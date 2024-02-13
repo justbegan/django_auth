@@ -1,11 +1,12 @@
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework.views import Response, status
+from rest_framework.request import Request
 
 
 class CustomTokenRefresh(TokenRefreshView):
-    def get(self, request):
-        cookie_refresh_token = request.COOKIES.get('refresh_token11', None)
+    def get(self, request: Request):
+        cookie_refresh_token = request.COOKIES.get('refresh_token', None)
         if not cookie_refresh_token:
             raise TokenError('No refresh token cookie found')
 
@@ -23,14 +24,17 @@ class CustomTokenRefresh(TokenRefreshView):
 
 
 class CustomGetToken(TokenObtainPairView):
-    def post(self, request, *args, **kwargs):
+    def post(self, request: Request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
         if 'refresh' in response.data:
             response.set_cookie(
-                key='refresh_token11',
+                key='refresh_token',
                 value=response.data['refresh'],
-                httponly=True,
+                httponly=False,
                 max_age=30 * 24 * 60 * 60,
-                secure=True
+                secure=False
             )
-        return response
+        custom_response = {
+            "access": response.data["access"]
+        }
+        return Response(custom_response)
