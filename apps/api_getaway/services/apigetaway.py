@@ -9,15 +9,14 @@ from apps.profiles.models import Profile
 def make_a_request(request: Request, path: str):
     """Сделать запрос на микро сервис"""
     microservice_url = get_url(request, path)
-    print(microservice_url)
     response = requests.request(
         method=request.method,
         url=microservice_url,
         headers=validate_header(request.headers),
         files=request.data,
-        data=request.data
+        data=request.data,
+        params=request.GET
     )
-    print(response.text)
     return Response(response.json(), status=response.status_code)
 
 
@@ -51,10 +50,8 @@ def check_path(request: Request, path: str) -> bool:
     """
     проверка доп. маршрута
     """
-    print(path)
     try:
         r_path = Remaining_paths.objects.get(name=path)
-        print(r_path)
     except:
         return True
     if r_path:
