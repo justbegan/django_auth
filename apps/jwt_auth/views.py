@@ -34,7 +34,5 @@ class CustomGetToken(TokenObtainPairView):
                 max_age=30 * 24 * 60 * 60,
                 secure=False
             )
-        custom_response = {
-            "access": response.data["access"]
-        }
-        return Response(custom_response)
+            del response.data['refresh']
+        return response
