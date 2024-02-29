@@ -7,17 +7,26 @@ from apps.profiles.models import Profile
 
 
 def make_a_request(request: Request, path: str):
-    """Сделать запрос на микро сервис"""
-    microservice_url = get_url(request, path)
+    """Сделать запрос на микросервис"""
     response = requests.request(
-        method=request.method,
-        url=microservice_url,
-        headers=validate_header(request.headers),
-        files=request.data,
-        data=request.data,
-        params=request.GET
+        **get_request_param(request, path)
     )
     return Response(response.json(), status=response.status_code)
+
+
+def get_request_param(request: Request, path: str) -> dict:
+    """Параметры запроса"""
+    param = {
+        "method": request.method,
+        "url": get_url(request, path),
+        "headers": validate_header(request.headers),
+        "params": request.GET
+    }
+    if path == 'contest_constructor/files/upload-doc':
+        param['files'] = request.data
+    else:
+        param['json'] = request.data
+    return param
 
 
 def validate_header(headers):
