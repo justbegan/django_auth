@@ -12,7 +12,7 @@ from .services.apigetaway import make_a_request
 #         return make_a_request(request, path)
 
 
-@api_view(['POST', 'GET', 'PUT'])
+@api_view(['POST', 'GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def api_getaway(request: Request, path: str):
     return make_a_request(request, path)
