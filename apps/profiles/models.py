@@ -17,7 +17,7 @@ class Roles(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="Профиль")
     role = models.ForeignKey(Roles, on_delete=models.PROTECT, verbose_name="Роль")
-    contest = models.CharField("Конкурс", max_length=120, choices=all_contests().items())
+    contest = models.CharField("Конкурс", max_length=120, choices=all_contests().items(), blank=True, null=True)
 
     def __str__(self):
         return f"{self.user.username}"

@@ -12,7 +12,7 @@ def get_all_contest_from_fast_api() -> dict:
             "Content-Type": "application/json",
             "Accept": "*/*"
         },
-        url=f'{contest_url}/contes/get_contests'
+        url=f'{contest_url}/contest/get_contests'
     )
     result = {item['_id']: item['title'] for item in response.json()['data']}
     return result

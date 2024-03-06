@@ -8,7 +8,7 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = 'django-insecure-02@4mn2!0a*2pn%eys0-4*6#&ey-i564q04!+vya!s_4zootb='
 DEBUG = os.environ.get('DEBUG')
 
 ALLOWED_HOSTS = ['*']
@@ -72,6 +72,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        'ATOMIC_REQUESTS': True
     }
 }
 
