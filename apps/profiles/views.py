@@ -1,5 +1,5 @@
 from rest_framework.views import APIView, Response
-from .services.profile_services import get_profile, get_profile_by_user_id, update_user_data
+from .services.profile_services import get_profile, get_profile_by_user_id, update_user_data, update_profile_by_user_id
 
 
 class Profile_view(APIView):
@@ -10,7 +10,11 @@ class Profile_view(APIView):
         return update_user_data(request)
 
 
-class Profile_by_user_id(APIView):
+class Profile_detail(APIView):
     def get(self, request):
         user_id = request.GET.get('user_id')
         return Response(get_profile_by_user_id(user_id))
+
+    def put(self, request):
+        user_id = request.GET.get('user_id')
+        return update_profile_by_user_id(request, user_id)

@@ -6,7 +6,8 @@ from django.contrib.auth.models import User
 class Profile_serializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        exclude = ['role', 'user']
+        # exclude = ['role', 'user']
+        fields = '__all__'
 
 
 class User_serializer(serializers.ModelSerializer):

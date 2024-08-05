@@ -5,18 +5,25 @@ from rest_framework.views import Response
 from django.contrib.auth.models import User
 
 from ..serializers import User_serializer
+from .crud import update, get
 
 
 def get_profile(request):
-    obj = User.objects.get(id=request.user.id)
-    ser = User_serializer(obj)
-    return ser.data
+    return get(User, User_serializer, {"id": request.user.id})
 
 
 def get_profile_by_user_id(user_id: int):
-    obj = User.objects.get(id=user_id)
-    ser = User_serializer(obj)
-    return ser.data
+    return get(User, User_serializer, {"id": user_id})
+
+
+def update_profile_by_user_id(request: Request, user_id: int):
+    data = request.data
+    profile_id = data['profile']['id']
+    profile_data = data['profile']
+    user = update(User, User_serializer, data, {"id": user_id})
+    profile = update(Profile, Profile_serializer, profile_data, {"user__id": profile_id})
+    user['profile'] = profile
+    return Response(user)
 
 
 def update_user_data(request: Request):
@@ -24,27 +31,7 @@ def update_user_data(request: Request):
     data = request.data
     profile_data = data['profile']
     profile_id = data['profile']['id']
-    user = update_user(user_id, data)
-    profile = update_profile(profile_id, profile_data)
+    user = update(User, User_serializer, data, {"id": user_id})
+    profile = update(Profile, Profile_serializer, profile_data, {"user__id": profile_id})
     user['profile'] = profile
     return Response(user)
-
-
-def update_user(user_id, data):
-    instance = User.objects.get(id=user_id)
-    serializer = User_serializer(instance, data=data)
-
-    if serializer.is_valid():
-        serializer.save()
-        return serializer.data
-    raise Exception(serializer.errors)
-
-
-def update_profile(profile_id, data):
-    instance = Profile.objects.get(user__id=profile_id)
-    serializer = Profile_serializer(instance, data=data)
-
-    if serializer.is_valid():
-        serializer.save()
-        return serializer.data
-    raise Exception(serializer.errors)

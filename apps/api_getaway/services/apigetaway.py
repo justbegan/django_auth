@@ -59,6 +59,7 @@ def check_path(request: Request, path: str) -> bool:
     """
     проверка доп. маршрута
     """
+    print(path)
     try:
         r_path = Remaining_paths.objects.get(name=path)
     except:
