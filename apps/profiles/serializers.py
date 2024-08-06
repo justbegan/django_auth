@@ -15,13 +15,21 @@ class Profile_serializer(serializers.ModelSerializer):
 
 class User_serializer(serializers.ModelSerializer):
     profile = Profile_serializer(read_only=True)
-    username = serializers.CharField(read_only=True)
-
     modules = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'email', 'profile', 'username', 'modules']
+        fields = ['id', 'first_name', 'last_name', 'email', 'profile', 'username', 'modules', 'password']
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
+
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        user = User(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
 
     def get_modules(self, obj):
         try:

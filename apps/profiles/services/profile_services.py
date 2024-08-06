@@ -35,3 +35,16 @@ def update_user_data(request: Request):
     profile = update(Profile, Profile_serializer, profile_data, {"user__id": profile_id})
     user['profile'] = profile
     return Response(user)
+
+
+def create_user(request: Request):
+    data = request.data
+    print(data)
+    # profile_data = data['profile']
+    ser = User_serializer(data=data)
+
+    if ser.is_valid():
+        ser.save()
+        return Response({"status": True, "data": ser.data})
+    else:
+        raise Exception({"status": False, "data": ser.errors})

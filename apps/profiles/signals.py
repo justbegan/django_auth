@@ -9,6 +9,6 @@ def create_default_user_profile(sender, instance, created, **kwargs):
     if created:
         p = Profile(
             user=instance,
-            role=Roles.objects.first()
+            role=Roles.objects.get(title="user")
         )
         p.save()
