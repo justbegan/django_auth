@@ -6,9 +6,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-MONGO_URL = os.environ.get('mongo_url')
-MONGO_USER = os.environ.get('mongo_user')
-MONGO_PASS = os.environ.get('mongo_pass')
+MONGO_URL = os.environ.get('MONGO_URL')
+MONGO_USER = os.environ.get('MONGO_USER')
+MONGO_PASS = os.environ.get('MONGO_PASS')
 
 
 def get_all_contest_from_fast_api() -> dict:

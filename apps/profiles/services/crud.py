@@ -4,7 +4,7 @@ from rest_framework.serializers import ModelSerializer
 
 def update(model: Model, serializer: ModelSerializer, data: dict, parameters: dict):
     instance = model.objects.get(**parameters)
-    serializer = ModelSerializer(instance, data=data)
+    serializer = serializer(instance, data=data)
 
     if serializer.is_valid():
         serializer.save()
