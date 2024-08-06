@@ -3,10 +3,10 @@ version: "3.0"
 services:
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8011
+    command: python manage.py runserver 0.0.0.0:8001
     volumes:
       - .:/code
     env_file:
       - ./.env
     ports:
-      - "8011:8011"
+      - "8001:8001"
