@@ -4,6 +4,17 @@ import requests
 
 from ..models import Api_getaway_mappping, Remaining_paths
 from apps.profiles.models import Profile
+from django.http import HttpResponse
+
+
+def report_service(url: str) -> bool:
+    try:
+        url = url.split("/")[0]
+        if url == 'report':
+            return True
+        return False
+    except:
+        return False
 
 
 def make_a_request(request: Request, path: str):
@@ -11,7 +22,10 @@ def make_a_request(request: Request, path: str):
     response = requests.request(
         **get_request_param(request, path)
     )
-    return Response(response.json(), status=response.status_code)
+    if report_service(path):
+        return HttpResponse(response)
+    else:
+        return Response(response.json(), status=response.status_code)
 
 
 def get_request_param(request: Request, path: str) -> dict:
