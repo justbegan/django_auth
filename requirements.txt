@@ -7,3 +7,5 @@ django-cors-headers==4.3.1
 djoser==2.2.2
 pymongo==4.7.2
 django-filter==23.1
+psycopg2-binary==2.9.9
+drf-yasg==1.21.7

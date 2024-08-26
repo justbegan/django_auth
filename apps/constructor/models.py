@@ -1,11 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 from apps.locations.models import Municipal_district, Settlement, Locality
+from apps.profiles.models import Section
 
 
 class Contest(models.Model):
     title = models.CharField("Наименование", max_length=120)
     active = models.BooleanField("Активность", default=True)
+    section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция")
 
     def __str__(self):
         return self.title
@@ -17,7 +19,7 @@ class Contest(models.Model):
 
 class Status(models.Model):
     title = models.CharField("Наименование", max_length=120)
-    contest = models.ForeignKey(Contest, on_delete=models.PROTECT, verbose_name="Конкурс")
+    section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция")
 
     def __str__(self):
         return self.title
@@ -29,7 +31,7 @@ class Status(models.Model):
 
 class Project_type(models.Model):
     title = models.CharField("Наименование", max_length=120)
-    contest = models.ForeignKey(Contest, on_delete=models.PROTECT, verbose_name="Конкурс")
+    section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция")
 
     def __str__(self):
         return self.title
@@ -51,6 +53,7 @@ class Application(models.Model):
     contest = models.ForeignKey(Contest, on_delete=models.PROTECT, verbose_name="Конкурс")
     author = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Пользователь")
     custom_data = models.JSONField("Кастомные поля", default=dict)
+    section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция")
 
     def __str__(self):
         return self.title
@@ -64,6 +67,7 @@ class History(models.Model):
     application = models.ForeignKey(Application, on_delete=models.PROTECT, verbose_name="Заявка")
     created_at = models.DateTimeField('Дата создания обращения', auto_now_add=True)
     text = models.TextField("Текст")
+    author = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Пользователь")
 
     class Meta:
         verbose_name = "История"
@@ -85,6 +89,7 @@ class Comments(models.Model):
 class Document_type(models.Model):
     title = models.CharField("Наименование", max_length=120)
     requirements = models.BooleanField("Обязательный")
+    section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция")
 
     def __str__(self):
         return self.title
@@ -97,6 +102,7 @@ class Document_type(models.Model):
 class Document(models.Model):
     document_type = models.ForeignKey(Document_type, on_delete=models.PROTECT, verbose_name="Тип")
     file_urls = models.JSONField("Ссылки на файлы", default=list)
+    section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция")
 
     class Meta:
         verbose_name = "Документ"

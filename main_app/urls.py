@@ -17,11 +17,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from .swagger import schema_view
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('apps.jwt_auth.urls')),
     path('api/v1/', include('apps.api_getaway.urls')),
     path('profile/', include('apps.profiles.urls')),
     path('locations/', include('apps.locations.urls')),
-    path('constructor/', include('apps.constructor.api.urls'))
+    path('constructor/', include('apps.constructor.api.urls')),
+    path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+
 ]

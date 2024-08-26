@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'djoser',
     'rest_framework_simplejwt',
     'corsheaders',
+    'drf_yasg',
     'apps.jwt_auth',
     'apps.api_getaway',
     'apps.profiles',

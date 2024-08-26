@@ -8,7 +8,7 @@ class Applications_serializer(serializers.ModelSerializer):
     class Meta:
         model = Application
         fields = "__all__"
-        read_only_fields = ['author']
+        read_only_fields = ['author', 'contest', 'section']
 
 
 class Contest_serializer(serializers.ModelSerializer):
