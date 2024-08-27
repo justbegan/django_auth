@@ -122,3 +122,7 @@ class Schema(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Main_table_fields(models.Model):
+    title = models.CharField("Наименование", max_length=120)

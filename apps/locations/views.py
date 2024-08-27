@@ -1,7 +1,8 @@
-from rest_framework.views import APIView, Response
+from rest_framework.views import APIView, Response, Request
 import json
+
 from .models import (Municipal_district, Settlement, Settlement_type, Locality_type, Locality)
-from apps.constructor.models import Application
+from .services import (get_all_municipal_district, get_settlement_by_distict_id, get_locality_by_settlement_id)
 
 
 class CreateRa(APIView):
@@ -63,7 +64,16 @@ class CreateLocality(APIView):
         return Response(True)
 
 
-class For_test(APIView):
-    def get(self, request):
-        x = Application.objects.filter(custom_data__test=13).values()
-        return Response(x)
+class Municipal_district_main(APIView):
+    def get(self, request: Request):
+        return get_all_municipal_district(request)
+
+
+class Settlement_main(APIView):
+    def get(self, request: Request, reg_id: int):
+        return get_settlement_by_distict_id(request, reg_id)
+
+
+class Locality_main(APIView):
+    def get(self, request: Request, settlement_id: int):
+        return get_locality_by_settlement_id(request, settlement_id)

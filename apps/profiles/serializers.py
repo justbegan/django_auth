@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Profile
 from django.contrib.auth.models import User
-from apps.profiles.services.services import get_contest_modules_by_contest_id
+# from apps.profiles.services.services import get_contest_modules_by_contest_id
 
 
 class Profile_serializer(serializers.ModelSerializer):

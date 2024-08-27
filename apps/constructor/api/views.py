@@ -20,6 +20,17 @@ class StandardResultsSetPagination(PageNumberPagination):
     page_size_query_param = 'page_size'
     max_page_size = 1000
 
+    def get_paginated_response(self, data):
+        return Response({
+            'main_table_fields': str(self.request),
+            'total_results': self.page.paginator.count,
+            'total_pages': self.page.paginator.num_pages,
+            'current_page': self.page.number,
+            'next': self.get_next_link(),
+            'previous': self.get_previous_link(),
+            'results': data
+        })
+
 
 class Application_main(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -44,7 +55,6 @@ class Application_main(generics.ListCreateAPIView):
             section=get_current_section(request),
             contest=get_current_contest(request)
         )
-
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
