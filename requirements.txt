@@ -9,3 +9,4 @@ pymongo==4.7.2
 django-filter==23.1
 psycopg2-binary==2.9.9
 drf-yasg==1.21.7
+jsonschema==4.20.0

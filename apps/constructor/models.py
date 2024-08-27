@@ -107,3 +107,18 @@ class Document(models.Model):
     class Meta:
         verbose_name = "Документ"
         verbose_name_plural = "Документы"
+
+
+class Schema(models.Model):
+    title = models.CharField("Наименование", max_length=120)
+    properties = models.JSONField("Properties", default=dict)
+    required = models.JSONField("Required", default=list, blank=True, null=True)
+    section = models.OneToOneField(Section, on_delete=models.PROTECT, verbose_name="Секция")
+    type = models.CharField("Тип", max_length=120)
+
+    class Meta:
+        verbose_name = "Схема"
+        verbose_name_plural = "Схемы"
+
+    def __str__(self):
+        return self.title

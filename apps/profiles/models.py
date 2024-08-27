@@ -5,7 +5,7 @@ from apps.locations.models import Municipal_district, Settlement, Locality
 
 class Section(models.Model):
     title = models.CharField("Секция", max_length=120)
-    
+
     def __str__(self):
         return f"{self.title}"
 
