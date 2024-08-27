@@ -32,8 +32,9 @@ class User_serializer(serializers.ModelSerializer):
         return user
 
     def get_modules(self, obj):
-        try:
-            contest_id = Profile.objects.get(user=obj).contest
-        except:
-            raise Exception("user profile not found")
-        return get_contest_modules_by_contest_id(contest_id)
+        # try:
+        #     contest_id = Profile.objects.get(user=obj).contest
+        # except:
+        #     raise Exception("user profile not found")
+        # return get_contest_modules_by_contest_id(contest_id)
+        pass
