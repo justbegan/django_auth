@@ -13,12 +13,12 @@ def update(model: Model, serializer: ModelSerializer, data: dict, parameters: di
     raise Exception(serializer.errors)
 
 
-def get(model: Model, serializer: ModelSerializer, parameters: dict):
+def get(model: Model, serializer: ModelSerializer, parameters: dict = {}):
     obj = model.objects.get(**parameters)
     return serializer(obj).data
 
 
-def get_many(model: Model, serializer: ModelSerializer, parameters: dict):
+def get_many(model: Model, serializer: ModelSerializer, parameters: dict = {}):
     obj = model.objects.filter(**parameters)
     return serializer(obj, many=True).data
 
