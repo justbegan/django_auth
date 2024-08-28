@@ -31,6 +31,7 @@ urlpatterns = [
     path('filehandler/', include('apps.filehandler.urls')),
     path('document/', include('apps.documents.urls')),
     path('news/', include('apps.news.urls')),
+    path('history/', include('apps.history.urls')),
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
 

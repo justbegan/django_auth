@@ -13,6 +13,7 @@ from .services.current import get_current_contest, get_current_section, get_curr
 from .services.schema import get_schema_by_user
 from .services.custom_data import validate_custom_data
 from .services.comment import get_comments_by_application_id, create_comments
+from apps.history.services import create_history
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -55,6 +56,15 @@ class Application_main(generics.ListCreateAPIView):
             section=get_current_section(request),
             contest=get_current_contest(request)
         )
+        history_data = {
+            "author": request.user.id,
+            "text": "Заявка создана",
+            "application": serializer.data["id"]
+        }
+        try:
+            create_history(history_data)
+        except Exception as e:
+            print(e)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
