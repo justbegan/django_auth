@@ -36,7 +36,8 @@ INSTALLED_APPS = [
     'apps.filehandler',
     'apps.documents',
     'apps.news',
-    'apps.history'
+    'apps.history',
+    'apps.calculation'
 ]
 
 MIDDLEWARE = [
