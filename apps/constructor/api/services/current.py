@@ -25,7 +25,7 @@ def get_current_schema(request: Request):
         raise Exception("schema is not selected")
 
 
-def get_current_new_status(request):
+def get_current_new_status(request: Request):
     try:
         section = get_current_section(request)
         obj = Status.objects.get(section=section, title="Создана").id

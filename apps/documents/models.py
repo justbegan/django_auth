@@ -6,7 +6,7 @@ class Document(models.Model):
     description = models.TextField("Описание")
     date = models.DateField("Дата")
     file_url = models.CharField("ссылка")
-    created_at = models.DateTimeField('Дата создания обращения', auto_now_add=True)
+    created_at = models.DateTimeField('Дата создания', auto_now_add=True)
     updated_at = models.DateTimeField('Дата обновления', auto_now=True)
 
     class Meta:

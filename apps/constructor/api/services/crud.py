@@ -30,3 +30,9 @@ def create(serializer: ModelSerializer, data: dict):
         return ser.data
     else:
         raise serializers.ValidationError(ser.errors)
+
+
+def delete(model: Model, parameter: dict):
+    obj = model.objects.get(**parameter)
+    obj.delete()
+    return True
