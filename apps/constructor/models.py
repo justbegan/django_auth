@@ -126,3 +126,12 @@ class Schema(models.Model):
 
 class Main_table_fields(models.Model):
     title = models.CharField("Наименование", max_length=120)
+    field = models.CharField("Транскрипция")
+    section = models.OneToOneField(Section, on_delete=models.PROTECT, verbose_name="Секция")
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Отображаемое значение в главной таблице"
+        verbose_name = "Отображаемые значения в главной таблице"

@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from apps.constructor.models import Application
 from apps.constructor.models import (Contest, Project_type, Status, Document_type, Schema,
-                                     Comments)
+                                     Comments, Main_table_fields)
 
 
 class Applications_serializer(serializers.ModelSerializer):
@@ -46,3 +46,9 @@ class Comments_serializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Comments
+
+
+class Main_table_fields_serializer(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        model = Main_table_fields
