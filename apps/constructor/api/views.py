@@ -14,7 +14,7 @@ from .services.schema import get_schema_by_user
 from .services.custom_data import validate_custom_data
 from .services.comment import get_comments_by_application_id, create_comments
 from apps.history.services import create_history
-from .services.main_table_fields import get_main_table_fields_by_section
+from .services.main_table_fields import get_main_table_fields_by_section, get_main_table_fields_by_section_method
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -24,7 +24,7 @@ class StandardResultsSetPagination(PageNumberPagination):
 
     def get_paginated_response(self, data):
         return Response({
-            'main_table_fields': str(self.request),
+            'main_table_fields': get_main_table_fields_by_section_method(self.request),
             'total_results': self.page.paginator.count,
             'total_pages': self.page.paginator.num_pages,
             'current_page': self.page.number,
