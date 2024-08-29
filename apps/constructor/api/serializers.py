@@ -6,12 +6,12 @@ from apps.constructor.models import (Contest, Project_type, Status, Document_typ
 
 
 class Applications_serializer(serializers.ModelSerializer):
-    get_all_by_id = serializers.DictField()
+    point_calculation = serializers.DictField()
 
     class Meta:
         model = Application
         fields = "__all__"
-        read_only_fields = ['author', 'contest', 'section', 'custom_data', 'get_all_by_id']
+        read_only_fields = ['author', 'contest', 'section', 'custom_data']
 
 
 class Contest_serializer(serializers.ModelSerializer):

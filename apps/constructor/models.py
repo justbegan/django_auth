@@ -63,7 +63,7 @@ class Application(models.Model):
         verbose_name = "Заявка"
         verbose_name_plural = "Заявки"
 
-    def get_all_by_id(self):
+    def point_calculation(self):
         final_score = 0
         d_copy = {}
 
@@ -94,7 +94,6 @@ class Application(models.Model):
                 value = -1
             elif value:
                 value = 100
-            print(obj.scope, value)
             if obj.scope > value:
                 return eval(obj.formula)
             else:

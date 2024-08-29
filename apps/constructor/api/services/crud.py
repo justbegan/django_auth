@@ -14,8 +14,11 @@ def update(model: Model, serializer: ModelSerializer, data: dict, parameters: di
 
 
 def get(model: Model, serializer: ModelSerializer, parameters: dict = {}):
-    obj = model.objects.get(**parameters)
-    return serializer(obj).data
+    try:
+        obj = model.objects.get(**parameters)
+        return serializer(obj).data
+    except:
+        return {}
 
 
 def get_many(model: Model, serializer: ModelSerializer, parameters: dict = {}, order: str = "id"):
