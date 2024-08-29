@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from apps.locations.models import Municipal_district, Settlement, Locality
 from apps.profiles.models import Section
+from apps.calculation.models import Formula
 
 
 class Contest(models.Model):
@@ -61,6 +62,47 @@ class Application(models.Model):
     class Meta:
         verbose_name = "Заявка"
         verbose_name_plural = "Заявки"
+
+    def get_all_by_id(self):
+        final_score = 0
+        d_copy = {}
+
+        for key, value in self.custom_data.items():
+            field_formula_value = self.get_value(key, value)
+            if field_formula_value is not False:
+                coefficient = self.get_coefficient(key)
+                if coefficient is not False:
+                    final_result = field_formula_value * coefficient
+                    final_score += final_result
+                    d_copy[f'{key}_formula_score'] = final_result
+
+        d_copy['final_score'] = final_score
+        return d_copy
+
+    def get_value(self, field: str, value: int):
+        """
+        Сравниваю значения с scope если соответсует возвращаю максимальный бал
+        Если значения поля True возвращаю максимальный бал из документации формулы,
+        если False возвращаю 0
+        """
+        obj = Formula.objects.get(field=field)
+        if obj:
+            if not value:
+                value = -1
+            elif value:
+                value = 100
+            print(obj.scope, value)
+            if obj.scope > value:
+                return eval(obj.formula)
+            else:
+                return obj.hight_value
+        return False
+
+    def get_coefficient(self, field):
+        try:
+            return Formula.objects.get(field=field).coefficent
+        except:
+            return False
 
 
 class History(models.Model):

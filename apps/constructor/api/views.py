@@ -15,6 +15,8 @@ from .services.custom_data import validate_custom_data
 from .services.comment import get_comments_by_application_id, create_comments
 from apps.history.services import create_history
 from .services.main_table_fields import get_main_table_fields_by_section, get_main_table_fields_by_section_method
+from .services.status import get_all_statuses_by_section
+from .services.project_type import get_project_type_by_section
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -112,4 +114,9 @@ class Main_table_fields_main(APIView):
 
 class Status_main(APIView):
     def get(self, request: Request):
-        pass
+        return get_all_statuses_by_section(request)
+
+
+class Project_type_main(APIView):
+    def get(self, request: Request):
+        return get_project_type_by_section(request)
