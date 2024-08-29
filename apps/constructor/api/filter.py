@@ -11,6 +11,7 @@ class Application_filter(django_filters.FilterSet):
     status = django_filters.CharFilter(method='filter_status')
     custom_data = django_filters.CharFilter(method='fiter_custom_data')
     order_by = django_filters.CharFilter(method='filter_order_by')
+    multipurpose = django_filters.CharFilter(method='filter_multipurpose')
 
     class Meta:
         model = Application
@@ -40,6 +41,13 @@ class Application_filter(django_filters.FilterSet):
         filter = {}
         for key, value in value.items():
             filter[f"custom_data__{key}"] = value
+        return queryset.filter(**filter)
+
+    def filter_multipurpose(self, queryset, name, value):
+        value = json.loads(value)
+        filter = {}
+        for key, value in value.items():
+            filter[key] = value
         return queryset.filter(**filter)
 
     def filter_order_by(self, queryset, name, value):
