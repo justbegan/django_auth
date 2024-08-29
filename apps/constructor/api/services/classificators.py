@@ -10,7 +10,7 @@ def get_all_classificators(request: Request) -> Response:
     for name, obj in vars(app_models).items():
         if isinstance(obj, type) and issubclass(obj, models.Model):
             try:
-                result[name] = obj.objects.filter(section=get_current_section(request)).values()
+                result[name.lower()] = obj.objects.filter(section=get_current_section(request)).values()
             except:
                 pass
 
