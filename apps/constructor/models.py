@@ -127,6 +127,7 @@ class Schema(models.Model):
 class Main_table_fields(models.Model):
     title = models.CharField("Наименование", max_length=120)
     field = models.CharField("Транскрипция")
+    pos = models.PositiveIntegerField("Позиция", default=100)
     section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция")
 
     def __str__(self):

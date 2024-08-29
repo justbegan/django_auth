@@ -18,8 +18,8 @@ def get(model: Model, serializer: ModelSerializer, parameters: dict = {}):
     return serializer(obj).data
 
 
-def get_many(model: Model, serializer: ModelSerializer, parameters: dict = {}):
-    obj = model.objects.filter(**parameters)
+def get_many(model: Model, serializer: ModelSerializer, parameters: dict = {}, order: str = "id"):
+    obj = model.objects.filter(**parameters).order_by(order)
     return serializer(obj, many=True).data
 
 
