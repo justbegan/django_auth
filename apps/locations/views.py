@@ -2,7 +2,9 @@ from rest_framework.views import APIView, Response, Request
 import json
 
 from .models import (Municipal_district, Settlement, Settlement_type, Locality_type, Locality)
-from .services import (get_all_municipal_district, get_settlement_by_distict_id, get_locality_by_settlement_id,
+from .services import (get_all_municipal_district, create_municipal_district, update_municipal_district,
+                       get_settlement_by_distict_id, create_settlement, update_settlement,
+                       get_locality_by_settlement_id, create_locality, update_locality,
                        get_locality_by_district_id, get_locality_by_id)
 
 
@@ -69,10 +71,26 @@ class Municipal_district_main(APIView):
     def get(self, request: Request):
         return get_all_municipal_district(request)
 
+    def post(self, request: Request):
+        return create_municipal_district(request)
+
+
+class Municipal_district_detail(APIView):
+    def put(self, request: Request, id: int):
+        return update_municipal_district(request, id)
+
+
+class Settlement_main(APIView):
+    def create(self, request: Request):
+        return create_settlement(request)
+
 
 class Settlement_detail(APIView):
-    def get(self, request: Request, reg_id: int):
-        return get_settlement_by_distict_id(request, reg_id)
+    def get(self, request: Request, id: int):
+        return get_settlement_by_distict_id(request, id)
+
+    def put(self, request: Request, id: int):
+        return update_settlement(request, id)
 
 
 class Locality_detail(APIView):
@@ -84,10 +102,17 @@ class Locality_detail(APIView):
     """
     def get(self, request: Request, id: int):
         request_type = request.GET.get("type")
-        print(request_type)
         if request_type == "1":
             return get_locality_by_settlement_id(request, id)
         elif request_type == "2":
             return get_locality_by_district_id(request, id)
         else:
             return get_locality_by_id(request, id)
+
+    def put(self, request: Request, id: int):
+        return update_locality(request, id)
+
+
+class Locality_main(APIView):
+    def post(self, request: Request):
+        return create_locality(request)

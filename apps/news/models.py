@@ -3,7 +3,7 @@ from django.db import models
 
 class News(models.Model):
     title = models.TextField("Наименование")
-    text = models.TimeField("Текст")
+    text = models.TextField("Текст")
     hide = models.BooleanField("Скрытый", default=False)
     created_at = models.DateTimeField('Дата создания', auto_now_add=True)
     updated_at = models.DateTimeField('Дата обновления', auto_now=True)
