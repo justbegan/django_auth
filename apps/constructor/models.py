@@ -85,7 +85,10 @@ class Application(models.Model):
         Если значения поля True возвращаю максимальный бал из документации формулы,
         если False возвращаю 0
         """
-        obj = Formula.objects.get(field=field)
+        try:
+            obj = Formula.objects.get(field=field)
+        except:
+            return False
         if obj:
             if not value:
                 value = -1
