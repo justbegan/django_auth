@@ -83,7 +83,7 @@ class Application_detail(APIView):
 
 class Classificators(APIView):
     def get(self, request: Request):
-        return get_all_classificators()
+        return get_all_classificators(request)
 
 
 class Schema_main(APIView):
