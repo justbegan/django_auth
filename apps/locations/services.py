@@ -17,6 +17,10 @@ def update_municipal_district(request: Request, id: int):
     return Response(update(Municipal_district, Municipal_district_serializer, request.data, {"id": id}))
 
 
+def get_all_settlements(request: Request):
+    return Response(get_many(Settlement, Settlement_serializer))
+
+
 def get_settlement_by_distict_id(request: Request, reg_id: int):
     return Response(get_many(Settlement, Settlement_serializer, {"RegID": reg_id}))
 
@@ -27,6 +31,10 @@ def create_settlement(request: Request):
 
 def update_settlement(request: Request, id: int):
     return Response(update(Settlement, Settlement_serializer, request.data, {"id": id}))
+
+
+def get_all_locality(request: Request):
+    return Response(get_many(Locality, Locality_serializer))
 
 
 def get_locality_by_settlement_id(request: Request, settlement_id: int):

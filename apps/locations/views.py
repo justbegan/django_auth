@@ -3,8 +3,8 @@ import json
 
 from .models import (Municipal_district, Settlement, Settlement_type, Locality_type, Locality)
 from .services import (get_all_municipal_district, create_municipal_district, update_municipal_district,
-                       get_settlement_by_distict_id, create_settlement, update_settlement,
-                       get_locality_by_settlement_id, create_locality, update_locality,
+                       get_settlement_by_distict_id, create_settlement, update_settlement, get_all_settlements,
+                       get_locality_by_settlement_id, create_locality, update_locality, get_all_locality,
                        get_locality_by_district_id, get_locality_by_id)
 
 
@@ -81,7 +81,10 @@ class Municipal_district_detail(APIView):
 
 
 class Settlement_main(APIView):
-    def create(self, request: Request):
+    def get(self, request: Request):
+        return get_all_settlements(request)
+
+    def post(self, request: Request):
         return create_settlement(request)
 
 
@@ -114,5 +117,8 @@ class Locality_detail(APIView):
 
 
 class Locality_main(APIView):
+    def get(self, request: Request):
+        return get_all_locality(request)
+
     def post(self, request: Request):
         return create_locality(request)
