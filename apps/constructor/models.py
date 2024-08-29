@@ -70,6 +70,13 @@ class Application(models.Model):
         except:
             return False
 
+    def total_price(self):
+        result = 0.0
+        obj = self.custom_data.get("project_financing", [])
+        for price in obj:
+            result = result + float(price.get('price', 0))
+        return result
+
 
 class History(models.Model):
     application = models.ForeignKey(Application, on_delete=models.PROTECT, verbose_name="Заявка")

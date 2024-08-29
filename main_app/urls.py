@@ -32,7 +32,8 @@ urlpatterns = [
     path('document/', include('apps.documents.urls')),
     path('news/', include('apps.news.urls')),
     path('history/', include('apps.history.urls')),
-    path('report/', include('apps.report.urls')),
+    path('report/', include('apps.report_manager.urls')),
+    path('ppmi_report/', include('apps.ppmi_report.urls')),
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
 
