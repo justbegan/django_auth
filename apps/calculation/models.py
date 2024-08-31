@@ -2,14 +2,24 @@ from django.db import models
 from apps.constructor.models import Section
 
 
+code_template = """#python!
+# result - пустой dict
+# self.get_financing_settlement_budget() - Бюджет поселения (муниципального района)
+# self.get_financing_people() - Население (поступления от жителей)
+# self.get_financing_sponsors() - Спонсоры
+# self.get_financing_republic_grant() - Субсидия из бюджета Республики Саха (Якутия)
+# self.total_price() - Общая сумма
+# key - названия поля
+# value - значение поля
+result[key] =
+"""
+
+
 class Formula(models.Model):
     title = models.CharField("Название", max_length=120)
-    field = models.CharField("Поле", max_length=120)
-    formula = models.CharField("Формула", max_length=120)
-    scope = models.FloatField("Сравниваемое значение", default=0)
-    hight_value = models.FloatField("Получаемый бал если соответует критерию", default=0)
-    coefficent = models.FloatField("Коефицент", default=0)
+    description = models.TextField("Описание", blank=True, null=True)
     section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция")
+    code = models.TextField("Код", default=code_template)
 
     class Meta:
         verbose_name = "Формула"

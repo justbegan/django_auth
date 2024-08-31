@@ -28,6 +28,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'drf_yasg',
+    'codemirror2',
+    'jsoneditor',
     'apps.jwt_auth',
     'apps.api_getaway',
     'apps.profiles',

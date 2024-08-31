@@ -28,54 +28,51 @@ class Application(models.Model):
         verbose_name_plural = "Заявки"
 
     def point_calculation(self):
-        final_score = 0
-        d_copy = {}
-
-        for key, value in self.custom_data.items():
-            field_formula_value = self.get_value(key, value)
-            if field_formula_value is not False:
-                coefficient = self.get_coefficient(key)
-                if coefficient is not False:
-                    final_result = field_formula_value * coefficient
-                    final_score += final_result
-                    d_copy[f'{key}_formula_score'] = final_result
-
-        d_copy['final_score'] = final_score
-        return d_copy
-
-    def get_value(self, field: str, value: int):
-        """
-        Сравниваю значения с scope если соответсует возвращаю максимальный бал
-        Если значения поля True возвращаю максимальный бал из документации формулы,
-        если False возвращаю 0
-        """
+        result = {}
         try:
-            obj = Formula.objects.get(field=field)
+            formulas = Formula.objects.filter(section=self.section)
+            for f in formulas:
+                try:
+                    exec(f.code)
+                except:
+                    pass
         except:
-            return False
-        if obj:
-            if not value:
-                value = -1
-            elif value:
-                value = 100
-            if obj.scope > value:
-                return eval(obj.formula)
-            else:
-                return obj.hight_value
-        return False
+            return result
+        return result
 
-    def get_coefficient(self, field):
-        try:
-            return Formula.objects.get(field=field).coefficent
-        except:
-            return False
+    def get_financing_settlement_budget(self) -> float:
+        """
+            Бюджет поселения (муниципального района)
+        """
+        return self.custom_data.get("financing_settlement_budget", 0.0)
+
+    def get_financing_people(self) -> float:
+        """
+            Население (поступления от жителей)
+        """
+        return self.custom_data.get("financing_people", 0.0)
+
+    def get_financing_sponsors(self) -> float:
+        """
+            Спонсоры (денежные поступления от юр.лиц, инд.предпринимателей и т.д.)
+        """
+        return self.custom_data.get("financing_sponsors", 0.0)
+
+    def get_financing_republic_grant(self) -> float:
+        """
+            Субсидия из бюджета Республики Саха (Якутия)
+        """
+        return self.custom_data.get("financing_republic_grant", 0.0)
 
     def total_price(self):
-        result = 0.0
-        obj = self.custom_data.get("project_financing", [])
-        for price in obj:
-            result = result + float(price.get('price', 0))
-        return result
+        return sum(
+            [
+                self.get_financing_settlement_budget(),
+                self.get_financing_people(),
+                self.get_financing_sponsors(),
+                self.get_financing_republic_grant()
+            ]
+        )
 
 
 class History(models.Model):
@@ -102,9 +99,9 @@ class Comments(models.Model):
 
 
 class Document(models.Model):
+    application = models.ForeignKey(Application, on_delete=models.PROTECT, verbose_name="Заявка")
     document_type = models.ForeignKey(Document_type, on_delete=models.PROTECT, verbose_name="Тип")
     file_urls = models.JSONField("Ссылки на файлы", default=list)
-    section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция")
 
     class Meta:
         verbose_name = "Документ"
