@@ -27,7 +27,7 @@ class Application(models.Model):
         verbose_name = "Заявка"
         verbose_name_plural = "Заявки"
 
-    def point_calculation(self):
+    def point_calculation(self) -> dict:
         result = {}
         try:
             formulas = Formula.objects.filter(section=self.section)
@@ -73,6 +73,13 @@ class Application(models.Model):
                 self.get_financing_republic_grant()
             ]
         )
+
+    def total_point(self):
+        try:
+            values = [value for key, value in self.point_calculation().items()]
+            return sum(values)
+        except:
+            return 0
 
 
 class History(models.Model):

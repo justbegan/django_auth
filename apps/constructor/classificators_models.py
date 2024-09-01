@@ -4,7 +4,9 @@ from apps.profiles.models import Section
 
 class Contest(models.Model):
     title = models.CharField("Наименование", max_length=120)
-    active = models.BooleanField("Активность", default=True)
+    grant_sum = models.DecimalField(
+        "Сумма гранта", max_digits=12, decimal_places=2, default=0.00, blank=True, null=True
+    )
     section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция")
 
     def __str__(self):

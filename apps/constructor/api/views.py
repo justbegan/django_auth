@@ -8,7 +8,7 @@ from .serializers import Applications_serializer
 from ..models import Application
 from .filter import Application_filter
 from .services.classificators import get_all_classificators
-from .services.applications import get_by_application_id, update_application
+from .services.applications import get_by_application_id, update_application, win_lose_calculation
 from .services.current import get_current_contest, get_current_section, get_current_new_status
 from .services.schema import get_schema_by_user
 from .services.custom_data import validate_custom_data
@@ -32,7 +32,8 @@ class StandardResultsSetPagination(PageNumberPagination):
             'current_page': self.page.number,
             'next': self.get_next_link(),
             'previous': self.get_previous_link(),
-            'results': data
+            'results': data,
+            'win_lose': win_lose_calculation(self.request)
         })
 
 

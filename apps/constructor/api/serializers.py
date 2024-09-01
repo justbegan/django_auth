@@ -7,6 +7,7 @@ from apps.constructor.models import (Contest, Project_type, Status, Document_typ
 
 class Applications_serializer(serializers.ModelSerializer):
     point_calculation = serializers.DictField()
+    total_point = serializers.FloatField()
 
     class Meta:
         model = Application
