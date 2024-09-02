@@ -17,6 +17,7 @@ from apps.history.services import create_history
 from .services.main_table_fields import get_main_table_fields_by_section, get_main_table_fields_by_section_method
 from .services.status import get_all_statuses_by_section
 from .services.project_type import get_project_type_by_section
+from .services.contest import create_contest, update_contest, get_contests_by_section
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -121,3 +122,16 @@ class Status_main(APIView):
 class Project_type_main(APIView):
     def get(self, request: Request):
         return get_project_type_by_section(request)
+
+
+class Contest_main(APIView):
+    def get(self, request: Request):
+        return get_contests_by_section(request)
+
+    def post(self, request: Request):
+        return create_contest(request)
+
+
+class Contest_detail(APIView):
+    def put(self, request: Request, id: int):
+        return update_contest(request, id)

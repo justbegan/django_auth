@@ -7,7 +7,7 @@ from ..serializers import Schema_serializer
 def get_current_contest(request: Request) -> int:
     try:
         section = get_current_section(request)
-        return Contest.objects.get(section=section)
+        return Contest.objects.filter(section=section).last()
     except:
         raise Exception("contest is not selected")
 
