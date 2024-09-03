@@ -18,7 +18,8 @@ class Municipal_district(models.Model):
 
 
 class Settlement_type(models.Model):
-    title = models.CharField("Наименование")
+    title = models.CharField("Наименование", max_length=120)
+    abbreviation = models.CharField("Аббревиатура", max_length=10)
 
     def __str__(self):
         return self.title
@@ -46,7 +47,7 @@ class Settlement(models.Model):
 
 
 class Locality_type(models.Model):
-    title = models.CharField("Наименование")
+    title = models.CharField("Наименование", max_length=120)
 
     def __str__(self):
         return self.title

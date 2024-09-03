@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-from apps.locations.models import Municipal_district, Settlement, Locality
+
+from apps.locations.models import Municipal_district, Settlement, Locality, Settlement_type
 
 
 class Section(models.Model):
@@ -39,6 +40,9 @@ class Profile(models.Model):
     )
     locality = models.ForeignKey(
         Locality, on_delete=models.PROTECT, verbose_name="Населенный пункт", blank=True, null=True
+    )
+    profile_type = models.ForeignKey(
+        Settlement_type, on_delete=models.PROTECT, verbose_name="Тип профиля", blank=True, null=True
     )
 
     def __str__(self):
