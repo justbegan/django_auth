@@ -1,8 +1,12 @@
 from rest_framework.views import APIView, Response, Request
+from rest_framework import generics
+from django_filters.rest_framework import DjangoFilterBackend
 
 from apps.constructor.models import Application
-from .serializers import (Application_registry_serializer, Results_of_applications_acceptance_serializer)
+from .serializers import (Application_registry_serializer, Results_of_applications_acceptance_serializer,
+                          Application_rating_serializer)
 from apps.constructor.api.services.current import get_current_section
+from .filter import Application_rating_filter
 
 
 class Application_registry(APIView):
@@ -43,3 +47,34 @@ class Results_of_applications_acceptance(APIView):
             "data": ser.data
         }
         return Response(result)
+
+
+class Application_rating(generics.ListCreateAPIView):
+    serializer_class = Application_rating_serializer
+    queryset = Application.objects.all().order_by('-id')
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = Application_rating_filter
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        obj = queryset.filter(author=self.request.user.id)
+        return obj
+
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, *args, **kwargs)
+
+        custom_data = {
+            'fields_description': {
+                'municipal_district': 'Район',
+                'settlement': 'Поселение',
+                'locality': 'Населенный пункт',
+                'title': 'Название проекта',
+                'get_financing_republic_grant': 'Сумма субсидии'
+            },
+            'data': self.custom_method(response.data),
+        }
+        return Response(custom_data)
+
+    def custom_method(self, data):
+        sorted_data = sorted(data, key=lambda x: (x['created_at'], -x['total_point']))
+        return sorted_data

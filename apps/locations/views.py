@@ -47,6 +47,12 @@ class CreateSettlements(APIView):
         return Response(True)
 
 
+class DeleteLocality(APIView):
+    def get(self, request):
+        Locality.objects.all().delete()
+        return Response(True)
+
+
 class CreateLocality(APIView):
     def get(self, request):
         with open('loc.json', 'r', encoding='utf-8-sig') as file:
@@ -60,7 +66,9 @@ class CreateLocality(APIView):
                 "LocName": r["LocName"],
                 "LocNameE": r["LocNameE"],
                 "LocPopulation": r["LocPopulation"],
-                "LocTypeID": Locality_type.objects.get(id=r["LocTypeID"])
+                "LocTypeID": Locality_type.objects.get(id=r["LocTypeID"]),
+                "Latitude": r["Latitude"],
+                "Longitude": r["Longitude"]
             }
             a = Locality.objects.create(**obj)
             a.save()

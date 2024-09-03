@@ -11,4 +11,6 @@ urlpatterns = [
 
     path('api/v1/locality_detail/<int:id>', views.Locality_detail.as_view()),
     path('api/v1/locality', views.Locality_main.as_view()),
+
+    path('test', views.CreateLocality.as_view())
 ]

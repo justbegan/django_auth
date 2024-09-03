@@ -64,6 +64,8 @@ class Locality(models.Model):
     LocNameE = models.CharField("Наименование", max_length=120)
     LocPopulation = models.PositiveIntegerField("Население")
     LocTypeID = models.ForeignKey(Locality_type, on_delete=models.PROTECT, verbose_name="Тип")
+    Latitude = models.CharField("Широта", max_length=120, null=True, blank=True)
+    Longitude = models.CharField("Долгота", max_length=120, null=True, blank=True)
 
     def __str__(self):
         return self.LocNameE
@@ -71,3 +73,15 @@ class Locality(models.Model):
     class Meta:
         verbose_name = "Населенный пункт"
         verbose_name_plural = "Населенные пункты"
+
+
+class Region_center(models.Model):
+    locality = models.ForeignKey(Locality, on_delete=models.PROTECT, verbose_name="Населенный пункт")
+    municipal_district = models.ForeignKey(Municipal_district, on_delete=models.PROTECT, verbose_name="Район")
+
+    def __str__(self):
+        return f"{self.municipal_district}"
+
+    class Meta:
+        verbose_name = "Центр района"
+        verbose_name_plural = "Центры районов"

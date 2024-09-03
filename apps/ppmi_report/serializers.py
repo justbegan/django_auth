@@ -40,3 +40,23 @@ class Results_of_applications_acceptance_serializer(serializers.ModelSerializer)
             'get_financing_sponsors',
             'get_financing_republic_grant'
         ]
+
+
+class Application_rating_serializer(serializers.ModelSerializer):
+    municipal_district = serializers.CharField(source='municipal_district.RegionNameE')
+    settlement = serializers.CharField(source='settlement.MunicNameE')
+    locality = serializers.CharField(source='locality.LocNameE')
+    get_financing_republic_grant = serializers.FloatField()
+    total_point = serializers.FloatField()
+
+    class Meta:
+        model = Application
+        fields = [
+            'municipal_district',
+            'settlement',
+            'locality',
+            'title',
+            'get_financing_republic_grant',
+            'total_point',
+            'created_at'
+        ]
