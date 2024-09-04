@@ -3,13 +3,14 @@ from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.views import APIView, Request, Response, status
 from rest_framework.permissions import IsAuthenticated
+from drf_yasg.utils import swagger_auto_schema
 
 from .serializers import Applications_serializer
 from ..models import Application
 from .filter import Application_filter
 from .services.classificators import get_all_classificators
 from .services.applications import get_by_application_id, update_application, win_lose_calculation
-from .services.current import get_current_contest, get_current_section, get_current_new_status
+from .services.current import get_current_contest, get_current_section
 from .services.schema import get_schema_by_user
 from .services.custom_data import validate_custom_data
 from .services.comment import get_comments_by_application_id, create_comments
@@ -18,6 +19,7 @@ from .services.main_table_fields import get_main_table_fields_by_section, get_ma
 from .services.status import get_all_statuses_by_section
 from .services.project_type import get_project_type_by_section
 from .services.contest import create_contest, update_contest, get_contests_by_section
+from .services.document import document_validation
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -51,10 +53,9 @@ class Application_main(generics.ListCreateAPIView):
         return queryset.filter(author=self.request.user.id)
 
     def post(self, request, *args, **kwargs):
-        data = request.data.copy()
-        data['status'] = get_current_new_status(request)
-        serializer = self.get_serializer(data=data)
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        document_validation(request)
         serializer.save(
             custom_data=validate_custom_data(request),
             author=self.request.user,
@@ -79,6 +80,7 @@ class Application_detail(APIView):
     def get(self, request: Request, id: int):
         return get_by_application_id(request, id)
 
+    @swagger_auto_schema(request_body=Applications_serializer)
     def put(self, request: Request, id: int):
         return update_application(request, id)
 

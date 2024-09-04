@@ -5,12 +5,16 @@ from apps.constructor.classificators_models import Contest
 from ..serializers import Applications_serializer
 from .crud import update, get
 from apps.history.services import create_history
+from .custom_data import validate_custom_data
 from .current import get_current_section
 from apps.constructor.models import Status
+from .document import document_validation
 
 
 def update_application(request: Request, id: int) -> Response:
     data = request.data
+    validate_custom_data(request)
+    document_validation(request)
     obj = update(Application, Applications_serializer, data, {"id": id})
     if obj:
         try:

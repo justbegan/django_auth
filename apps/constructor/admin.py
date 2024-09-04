@@ -3,8 +3,9 @@ from django.db import models
 from jsoneditor.forms import JSONEditor
 
 from .models import (Contest, Status, Application, Project_type,
-                     History, Comments, Document, Document_type, Schema,
+                     History, Comments, Schema,
                      Main_table_fields)
+from .classificators_models import Document_type
 
 
 class BaseAdmin(admin.ModelAdmin):
@@ -28,7 +29,6 @@ class Aplication_admin(BaseAdmin):
 admin.site.register(Project_type)
 admin.site.register(History)
 admin.site.register(Comments)
-admin.site.register(Document)
 admin.site.register(Document_type)
 
 

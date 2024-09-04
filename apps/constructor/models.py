@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from apps.locations.models import Municipal_district, Settlement, Locality
 from apps.profiles.models import Section
 from apps.calculation.models import Formula
-from .classificators_models import Project_type, Status, Contest, Document_type
+from .classificators_models import Project_type, Status, Contest
 
 
 class Application(models.Model):
@@ -19,6 +19,7 @@ class Application(models.Model):
     author = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Пользователь")
     custom_data = models.JSONField("Кастомные поля", default=dict)
     section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция")
+    documents = models.JSONField("Документы", default=list)
 
     def __str__(self):
         return self.title
@@ -103,16 +104,6 @@ class Comments(models.Model):
     class Meta:
         verbose_name = "Коммент"
         verbose_name_plural = "Комменты"
-
-
-class Document(models.Model):
-    application = models.ForeignKey(Application, on_delete=models.PROTECT, verbose_name="Заявка")
-    document_type = models.ForeignKey(Document_type, on_delete=models.PROTECT, verbose_name="Тип")
-    file_urls = models.JSONField("Ссылки на файлы", default=list)
-
-    class Meta:
-        verbose_name = "Документ"
-        verbose_name_plural = "Документы"
 
 
 class Schema(models.Model):

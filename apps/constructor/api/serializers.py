@@ -1,20 +1,21 @@
 from rest_framework import serializers
 
 from apps.constructor.models import Application
-from apps.constructor.models import (Contest, Project_type, Status, Document_type, Schema,
+from apps.constructor.models import (Contest, Project_type, Status, Schema,
                                      Comments, Main_table_fields)
+from apps.constructor.classificators_models import Document_type
 
 
 class Applications_serializer(serializers.ModelSerializer):
-    point_calculation = serializers.DictField()
-    total_point = serializers.FloatField()
-    get_financing_republic_grant = serializers.FloatField()
-    author_type = serializers.CharField(source='author.profile.profile_type')
+    point_calculation = serializers.DictField(read_only=True)
+    total_point = serializers.FloatField(read_only=True)
+    get_financing_republic_grant = serializers.FloatField(read_only=True)
+    author_type = serializers.CharField(source='author.profile.profile_type', read_only=True)
 
     class Meta:
         model = Application
         fields = "__all__"
-        read_only_fields = ['author', 'contest', 'section', 'custom_data']
+        read_only_fields = ['author', 'contest', 'section']
 
 
 class Contest_serializer(serializers.ModelSerializer):

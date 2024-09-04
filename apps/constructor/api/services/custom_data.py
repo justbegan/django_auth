@@ -1,28 +1,41 @@
 from rest_framework.views import Request
-from jsonschema import validate
-from rest_framework.exceptions import ValidationError
+from copy import deepcopy
+from jsonschema import validate, ValidationError
 
 from ..services.current import get_current_schema
+from .current import get_current_new_status
+
+
+class CustomDataValidationError(Exception):
+    pass
+
+
+class SchemaNotFoundError(Exception):
+    pass
 
 
 def validate_custom_data(request: Request):
-    custom_data = request.data.get("custom_data")
+    data = deepcopy(request.data)
+    status = data.get("status")
+    required = status != get_current_new_status(request)
 
-    if custom_data is None:
-        raise Exception({"custom_data": "This field is required."})
+    custom_data = data.get("custom_data")
+    schema = get_current_schema(request)
+    if not schema:
+        raise SchemaNotFoundError({"schema": "Schema could not be found."})
+
+    schema = deepcopy(schema)
+    if not required:
+        schema['required'] = []
+
+    obj = {
+        key: value for key, value in custom_data.items()
+        if key in schema.get("properties", {}) and value != ''
+    }
 
     try:
-        schema = get_current_schema(request)
-        if schema is None:
-            raise Exception({"schema": "Schema could not be found."})
-
-        data = {
-            key: value for key, value in custom_data.items()
-            if key in schema.get("properties", {}) and value != ''
-        }
-        validate(instance=data, schema=schema)
-        return data
+        validate(instance=obj, schema=schema)
     except ValidationError as e:
-        raise Exception({"custom_data": str(e)})
-    except Exception as e:
-        raise Exception({"error": str(e)})
+        raise CustomDataValidationError({"custom_data": str(e)})
+
+    return obj

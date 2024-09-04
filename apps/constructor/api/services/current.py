@@ -1,19 +1,32 @@
 from rest_framework.views import Request
+
 from apps.profiles.models import Profile
 from apps.constructor.models import Contest, Schema, Status
 from ..serializers import Schema_serializer
 
 
-def get_current_contest(request: Request) -> int:
+def get_current_profile_type(request: Request):
     try:
-        section = get_current_section(request)
-        return Contest.objects.filter(section=section).last()
+        return Profile.objects.get(user=request.user).profile_type
     except:
-        raise Exception("contest is not selected")
+        Exception("Ошибка при поиске поля profile_type")
+
+
+def get_current_contest(request: Request) -> int:
+    section = get_current_section(request)
+    profile_type = get_current_profile_type(request).id
+    contest = Contest.objects.filter(section=section, status='opened', contest_types=profile_type)
+    if contest.count() == 0:
+        raise Exception("Конкурс с вашими критериями не найден")
+    else:
+        return contest.last()
 
 
 def get_current_section(request: Request):
-    return Profile.objects.get(user=request.user).section
+    try:
+        return Profile.objects.get(user=request.user).section
+    except:
+        raise Exception("Ошибка при поиске поля profile section")
 
 
 def get_current_schema(request: Request):
@@ -22,13 +35,13 @@ def get_current_schema(request: Request):
         obj = Schema.objects.get(section=section)
         return Schema_serializer(obj).data
     except:
-        raise Exception("schema is not selected")
+        raise Exception("Ошибка при поиске поля schema")
 
 
-def get_current_new_status(request: Request):
+def get_current_new_status(request: Request) -> int:
     try:
         section = get_current_section(request)
         obj = Status.objects.get(section=section, title="Создана").id
         return obj
     except:
-        raise Exception("created status is not found")
+        raise Exception("Не могу найти статус с именем 'Создана'")
