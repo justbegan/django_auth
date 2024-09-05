@@ -7,10 +7,10 @@ from .models import Comments
 
 
 def create_comments(request: Request):
-    application_content_type = ContentType.objects.get(model='application')
+    model_name = request.GET.get("type", "application")
+    application_content_type = ContentType.objects.get(model=model_name)
     data = request.data.copy()
     data['author'] = request.user.id
-    data['object_id'] = data['application']
     data['content_type'] = application_content_type.id
     return Response(create(Comments_serializer, data))
 
