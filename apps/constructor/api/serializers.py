@@ -1,8 +1,7 @@
 from rest_framework import serializers
 
 from apps.constructor.models import Application
-from apps.constructor.models import (Contest, Project_type, Status, Schema,
-                                     Comments, Main_table_fields)
+from apps.constructor.models import (Contest, Project_type, Status, Schema, Main_table_fields)
 from apps.constructor.classificators_models import Document_type
 
 
@@ -46,12 +45,6 @@ class Schema_serializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Schema
-
-
-class Comments_serializer(serializers.ModelSerializer):
-    class Meta:
-        fields = '__all__'
-        model = Comments
 
 
 class Main_table_fields_serializer(serializers.ModelSerializer):

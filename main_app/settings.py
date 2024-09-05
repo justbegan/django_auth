@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'apps.history',
     'apps.calculation',
     'apps.report_manager',
-    'apps.ppmi_report'
+    'apps.ppmi_report',
+    'apps.comments'
 ]
 
 MIDDLEWARE = [

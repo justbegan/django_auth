@@ -69,7 +69,9 @@ class Application_rating(generics.ListCreateAPIView):
                 'settlement': 'Поселение',
                 'locality': 'Населенный пункт',
                 'title': 'Название проекта',
-                'get_financing_republic_grant': 'Сумма субсидии'
+                'rating': 'Рейтинг',
+                'get_financing_republic_grant': 'Сумма субсидии',
+                'total_point': 'Итог. балл'
             },
             'data': self.custom_method(response.data),
         }
@@ -77,4 +79,6 @@ class Application_rating(generics.ListCreateAPIView):
 
     def custom_method(self, data):
         sorted_data = sorted(data, key=lambda x: (x['created_at'], -x['total_point']))
+        for num, i in enumerate(sorted_data, start=1):
+            i['rating'] = num
         return sorted_data

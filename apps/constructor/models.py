@@ -94,18 +94,6 @@ class History(models.Model):
         verbose_name_plural = "Истории"
 
 
-class Comments(models.Model):
-    application = models.ForeignKey(Application, on_delete=models.PROTECT, verbose_name="Заявка")
-    text = models.TextField("Текст")
-    created_at = models.DateTimeField('Дата создания обращения', auto_now_add=True)
-    updated_at = models.DateTimeField('Дата обновления', auto_now=True)
-    author = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Пользователь")
-
-    class Meta:
-        verbose_name = "Коммент"
-        verbose_name_plural = "Комменты"
-
-
 class Schema(models.Model):
     title = models.CharField("Наименование", max_length=120)
     properties = models.JSONField("Properties", default=dict)

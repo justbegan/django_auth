@@ -13,7 +13,6 @@ from .services.applications import get_by_application_id, update_application, wi
 from .services.current import get_current_contest, get_current_section
 from .services.schema import get_schema_by_user
 from .services.custom_data import validate_custom_data
-from .services.comment import get_comments_by_application_id, create_comments
 from apps.history.services import create_history
 from .services.main_table_fields import get_main_table_fields_by_section, get_main_table_fields_by_section_method
 from .services.status import get_all_statuses_by_section
@@ -99,20 +98,6 @@ class Schema_main(APIView):
 
     def get(self, request: Request):
         return get_schema_by_user(request)
-
-
-class Comment_main(APIView):
-
-    def post(self, request: Request):
-        return create_comments(request)
-
-
-class Comment_detail(APIView):
-    """
-    Получить все комменты по id заявки
-    """
-    def get(self, request: Request, id: int):
-        return get_comments_by_application_id(request, id)
 
 
 class Main_table_fields_main(APIView):
