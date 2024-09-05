@@ -26,11 +26,13 @@ def role_required_v2(end_point_name: str):
         @wraps(func)
         def wrapper(self, request, *args, **kwargs):
             user_role = Profile.objects.get(user=request.user).role
-
-            method_roles = Role_handler.objects.get(
-                section=get_current_section(request),
-                end_point_name=end_point_name
-            )
+            try:
+                method_roles = Role_handler.objects.get(
+                    section=get_current_section(request),
+                    end_point_name=end_point_name
+                )
+            except:
+                raise Exception("Не могу найти роль метода")
             if user_role not in method_roles.roles.all():
                 return Response(
                     {"detail": "У вас нет прав для создания записи."},

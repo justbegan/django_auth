@@ -1,4 +1,5 @@
 from rest_framework.views import Request
+from rest_framework.exceptions import ValidationError
 
 from apps.constructor.classificators_models import Document_type
 from .current import get_current_section, get_current_new_status
@@ -13,8 +14,16 @@ def document_validation(request: Request):
         }
     ]
     """
-    docs = request.data['documents']
-    status = request.data['status']
+    try:
+        docs = request.data['documents']
+    except:
+        raise ValidationError("documents не найден", code=400)
+
+    try:
+        status = request.data['status']
+    except:
+        raise ValidationError("status не найден", code=400)
+
     if get_current_new_status(request) != status:
         docs_req_types = Document_type.objects.filter(
             section=get_current_section(request), required=True

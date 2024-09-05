@@ -10,7 +10,7 @@ def update(model: Model, serializer: ModelSerializer, data: dict, parameters: di
     if serializer.is_valid():
         serializer.save()
         return serializer.data
-    raise Exception(serializer.errors)
+    raise serializers.ValidationError(serializer.errors)
 
 
 def get(model: Model, serializer: ModelSerializer, parameters: dict = {}):
