@@ -17,9 +17,11 @@ from .services.comment import get_comments_by_application_id, create_comments
 from apps.history.services import create_history
 from .services.main_table_fields import get_main_table_fields_by_section, get_main_table_fields_by_section_method
 from .services.status import get_all_statuses_by_section
-from .services.project_type import get_project_type_by_section
+from .services.project_type import get_project_type_by_section, create_project_type, update_project_type
 from .services.contest import create_contest, update_contest, get_contests_by_section
 from .services.document import document_validation
+from .services.decorators import role_required
+from .services.decorators import role_required_v2
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -52,6 +54,7 @@ class Application_main(generics.ListCreateAPIView):
         queryset = super().get_queryset()
         return queryset.filter(author=self.request.user.id)
 
+    @role_required_v2("applications")
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -81,6 +84,7 @@ class Application_detail(APIView):
         return get_by_application_id(request, id)
 
     @swagger_auto_schema(request_body=Applications_serializer)
+    @role_required_v2("applications")
     def put(self, request: Request, id: int):
         return update_application(request, id)
 
@@ -125,15 +129,27 @@ class Project_type_main(APIView):
     def get(self, request: Request):
         return get_project_type_by_section(request)
 
+    @role_required(allowed_roles=["admin"])
+    def post(self, request: Request):
+        return create_project_type(request)
+
+
+class Project_type_detail(APIView):
+    @role_required(allowed_roles=["admin"])
+    def put(self, request: Request, id: int):
+        return update_project_type(request, id)
+
 
 class Contest_main(APIView):
     def get(self, request: Request):
         return get_contests_by_section(request)
 
+    @role_required(allowed_roles=["admin"])
     def post(self, request: Request):
         return create_contest(request)
 
 
 class Contest_detail(APIView):
+    @role_required(allowed_roles=["admin"])
     def put(self, request: Request, id: int):
         return update_contest(request, id)

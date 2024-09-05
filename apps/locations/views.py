@@ -6,6 +6,7 @@ from .services import (get_all_municipal_district, create_municipal_district, up
                        get_settlement_by_distict_id, create_settlement, update_settlement, get_all_settlements,
                        get_locality_by_settlement_id, create_locality, update_locality, get_all_locality,
                        get_locality_by_district_id, get_locality_by_id)
+from apps.constructor.api.services.decorators import role_required
 
 
 class CreateRa(APIView):
@@ -79,11 +80,13 @@ class Municipal_district_main(APIView):
     def get(self, request: Request):
         return get_all_municipal_district(request)
 
+    @role_required(allowed_roles=['admin'])
     def post(self, request: Request):
         return create_municipal_district(request)
 
 
 class Municipal_district_detail(APIView):
+    @role_required(allowed_roles=['admin'])
     def put(self, request: Request, id: int):
         return update_municipal_district(request, id)
 
@@ -92,6 +95,7 @@ class Settlement_main(APIView):
     def get(self, request: Request):
         return get_all_settlements(request)
 
+    @role_required(allowed_roles=['admin'])
     def post(self, request: Request):
         return create_settlement(request)
 
@@ -100,6 +104,7 @@ class Settlement_detail(APIView):
     def get(self, request: Request, id: int):
         return get_settlement_by_distict_id(request, id)
 
+    @role_required(allowed_roles=['admin'])
     def put(self, request: Request, id: int):
         return update_settlement(request, id)
 
@@ -120,6 +125,7 @@ class Locality_detail(APIView):
         else:
             return get_locality_by_id(request, id)
 
+    @role_required(allowed_roles=['admin'])
     def put(self, request: Request, id: int):
         return update_locality(request, id)
 
@@ -128,5 +134,6 @@ class Locality_main(APIView):
     def get(self, request: Request):
         return get_all_locality(request)
 
+    @role_required(allowed_roles=['admin'])
     def post(self, request: Request):
         return create_locality(request)

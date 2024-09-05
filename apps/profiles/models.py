@@ -51,3 +51,18 @@ class Profile(models.Model):
     class Meta:
         verbose_name = "Профиль"
         verbose_name_plural = "Профили"
+
+
+class Role_handler(models.Model):
+    end_point_name = models.TextField("Название")
+    roles = models.ManyToManyField(Roles, verbose_name="Роли")
+    section = models.ForeignKey(
+        Section, on_delete=models.PROTECT, verbose_name="Раздел"
+    )
+
+    def __str__(self):
+        return f"{self.end_point_name}"
+
+    class Meta:
+        verbose_name = "Доступ к методу"
+        verbose_name_plural = "Доступы к методам"
