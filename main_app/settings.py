@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'apps.calculation',
     'apps.report_manager',
     'apps.ppmi_report',
-    'apps.comments'
+    'apps.comments',
+    'apps.meeting'
 ]
 
 MIDDLEWARE = [

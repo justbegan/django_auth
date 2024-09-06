@@ -1,6 +1,7 @@
 from rest_framework.views import APIView, Response, Request
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.permissions import IsAuthenticated
 
 from apps.constructor.models import Application
 from .serializers import (Application_registry_serializer, Results_of_applications_acceptance_serializer,
@@ -10,6 +11,8 @@ from .filter import Application_rating_filter
 
 
 class Application_registry(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request: Request):
         obj = Application.objects.filter(section=get_current_section(request))
         ser = Application_registry_serializer(obj, many=True)
@@ -28,6 +31,8 @@ class Application_registry(APIView):
 
 
 class Results_of_applications_acceptance(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request: Request):
         obj = Application.objects.filter(section=get_current_section(request))
         ser = Results_of_applications_acceptance_serializer(obj, many=True)
@@ -49,7 +54,9 @@ class Results_of_applications_acceptance(APIView):
         return Response(result)
 
 
-class Application_rating(generics.ListCreateAPIView):
+class Application_rating(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+
     serializer_class = Application_rating_serializer
     queryset = Application.objects.all().order_by('-id')
     filter_backends = [DjangoFilterBackend]
