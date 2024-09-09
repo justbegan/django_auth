@@ -36,7 +36,8 @@ urlpatterns = [
     path('ppmi_report/', include('apps.ppmi_report.urls')),
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('comment/', include('apps.comments.urls')),
-    path('meeting/', include('apps.meeting.urls'))
+    path('meeting/', include('apps.meeting.urls')),
+    path('faq/', include('apps.faq.urls'))
 ]
 
 if settings.DEBUG:
