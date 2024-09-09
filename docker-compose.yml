@@ -6,6 +6,7 @@ services:
     command: python manage.py runserver 0.0.0.0:8001
     volumes:
       - .:/code
+      - ./logs:/app/logs
     env_file:
       - ./.env
     ports:

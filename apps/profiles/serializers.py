@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from .models import Profile
 from django.contrib.auth.models import User
+
+from .models import Profile, Role_handler, Roles
 # from apps.profiles.services.services import get_contest_modules_by_contest_id
 
 
@@ -40,3 +41,16 @@ class User_serializer(serializers.ModelSerializer):
         #     raise Exception("user profile not found")
         # return get_contest_modules_by_contest_id(contest_id)
         pass
+
+
+class Role_handler_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role_handler
+        fields = '__all__'
+        read_only_fields = ['section']
+
+
+class Role_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Roles
+        fields = '__all__'

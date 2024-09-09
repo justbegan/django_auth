@@ -39,8 +39,5 @@ def get_contest_modules_by_contest_id(contest_id: str) -> list:
     db = client["contest"]
     collection = db["contests"]
     obj = collection.find_one({"_id": ObjectId(contest_id)})
-    try:
-        result = obj["modules"]
-        return result
-    except:
-        return None
+    result = obj["modules"]
+    return result

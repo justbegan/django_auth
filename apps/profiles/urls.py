@@ -4,5 +4,10 @@ from . import views
 
 urlpatterns = [
     path('api', views.Profile_main.as_view()),
-    path('api/by_id/<int:id>', views.Profile_detail.as_view())
+    path('api/by_id/<int:id>', views.Profile_detail.as_view()),
+    path('api/v1/role', views.Role_main.as_view()),
+    path('api/v1/role/<int:id>', views.Role_detail.as_view()),
+    path('api/v1/role_handler', views.Role_handler_main.as_view()),
+    path('api/v1/role_handler_detail/<int:id>', views.Role_handler_detail.as_view()),
+    path('api/v1/role_handler_models', views.Model_main.as_view())
 ]
