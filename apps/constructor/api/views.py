@@ -48,12 +48,13 @@ class Application_main(generics.ListCreateAPIView):
     pagination_class = StandardResultsSetPagination
     filter_backends = [DjangoFilterBackend]
     filterset_class = Application_filter
+    model_used = Application
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.filter(author=self.request.user.id)
+        q = super().get_queryset()
+        return q.filter(author=self.request.user.id)
 
-    @role_required_v2("applications")
+    @role_required_v2()
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -78,12 +79,13 @@ class Application_main(generics.ListCreateAPIView):
 
 class Application_detail(APIView):
     permission_classes = [IsAuthenticated]
+    model_used = Application
 
     def get(self, request: Request, id: int):
         return get_by_application_id(request, id)
 
     @swagger_auto_schema(request_body=Applications_serializer)
-    @role_required_v2("applications")
+    @role_required_v2()
     def put(self, request: Request, id: int):
         return update_application(request, id)
 

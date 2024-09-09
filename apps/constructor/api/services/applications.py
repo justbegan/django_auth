@@ -1,4 +1,6 @@
 from rest_framework.views import Request, Response
+from decimal import Decimal
+import logging
 
 from apps.constructor.models import Application
 from apps.constructor.classificators_models import Contest
@@ -9,6 +11,9 @@ from .custom_data import validate_custom_data
 from .current import get_current_section
 from apps.constructor.models import Status
 from .document import document_validation
+
+
+logger = logging.getLogger('django')
 
 
 def update_application(request: Request, id: int) -> Response:
@@ -25,8 +30,8 @@ def update_application(request: Request, id: int) -> Response:
                 "application": obj["id"]
             }
             create_history(history_data)
-        except:
-            pass
+        except Exception as e:
+            logger.exception(f"Ошибка при создании истории в заявке № {obj.id} {e}")
     return Response(obj)
 
 
@@ -43,7 +48,7 @@ def win_lose_calculation(request: Request) -> list:
     result = []
     for i in obj:
         req_sum = i.get_financing_republic_grant()
-        grant_sum = grant_sum - req_sum
+        grant_sum = grant_sum - Decimal(req_sum)
         if grant_sum < 0:
             result.append(
                 {

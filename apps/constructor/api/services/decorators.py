@@ -4,6 +4,11 @@ from rest_framework import status
 
 from apps.profiles.models import Profile, Role_handler
 from .current import get_current_section
+import logging
+from django.contrib.contenttypes.models import ContentType
+
+
+logger = logging.getLogger('django')
 
 
 def role_required(allowed_roles):
@@ -21,23 +26,24 @@ def role_required(allowed_roles):
     return decorator
 
 
-def role_required_v2(end_point_name: str):
+def role_required_v2():
     def decorator(func):
         @wraps(func)
         def wrapper(self, request, *args, **kwargs):
             user_role = Profile.objects.get(user=request.user).role
+            used_model_content_type = ContentType.objects.get_for_model(self.model_used)
             try:
                 method_roles = Role_handler.objects.get(
                     section=get_current_section(request),
-                    end_point_name=end_point_name
+                    model=used_model_content_type
                 )
-            except:
-                raise Exception("Не могу найти роль метода")
-            if user_role not in method_roles.roles.all():
-                return Response(
-                    {"detail": "У вас нет прав для создания записи."},
-                    status=status.HTTP_403_FORBIDDEN
-                )
+                if user_role not in method_roles.roles.all():
+                    return Response(
+                        {"detail": "У вас нет прав для создания записи."},
+                        status=status.HTTP_403_FORBIDDEN
+                    )
+            except Exception as e:
+                logger.exception(f"Не могу найти роль метода {e}")
 
             return func(self, request, *args, **kwargs)
         return wrapper

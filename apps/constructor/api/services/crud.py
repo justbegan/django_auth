@@ -1,6 +1,9 @@
 from django.db.models import Model
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
+import logging
+
+logger = logging.getLogger('django')
 
 
 def update(model: Model, serializer: ModelSerializer, data: dict, parameters: dict):
@@ -17,7 +20,8 @@ def get(model: Model, serializer: ModelSerializer, parameters: dict = {}):
     try:
         obj = model.objects.get(**parameters)
         return serializer(obj).data
-    except:
+    except Exception as e:
+        logger.exception(f"Ошибка получения данных в crud {e}")
         return {}
 
 

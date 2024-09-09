@@ -5,7 +5,7 @@ from rest_framework.views import Response
 from django.contrib.auth.models import User
 
 from ..serializers import User_serializer
-from .crud import update, get
+from apps.constructor.api.services.crud import update, get, create
 
 
 def get_profile(request):
@@ -39,12 +39,5 @@ def update_user_data(request: Request):
 
 def create_user(request: Request):
     data = request.data
-    print(data)
     # profile_data = data['profile']
-    ser = User_serializer(data=data)
-
-    if ser.is_valid():
-        ser.save()
-        return Response({"status": True, "data": ser.data})
-    else:
-        raise Exception({"status": False, "data": ser.errors})
+    return Response(create(User_serializer, data))

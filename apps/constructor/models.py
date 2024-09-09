@@ -1,9 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
+import logging
+
 from apps.locations.models import Municipal_district, Settlement, Locality
 from apps.profiles.models import Section
 from apps.calculation.models import Formula
 from .classificators_models import Project_type, Status, Contest
+
+logger = logging.getLogger('django')
 
 
 class Application(models.Model):
@@ -35,9 +39,11 @@ class Application(models.Model):
             for f in formulas:
                 try:
                     exec(f.code)
-                except:
+                except Exception:
+                    logger.exception("Ошибка при выполнение кода формулы")
                     pass
-        except:
+        except Exception:
+            logger.exception("Ошибка при итерации формулы")
             return result
         return result
 
@@ -79,7 +85,8 @@ class Application(models.Model):
         try:
             values = [value for key, value in self.point_calculation().items()]
             return sum(values)
-        except:
+        except Exception:
+            logger.exception("Ошибка при расчете баллов")
             return 0
 
 

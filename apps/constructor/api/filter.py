@@ -1,6 +1,8 @@
 import django_filters
-from ..models import Application
 import json
+from django.db.models import Q
+
+from ..models import Application
 
 
 class Application_filter(django_filters.FilterSet):
@@ -12,6 +14,7 @@ class Application_filter(django_filters.FilterSet):
     custom_data = django_filters.CharFilter(method='fiter_custom_data')
     order_by = django_filters.CharFilter(method='filter_order_by')
     multipurpose = django_filters.CharFilter(method='filter_multipurpose')
+    all_field = django_filters.CharFilter(method='search_all_field')
 
     class Meta:
         model = Application
@@ -52,3 +55,16 @@ class Application_filter(django_filters.FilterSet):
 
     def filter_order_by(self, queryset, name, value):
         return queryset.order_by(value)
+
+    def search_all_field(self, queryset, name, value):
+        q1 = queryset.filter(
+            (
+                Q(title__icontains=value)
+                | Q(municipal_district__RegionNameE__icontains=value)
+                | Q(settlement__MunicNameE__icontains=value)
+                | Q(locality__LocNameE__icontains=value)
+                | Q(project_type__title__icontains=value))
+        )
+        q2 = queryset.filter(custom_data__icontains=value)
+        combined_queryset = q1.union(q2)
+        return combined_queryset

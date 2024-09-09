@@ -1,6 +1,7 @@
 from pathlib import Path
 from datetime import timedelta
 import os
+from datetime import datetime
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -191,5 +192,39 @@ SWAGGER_SETTINGS = {
             'name': 'Authorization',
             'in': 'header'
         }
+    },
+}
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'ERROR',  # Записываем только ошибки и критические ошибки
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', f'{datetime.now().strftime("%Y-%m-%d")}_error.log'),
+            'when': 'midnight',  # Новый файл каждый день
+            'backupCount': 7,  # Хранить файлы за последние 7 дней
+            'formatter': 'verbose',
+            'encoding': 'utf-8',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'ERROR',  # Логируем только ошибки
+            'propagate': True,
+        },
     },
 }

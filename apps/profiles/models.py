@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 
 from apps.locations.models import Municipal_district, Settlement, Locality, Settlement_type
 
@@ -54,14 +55,14 @@ class Profile(models.Model):
 
 
 class Role_handler(models.Model):
-    end_point_name = models.TextField("Название")
+    model = models.ForeignKey(ContentType, verbose_name="Модель", on_delete=models.PROTECT)
     roles = models.ManyToManyField(Roles, verbose_name="Роли")
     section = models.ForeignKey(
         Section, on_delete=models.PROTECT, verbose_name="Раздел"
     )
 
     def __str__(self):
-        return f"{self.end_point_name}"
+        return f"{self.model}"
 
     class Meta:
         verbose_name = "Доступ к методу"
