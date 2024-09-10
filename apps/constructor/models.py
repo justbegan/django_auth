@@ -6,6 +6,8 @@ from apps.locations.models import Municipal_district, Settlement, Locality
 from apps.profiles.models import Section
 from apps.calculation.models import Formula
 from .classificators_models import Project_type, Status, Contest
+from simple_history.models import HistoricalRecords
+
 
 logger = logging.getLogger('django')
 
@@ -24,6 +26,7 @@ class Application(models.Model):
     custom_data = models.JSONField("Кастомные поля", default=dict)
     section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция")
     documents = models.JSONField("Документы", default=list)
+    history = HistoricalRecords("История")
 
     def __str__(self):
         return self.title

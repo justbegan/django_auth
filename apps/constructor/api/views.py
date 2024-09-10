@@ -13,7 +13,6 @@ from .services.applications import get_by_application_id, update_application, wi
 from .services.current import get_current_contest, get_current_section
 from .services.schema import get_schema_by_user
 from .services.custom_data import validate_custom_data
-from apps.history.services import create_history
 from .services.main_table_fields import get_main_table_fields_by_section, get_main_table_fields_by_section_method
 from .services.status import get_all_statuses_by_section
 from .services.project_type import get_project_type_by_section, create_project_type, update_project_type
@@ -64,15 +63,6 @@ class Application_main(generics.ListCreateAPIView):
             section=get_current_section(request),
             contest=get_current_contest(request)
         )
-        history_data = {
-            "author": request.user.id,
-            "text": "Заявка создана",
-            "application": serializer.data["id"]
-        }
-        try:
-            create_history(history_data)
-        except Exception as e:
-            print(e)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 

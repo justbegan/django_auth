@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'codemirror2',
     'jsoneditor',
+    'simple_history',
     'apps.jwt_auth',
     'apps.api_getaway',
     'apps.profiles',
@@ -56,7 +57,8 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware'
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 ROOT_URLCONF = 'main_app.urls'

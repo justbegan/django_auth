@@ -1,19 +1,13 @@
 from rest_framework.views import Request, Response
 from decimal import Decimal
-import logging
 
 from apps.constructor.models import Application
 from apps.constructor.classificators_models import Contest
 from ..serializers import Applications_serializer
 from .crud import update, get
-from apps.history.services import create_history
 from .custom_data import validate_custom_data
 from .current import get_current_section
-from apps.constructor.models import Status
 from .document import document_validation
-
-
-logger = logging.getLogger('django')
 
 
 def update_application(request: Request, id: int) -> Response:
@@ -21,17 +15,6 @@ def update_application(request: Request, id: int) -> Response:
     validate_custom_data(request)
     document_validation(request)
     obj = update(Application, Applications_serializer, data, {"id": id})
-    if obj:
-        try:
-            status_title = Status.objects.get(id=data['status']).title
-            history_data = {
-                "author": request.user.id,
-                "text": f"Статус заявки изменен на {status_title}",
-                "application": obj["id"]
-            }
-            create_history(history_data)
-        except Exception as e:
-            logger.exception(f"Ошибка при создании истории в заявке № {obj.id} {e}")
     return Response(obj)
 
 

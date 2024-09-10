@@ -17,4 +17,4 @@ class History(models.Model):
         verbose_name_plural = "Истории"
 
     def __str__(self):
-        return self.text
+        return f"{self.application}"
