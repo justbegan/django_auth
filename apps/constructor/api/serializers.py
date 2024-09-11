@@ -7,9 +7,10 @@ from apps.constructor.classificators_models import Document_type
 
 class Applications_serializer(serializers.ModelSerializer):
     point_calculation = serializers.DictField(read_only=True)
-    total_point = serializers.FloatField(read_only=True)
-    get_financing_republic_grant = serializers.FloatField(read_only=True)
+    total_point = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+    get_financing_republic_grant = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     author_type = serializers.CharField(source='author.profile.profile_type', read_only=True)
+    total_price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
 
     class Meta:
         model = Application
