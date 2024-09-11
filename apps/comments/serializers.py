@@ -4,6 +4,16 @@ from .models import Comments
 
 
 class Comments_serializer(serializers.ModelSerializer):
+
     class Meta:
-        fields = '__all__'
+        fields = ['text', 'object_id', 'author', 'content_type']
         model = Comments
+
+
+class Comments_change_status_serializer(serializers.Serializer):
+    text = serializers.CharField()
+    object_id = serializers.IntegerField()
+    status = serializers.IntegerField()
+
+    def create(self, validated_data):
+        return validated_data
