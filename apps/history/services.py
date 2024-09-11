@@ -81,7 +81,7 @@ def process_change(new_record, change, only_status):
     return change_data
 
 
-def get_histories_by_application_id(request: Request, id: int, only_status: bool = True):
+def get_histories_by_application_id(request: Request, id: int, only_status: int):
     try:
         instance = Application.objects.get(id=id)
     except Application.DoesNotExist:
