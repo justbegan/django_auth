@@ -103,6 +103,40 @@ def get_histories_by_application_id(request: Request, id: int, only_status: int)
     return Response(changes)
 
 
+def get_histories_by_user_id(request: Request, id: int, only_status: int):
+    apps = Application.objects.filter(author=id)
+    changes = []
+    for app in apps:
+        history = app.history.all()
+        if len(history) < 2:
+            continue
+        for new_record, old_record in zip(history, history[1:]):
+            delta = new_record.diff_against(old_record)
+
+            for change in delta.changes:
+                change_data = process_change(new_record, change, only_status)
+                if change_data:
+                    changes.append(change_data)
+    return Response(changes)
+
+
+def get_histories_by_user(request: Request, only_status: int):
+    apps = Application.objects.filter(author=request.user.id)
+    changes = []
+    for app in apps:
+        history = app.history.all()
+        if len(history) < 2:
+            continue
+        for new_record, old_record in zip(history, history[1:]):
+            delta = new_record.diff_against(old_record)
+
+            for change in delta.changes:
+                change_data = process_change(new_record, change, only_status)
+                if change_data:
+                    changes.append(change_data)
+    return Response(changes)
+
+
 def create_history(request: Request, new: dict, created: bool = False):
     try:
         old = deepcopy(request.data)
