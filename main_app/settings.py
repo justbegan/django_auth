@@ -1,7 +1,6 @@
 from pathlib import Path
 from datetime import timedelta
 import os
-from datetime import datetime
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -216,7 +215,7 @@ LOGGING = {
         'file': {
             'level': 'ERROR',  # Записываем только ошибки и критические ошибки
             'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs', f'{datetime.now().strftime("%Y-%m-%d")}_error.log'),
+            'filename': os.path.join(BASE_DIR, 'logs', 'error.log'),  # Статичное имя файла
             'when': 'midnight',  # Новый файл каждый день
             'backupCount': 7,  # Хранить файлы за последние 7 дней
             'formatter': 'verbose',

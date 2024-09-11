@@ -22,9 +22,9 @@ def get_comments_by_application_id(request: Request, app_id: int):
 
 
 def create_comment_and_change_status(request: Request):
+    APLICATION_CONTENT_TYPE_ID = 16
     data = request.data.copy()
-    print(data)
     data['author'] = request.user.id
-    data['content_type'] = data.get("content_type", 16)
+    data['content_type'] = data.get("content_type", APLICATION_CONTENT_TYPE_ID)
     Application.objects.filter(id=data["object_id"]).update(status=data["status"])
     return Response(create(Comments_change_status_serializer, data))
