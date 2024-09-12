@@ -14,7 +14,7 @@ services:
 
   web:
     build: .
-    command: python3 manage.py runserver 0.0.0.0:8000
+    command: sh -c "mkdir -p /app/logs && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/code
     ports:
