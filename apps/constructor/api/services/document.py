@@ -2,7 +2,7 @@ from rest_framework.views import Request
 from rest_framework.exceptions import ValidationError
 import logging
 
-from apps.constructor.classificators_models import Document_type
+from apps.constructor.models import Document_type
 from .current import get_current_section, get_current_new_status
 
 logger = logging.getLogger('django')

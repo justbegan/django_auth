@@ -3,8 +3,7 @@ from decimal import Decimal
 from copy import deepcopy
 from django.db import transaction
 
-from apps.constructor.models import Application
-from apps.constructor.classificators_models import Contest
+from apps.constructor.models import Application, Contest
 from ..serializers import Applications_serializer
 from .crud import update, get
 from .custom_data import validate_custom_data

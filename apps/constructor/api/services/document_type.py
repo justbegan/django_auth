@@ -4,7 +4,7 @@ from apps.constructor.api.services.crud import create, get_many, update
 from copy import deepcopy
 
 from ..serializers import Document_type_serializer
-from ...classificators_models import Document_type
+from ...models import Document_type
 
 
 def create_document_type(request: Request):

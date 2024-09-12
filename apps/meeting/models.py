@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from apps.locations.models import Municipal_district, Settlement, Locality
 from apps.profiles.models import Section
-from apps.constructor.classificators_models import Contest
+from apps.constructor.models import Contest
 
 
 class Meeting_status(models.Model):

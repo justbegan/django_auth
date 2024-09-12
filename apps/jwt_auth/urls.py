@@ -10,5 +10,5 @@ urlpatterns = [
     # path('api/register', include('djoser.urls')),
     # custom
     path('api/token/customRefresh', views.CustomTokenRefresh.as_view()),
-    path('api/token/customGetToken', views.CustomGetToken.as_view())
+    path('api/token/customGetToken', views.CustomGetToken.as_view(), name='custom_token_get'),
 ]
