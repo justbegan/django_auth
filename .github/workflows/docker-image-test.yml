@@ -21,6 +21,9 @@ jobs:
       - name: Run Docker container
         run: |
           docker run -d --name my-app-container my-app:latest
+      
+      - name: Wait for services to start
+        run: sleep 10
 
       - name: Run tests
         run: |
