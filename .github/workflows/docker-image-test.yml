@@ -1,0 +1,33 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build the Docker image
+        run: |
+          docker build -t my-app:latest .
+
+      - name: Run Docker container
+        run: |
+          docker run -d --name my-app-container my-app:latest
+
+      - name: Run tests
+        run: |
+          docker exec my-app-container python3 manage.py test apps
+
+      - name: Clean up
+        run: |
+          docker stop my-app-container
+          docker rm my-app-container
+      
