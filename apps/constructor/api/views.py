@@ -5,20 +5,21 @@ from rest_framework.views import APIView, Request, Response, status
 from rest_framework.permissions import IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
 
-from .serializers import Applications_serializer, Application_update_serializer
+from .serializers import (Applications_serializer, Application_update_serializer, Document_type_serializer,
+                          Status_serializer)
 from ..models import Application
 from .filter import Application_filter
-from .services.classificators import get_all_classificators
 from .services.applications import get_by_application_id, update_application, win_lose_calculation
 from .services.current import get_current_contest, get_current_section
 from .services.schema import get_schema_by_user
 from .services.custom_data import validate_custom_data
 from .services.main_table_fields import get_main_table_fields_by_section, get_main_table_fields_by_section_method
-from .services.status import get_all_statuses_by_section
+from .services.status import get_all_statuses_by_section, create_status, update_status
 from .services.project_type import get_project_type_by_section, create_project_type, update_project_type
 from .services.contest import create_contest, update_contest, get_contests_by_section
 from .services.document import document_validation
 from .services.decorators import role_required_v2
+from .services.document_type import create_document_type, update_document_type, get_all_document_types_by_section
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -79,11 +80,6 @@ class Application_detail(APIView):
         return update_application(request, id)
 
 
-class Classificators(APIView):
-    def get(self, request: Request):
-        return get_all_classificators(request)
-
-
 class Schema_main(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -99,6 +95,16 @@ class Main_table_fields_main(APIView):
 class Status_main(APIView):
     def get(self, request: Request):
         return get_all_statuses_by_section(request)
+
+    @swagger_auto_schema(request_body=Status_serializer)
+    def post(self, request: Request):
+        return create_status(request)
+
+
+class Status_detail(APIView):
+    @swagger_auto_schema(request_body=Status_serializer)
+    def put(self, request: Request, id: int):
+        return update_status(request, id)
 
 
 class Project_type_main(APIView):
@@ -129,3 +135,18 @@ class Contest_detail(APIView):
     @role_required_v2()
     def put(self, request: Request, id: int):
         return update_contest(request, id)
+
+
+class Document_type_main(APIView):
+    def get(self, request: Request):
+        return get_all_document_types_by_section(request)
+
+    @swagger_auto_schema(request_body=Document_type_serializer)
+    def post(self, request: Request):
+        return create_document_type(request)
+
+
+class Document_type_detail(APIView):
+    @swagger_auto_schema(request_body=Document_type_serializer)
+    def put(self, request: Request, id: int):
+        return update_document_type(request, id)
