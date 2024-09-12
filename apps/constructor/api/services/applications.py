@@ -1,5 +1,7 @@
 from rest_framework.views import Request, Response
 from decimal import Decimal
+from copy import deepcopy
+from django.db import transaction
 
 from apps.constructor.models import Application
 from apps.constructor.classificators_models import Contest
@@ -8,13 +10,18 @@ from .crud import update, get
 from .custom_data import validate_custom_data
 from .current import get_current_section
 from .document import document_validation
+from apps.comments.services import create_comment_and_change_status
 
 
+@transaction.atomic
 def update_application(request: Request, id: int) -> Response:
-    data = request.data
+    data = deepcopy(request.data)
     validate_custom_data(request)
     document_validation(request)
     obj = update(Application, Applications_serializer, data, {"id": id})
+    comment = data.get("comment")
+    if comment:
+        create_comment_and_change_status(request, comment, id)
     return Response(obj)
 
 

@@ -3,6 +3,7 @@ from rest_framework import serializers
 from apps.constructor.models import Application
 from apps.constructor.models import (Contest, Project_type, Status, Schema, Main_table_fields)
 from apps.constructor.classificators_models import Document_type
+from apps.comments.serializers import Comments_change_status_serializer
 
 
 class Applications_serializer(serializers.ModelSerializer):
@@ -15,7 +16,25 @@ class Applications_serializer(serializers.ModelSerializer):
     class Meta:
         model = Application
         fields = "__all__"
-        read_only_fields = ['author', 'contest', 'section']
+
+
+class Application_update_serializer(serializers.Serializer):
+    """
+    Кастомный сериализатор для изменения заявки
+    из-за создания комментария и изменения статуса
+    """
+    title = serializers.CharField()
+    municipal_district = serializers.IntegerField()
+    settlement = serializers.IntegerField()
+    locality = serializers.IntegerField()
+    project_type = serializers.IntegerField()
+    status = serializers.IntegerField()
+    custom_data = serializers.JSONField()
+    documents = serializers.JSONField()
+    comment = Comments_change_status_serializer(required=False)
+
+    def update(self, instance, validated_data):
+        return validated_data
 
 
 class Contest_serializer(serializers.ModelSerializer):

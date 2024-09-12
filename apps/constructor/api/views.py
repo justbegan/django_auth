@@ -5,7 +5,7 @@ from rest_framework.views import APIView, Request, Response, status
 from rest_framework.permissions import IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
 
-from .serializers import Applications_serializer
+from .serializers import Applications_serializer, Application_update_serializer
 from ..models import Application
 from .filter import Application_filter
 from .services.classificators import get_all_classificators
@@ -73,7 +73,7 @@ class Application_detail(APIView):
     def get(self, request: Request, id: int):
         return get_by_application_id(request, id)
 
-    @swagger_auto_schema(request_body=Applications_serializer)
+    @swagger_auto_schema(request_body=Application_update_serializer)
     @role_required_v2()
     def put(self, request: Request, id: int):
         return update_application(request, id)

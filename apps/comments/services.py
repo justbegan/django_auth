@@ -2,8 +2,7 @@ from rest_framework.views import Response, Request
 
 from django.contrib.contenttypes.models import ContentType
 from apps.constructor.api.services.crud import create, get_many
-from apps.constructor.models import Application
-from .serializers import Comments_serializer, Comments_change_status_serializer
+from .serializers import Comments_serializer
 from .models import Comments
 
 
@@ -21,10 +20,9 @@ def get_comments_by_application_id(request: Request, app_id: int):
     }))
 
 
-def create_comment_and_change_status(request: Request):
+def create_comment_and_change_status(request: Request, data: dict, app_id: int) -> bool:
     APLICATION_CONTENT_TYPE_ID = 16
-    data = request.data.copy()
     data['author'] = request.user.id
     data['content_type'] = data.get("content_type", APLICATION_CONTENT_TYPE_ID)
-    Application.objects.filter(id=data["object_id"]).update(status=data["status"])
-    return Response(create(Comments_change_status_serializer, data))
+    data['object_id'] = app_id
+    return Response(create(Comments_serializer, data))
