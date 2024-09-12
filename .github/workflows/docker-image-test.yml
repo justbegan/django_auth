@@ -31,13 +31,3 @@ jobs:
       - name: Clean up
         run: |
           docker compose down
-
-      - name: Wait for services to stop
-        run: |
-          sleep 10
-
-      - name: Delete containers
-        run: |
-          docker rm my_custom_web
-          docker rm my_custom_postgres
-
