@@ -1,28 +1,33 @@
-name: Docker Image CI
+name: Docker Compose Build and Test
 
 on:
   push:
-    branches: [ "master" ]
+    branches:
+      - master
   pull_request:
-    branches: [ "master" ]
+    branches:
+      - master
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Build the Docker image
+      - name: Set up Docker Compose
         run: |
-          docker build -t my-app:latest .
-      
-      - name: Run Docker container
+          docker-compose up -d --build
+
+      - name: Wait for services to start
         run: |
-          docker run -d --name my-app-container my-app:latest python3 manage.py test apps
-      
+          sleep 10
+
+      - name: Run Django tests
+        run: |
+          docker-compose exec web python3 manage.py test
+
       - name: Clean up
         run: |
-          docker stop my-app-container
-          docker rm my-app-container
+          docker-compose down
