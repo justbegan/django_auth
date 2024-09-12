@@ -30,4 +30,6 @@ jobs:
 
       - name: Clean up
         run: |
-          docker-compose down
+          docker compose down
+          docker rm my_custom_postgres
+          docker rm my_custom_web
