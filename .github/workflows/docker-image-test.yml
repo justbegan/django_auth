@@ -16,26 +16,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v2
-
       - name: Set up Docker Compose
-        uses: docker/compose-action@v2
-        with:
-          version: '2.20.2'  # Укажите нужную версию Docker Compose
-
-      - name: Build and run Docker Compose
         run: |
-          docker-compose -f docker-compose-for-test.yml up -d --build
+          docker compose -f docker-image-test.yml up -d --build
 
       - name: Wait for services to start
         run: |
-          sleep 10  # Увеличьте время ожидания, если необходимо
+          sleep 10
 
       - name: Run Django tests
         run: |
-          docker-compose -f docker-compose-for-test.yml exec web python3 manage.py test
+          docker-compose exec web python3 manage.py test
 
       - name: Clean up
         run: |
-          docker-compose -f docker-compose-for-test.yml down
+          docker-compose down
