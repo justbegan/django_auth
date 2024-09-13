@@ -16,7 +16,9 @@ services:
   web:
     container_name: my_custom_web
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: /bin/bash -c "
+      echo -e 'SECRET_KEY=for_github_test\nDB_NAME=mydb\nDB_USER=myuser\nDB_PASSWORD=mypassword\nDB_HOST=localhost\nDB_PORT=5432\nDEBUG=False\nCONTEST_URL=http://127.0.0.1:8000' > /app/.env &&
+      python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/code
       - ./logs:/app/logs
