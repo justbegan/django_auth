@@ -196,4 +196,25 @@ class Main_table_fields(models.Model):
 
     class Meta:
         verbose_name = "Отображаемое значение в главной таблице"
-        verbose_name = "Отображаемые значения в главной таблице"
+        verbose_name_plural = "Отображаемые значения в главной таблице"
+
+
+code_template = """#python!
+# imported models Application, Profile
+current_user = request.user
+current_contest = get_current_contest(request)
+profile_type = Profile.objects.get(user=current_user).profile_type
+"""
+
+
+class Custom_validation(models.Model):
+    title = models.CharField("Наименование", max_length=120)
+    code = models.TextField("Код", default=code_template)
+    section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция")
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Кастомное валидирование"
+        verbose_name_plural = "Кастомные валидации"

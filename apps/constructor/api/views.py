@@ -20,6 +20,7 @@ from .services.contest import create_contest, update_contest, get_contests_by_se
 from .services.document import document_validation
 from .services.decorators import role_required_v2
 from .services.document_type import create_document_type, update_document_type, get_all_document_types_by_section
+from .services.custom_validation import custom_validation
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -55,15 +56,15 @@ class Application_main(generics.ListCreateAPIView):
 
     @role_required_v2()
     def post(self, request, *args, **kwargs):
+        request.data['author'] = self.request.user.id
+        request.data['section'] = get_current_section(request).id
+        request.data['contest'] = get_current_contest(request).id
+        request.data['custom_data'] = validate_custom_data(request)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        custom_validation(request)
         document_validation(request)
-        serializer.save(
-            custom_data=validate_custom_data(request),
-            author=self.request.user,
-            section=get_current_section(request),
-            contest=get_current_contest(request)
-        )
+        serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
