@@ -6,12 +6,12 @@ from apps.constructor.models import (Application, Municipal_district, Settlement
                                      Schema)
 from apps.locations.models import Locality_type
 from apps.profiles.models import Profile, Roles
+from apps.comments.models import Comments
 
 
 class ApplicationAPITest(APITestCase):
 
     def setUp(self):
-        # Здесь создаются необходимые объекты для тестов
         self.municipal_district = Municipal_district.objects.create(
             RegionName="Тестовый регион",
             RegionNameE="Регион",
@@ -107,7 +107,7 @@ class ApplicationAPITest(APITestCase):
         self.token = self.get_jwt_token()
 
     def get_jwt_token(self):
-        url = reverse('custom_token_get')  # Замените на ваш эндпоинт для получения токена
+        url = reverse('custom_token_get')
         response = self.client.post(url, {"username": "testuser", "password": "testpassword"}, format='json')
         return response.data['access']
 
@@ -125,9 +125,11 @@ class ApplicationAPITest(APITestCase):
         url = reverse('application_detail', args=[application.id])
         updated_data = self.application_data.copy()
         updated_data["title"] = "Updated Project"
+        updated_data["comment"] = {"text": "Тестовый комментарий"}
         response = self.client.put(url, updated_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Application.objects.get().title, 'Updated Project')
+        self.assertEqual(Comments.objects.all().count(), 1)
 
     def test_get_application_list(self):
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.token)

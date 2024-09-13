@@ -26,7 +26,7 @@ jobs:
 
       - name: Run Django tests
         run: |
-          docker compose exec web python3 manage.py test apps
+          docker compose exec web python3 manage.py test apps -v 2
 
       - name: Clean up
         run: |
