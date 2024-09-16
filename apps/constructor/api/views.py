@@ -8,8 +8,8 @@ from drf_yasg.utils import swagger_auto_schema
 from .serializers import (Applications_serializer, Application_update_serializer, Document_type_serializer,
                           Status_serializer)
 from ..models import Application
-from .filter import Application_filter
-from .services.applications import get_by_application_id, update_application, win_lose_calculation
+from .filter import Application_filter, Application_map_filter
+from .services.applications import get_by_application_id, update_application, win_lose_calculation, application_for_map
 from .services.current import get_current_contest, get_current_section
 from .services.schema import get_schema_by_user
 from .services.custom_data import validate_custom_data
@@ -151,3 +151,17 @@ class Document_type_detail(APIView):
     @swagger_auto_schema(request_body=Document_type_serializer)
     def put(self, request: Request, id: int):
         return update_document_type(request, id)
+
+
+class Application_for_map(APIView):
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = Application_map_filter
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request: Request):
+        queryset = Application.objects.all()
+        filterset = self.filterset_class(request.GET, queryset=queryset)
+
+        if filterset.is_valid():
+            queryset = filterset.qs
+            return application_for_map(queryset, request)

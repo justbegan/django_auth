@@ -4,7 +4,7 @@ from copy import deepcopy
 from django.db import transaction
 
 from apps.constructor.models import Application, Contest
-from ..serializers import Applications_serializer
+from ..serializers import Applications_serializer, Application_for_map_serializer
 from .crud import update, get
 from .custom_data import validate_custom_data
 from .current import get_current_section
@@ -57,3 +57,9 @@ def win_lose_calculation(request: Request) -> list:
                 }
             )
     return result
+
+
+def application_for_map(queryset: list, request: Request) -> list:
+    section = get_current_section(request)
+    qs = queryset.filter(section=section)
+    return Response(Application_for_map_serializer(qs, many=True).data)

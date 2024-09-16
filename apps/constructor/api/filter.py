@@ -18,7 +18,7 @@ class Application_filter(django_filters.FilterSet):
 
     class Meta:
         model = Application
-        fields = ['id', 'created_time', 'status']
+        fields = ['id', 'created_at', 'status']
 
     def filter_id(self, queryset, name, value):
         return queryset.filter(id=value)
@@ -55,6 +55,33 @@ class Application_filter(django_filters.FilterSet):
 
     def filter_order_by(self, queryset, name, value):
         return queryset.order_by(value)
+
+    def search_all_field(self, queryset, name, value):
+        q1 = queryset.filter(
+            (
+                Q(title__icontains=value)
+                | Q(municipal_district__RegionNameE__icontains=value)
+                | Q(settlement__MunicNameE__icontains=value)
+                | Q(locality__LocNameE__icontains=value)
+                | Q(project_type__title__icontains=value))
+        )
+        q2 = queryset.filter(custom_data__icontains=value)
+        combined_queryset = q1.union(q2)
+        return combined_queryset
+
+
+class Application_map_filter(django_filters.FilterSet):
+
+    municipal_district = django_filters.CharFilter(method='filter_municipal_district')
+    all_field = django_filters.CharFilter(method='search_all_field')
+
+    class Meta:
+        model = Application
+        fields = ['municipal_district', 'project_type']
+
+    def filter_municipal_district(self, queryset, name, value):
+        district = value.split(',')
+        return queryset.filter(municipal_district__id__in=district)
 
     def search_all_field(self, queryset, name, value):
         q1 = queryset.filter(

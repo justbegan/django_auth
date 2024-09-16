@@ -36,6 +36,15 @@ class Application_update_serializer(serializers.Serializer):
         return validated_data
 
 
+class Application_for_map_serializer(serializers.ModelSerializer):
+    get_lat_lon = serializers.JSONField(read_only=True)
+    get_project_prolbem = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = Application
+        fields = ['id', 'title', 'get_project_prolbem', 'get_lat_lon']
+
+
 class Contest_serializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'

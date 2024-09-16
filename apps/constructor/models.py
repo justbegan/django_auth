@@ -7,6 +7,8 @@ from apps.profiles.models import Section
 from apps.calculation.models import Formula
 from simple_history.models import HistoricalRecords
 from apps.locations.models import Settlement_type
+from apps.profiles.models import Profile
+
 
 logger = logging.getLogger('django')
 
@@ -159,6 +161,22 @@ class Application(models.Model):
         except Exception:
             logger.exception("Ошибка при расчете баллов")
             return 0
+
+    def get_lat_lon(self):
+        try:
+            obj = Profile.objects.get(user=self.author)
+            return {
+                "latitude": obj.locality.Latitude,
+                "longitude": obj.locality.Longitude,
+            }
+        except Exception:
+            return {}
+
+    def get_project_prolbem(self):
+        """
+        Цель проекта
+        """
+        return self.custom_data.get("project_problem", "")
 
 
 class History(models.Model):
