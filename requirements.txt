@@ -14,3 +14,4 @@ django-jsoneditor==0.2.4
 django-codemirror2==0.2
 deepdiff==8.0.1
 django-simple-history==3.7.0
+gunicorn==23.0.0

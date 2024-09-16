@@ -5,3 +5,4 @@ api_log.txt
 .env
 /media
 /logs
+/static
