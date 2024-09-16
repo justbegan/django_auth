@@ -82,10 +82,7 @@ class ApplicationAPITest(APITestCase):
             "locality": self.locality.id,
             "project_type": self.project_type.id,
             "status": self.status.id,
-            "contest": self.contest.id,
-            "author": self.user.id,
             "custom_data": {"key": "value"},
-            "section": self.section.id,
             "documents": []
         }
         self.application_create_data = {

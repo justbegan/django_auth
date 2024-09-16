@@ -17,6 +17,10 @@ def update_application(request: Request, id: int) -> Response:
     data = deepcopy(request.data)
     validate_custom_data(request)
     document_validation(request)
+    instance = Application.objects.get(id=id)
+    data['author'] = instance.author.id
+    data['section'] = instance.section.id
+    data['contest'] = instance.contest.id
     obj = update(Application, Applications_serializer, data, {"id": id})
     comment = data.get("comment")
     if comment:
