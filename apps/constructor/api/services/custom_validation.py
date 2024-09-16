@@ -10,8 +10,7 @@ def custom_validation(request: Request):
     try:
         custom_validation_code = Custom_validation.objects.get(section=get_current_section(request)).code
     except Exception:
-        pass
-    try:
+        custom_validation_code = None
+
+    if custom_validation_code:
         exec(custom_validation_code)
-    except Exception:
-        raise ValidationError('Custom validation failed')
