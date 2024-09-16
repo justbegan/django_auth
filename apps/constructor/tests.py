@@ -3,7 +3,7 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 from apps.constructor.models import (Application, Municipal_district, Settlement, Locality,
                                      Settlement_type, Project_type, Status, Contest, User, Section,
-                                     Schema)
+                                     Schema, Custom_validation)
 from apps.locations.models import Locality_type
 from apps.profiles.models import Profile, Roles
 from apps.comments.models import Comments
@@ -21,7 +21,7 @@ class ApplicationAPITest(APITestCase):
             RegIsNorthern=True
         )
         self.settlement_type = Settlement_type.objects.create(
-            title="Registration",
+            title="Муниципальный район",
             abbreviation="test"
         )
         self.locality_type = Locality_type.objects.create(title="Locality Type 1")
@@ -101,6 +101,36 @@ class ApplicationAPITest(APITestCase):
             "section": self.section,
             "documents": []
         }
+        self.custom_validatror = {
+            "title": "222",
+            "code": """
+#python!
+# район - 3
+# село - 2
+# imported models Application, Profile
+try:
+    current_user = request.user
+    current_contest = get_current_contest(request)
+    current_section = get_current_section(request)
+    profile_type = Profile.objects.get(user=current_user).profile_type.title
+
+    if profile_type == 'Муниципальный район':
+        app_quota_count = 3
+    elif profile_type == 'Сельское Поселение':
+        app_quota_count = 24
+    else:
+        app_quota_count = 0
+
+    app_count = Application.objects.filter(
+        contest=current_contest, section=current_section, author=current_user).count()
+except Exception:
+    raise ValidationError('Custom validation failed')
+
+if app_count >= app_quota_count:
+    raise ValidationError("У вас максимальное количество заявок!")
+            """,
+            "section": self.section
+        }
 
         # Аутентификация пользователя
         self.client.login(username='testuser', password='testpassword')
@@ -113,6 +143,15 @@ class ApplicationAPITest(APITestCase):
 
     def test_create_application(self):
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.token)
+        url = reverse('application_main')
+        response = self.client.post(url, self.application_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Application.objects.count(), 1)
+        self.assertEqual(Application.objects.get().title, 'Test Project')
+
+    def test_create_application_with_custom_validation(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.token)
+        Custom_validation.objects.create(**self.custom_validatror)
         url = reverse('application_main')
         response = self.client.post(url, self.application_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

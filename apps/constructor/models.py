@@ -92,6 +92,8 @@ class Application(models.Model):
     custom_data = models.JSONField("Кастомные поля", default=dict)
     section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция")
     documents = models.JSONField("Документы", default=list)
+    latitude = models.CharField("Широта", max_length=20, blank=True, null=True)
+    longitude = models.CharField("Долгота", max_length=20, blank=True, null=True)
     history = HistoricalRecords("История")
 
     def __str__(self):
