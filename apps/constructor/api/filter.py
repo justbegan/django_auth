@@ -74,6 +74,7 @@ class Application_map_filter(django_filters.FilterSet):
 
     municipal_district = django_filters.CharFilter(method='filter_municipal_district')
     all_field = django_filters.CharFilter(method='search_all_field')
+    contest = django_filters.CharFilter(method='filter_contest')
 
     class Meta:
         model = Application
@@ -95,3 +96,7 @@ class Application_map_filter(django_filters.FilterSet):
         q2 = queryset.filter(custom_data__icontains=value)
         combined_queryset = q1.union(q2)
         return combined_queryset
+
+    def filter_contest(self, queryset, name, value):
+        contests = value.split(',')
+        return queryset.filter(contest__id__in=contests)

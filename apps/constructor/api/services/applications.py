@@ -60,6 +60,4 @@ def win_lose_calculation(request: Request) -> list:
 
 
 def application_for_map(queryset: list, request: Request) -> list:
-    section = get_current_section(request)
-    qs = queryset.filter(section=section)
-    return Response(Application_for_map_serializer(qs, many=True).data)
+    return Response(Application_for_map_serializer(queryset, many=True).data)

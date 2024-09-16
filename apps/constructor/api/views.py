@@ -159,9 +159,13 @@ class Application_for_map(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request: Request):
-        queryset = Application.objects.all()
+        section = get_current_section(request)
+        queryset = Application.objects.filter(section=section)
         filterset = self.filterset_class(request.GET, queryset=queryset)
 
         if filterset.is_valid():
             queryset = filterset.qs
+            print(queryset)
             return application_for_map(queryset, request)
+        else:
+            return Response(filterset.errors, status=status.HTTP_400_BAD_REQUEST)
