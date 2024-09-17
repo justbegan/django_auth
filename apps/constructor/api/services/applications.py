@@ -34,28 +34,30 @@ def get_by_application_id(request: Request, id: int) -> Response:
     )
 
 
-def win_lose_calculation(request: Request) -> list:
+def win_lose_calculation(request: Request, data: list) -> list:
     section = get_current_section(request)
-    obj = Application.objects.filter(section=section)
-    grant_sum = Contest.objects.get(section=section).grant_sum
+    all_contests = Contest.objects.filter(section=section)
     result = []
-    for i in obj:
-        req_sum = i.get_financing_republic_grant()
-        grant_sum = grant_sum - Decimal(req_sum)
-        if grant_sum < 0:
-            result.append(
-                {
-                    "id": i.id,
-                    "status": "loose"
-                }
-            )
-        else:
-            result.append(
-                {
-                    "id": i.id,
-                    "status": "win"
-                }
-            )
+    for c in all_contests:
+        grant_sum = Contest.objects.get(id=c.id).grant_sum
+        for i in data:
+            if c.id == i["contest"]:
+                req_sum = i["get_financing_republic_grant"]
+                grant_sum = grant_sum - Decimal(req_sum)
+                if grant_sum < 0:
+                    result.append(
+                        {
+                            "id": i["id"],
+                            "status": "loose"
+                        }
+                    )
+                else:
+                    result.append(
+                        {
+                            "id": i["id"],
+                            "status": "win"
+                        }
+                    )
     return result
 
 

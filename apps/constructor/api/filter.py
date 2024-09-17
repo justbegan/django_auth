@@ -11,6 +11,7 @@ class Application_filter(django_filters.FilterSet):
     municipal_district = django_filters.CharFilter(method='filter_municipal_district')
     project_type = django_filters.CharFilter(method='filter_project_type')
     status = django_filters.CharFilter(method='filter_status')
+    contest = django_filters.CharFilter(method='filter_contest')
     custom_data = django_filters.CharFilter(method='fiter_custom_data')
     order_by = django_filters.CharFilter(method='filter_order_by')
     multipurpose = django_filters.CharFilter(method='filter_multipurpose')
@@ -30,6 +31,10 @@ class Application_filter(django_filters.FilterSet):
     def filter_status(self, queryset, name, value):
         status = value.split(',')
         return queryset.filter(status__id__in=status)
+
+    def filter_contest(self, queryset, name, value):
+        contest = value.split(',')
+        return queryset.filter(contest__id__in=contest)
 
     def filter_municipal_district(self, queryset, name, value):
         district = value.split(',')
