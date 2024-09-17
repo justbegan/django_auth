@@ -165,7 +165,6 @@ class Application_for_map(APIView):
 
         if filterset.is_valid():
             queryset = filterset.qs
-            print(queryset)
             return application_for_map(queryset, request)
         else:
             return Response(filterset.errors, status=status.HTTP_400_BAD_REQUEST)

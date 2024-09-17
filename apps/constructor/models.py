@@ -7,7 +7,6 @@ from apps.profiles.models import Section
 from apps.calculation.models import Formula
 from simple_history.models import HistoricalRecords
 from apps.locations.models import Settlement_type
-from apps.profiles.models import Profile
 
 
 logger = logging.getLogger('django')
@@ -164,10 +163,9 @@ class Application(models.Model):
 
     def get_lat_lon(self):
         try:
-            obj = Profile.objects.get(user=self.author)
             return {
-                "latitude": obj.locality.Latitude,
-                "longitude": obj.locality.Longitude,
+                "latitude": self.locality.Latitude,
+                "longitude": self.locality.Longitude
             }
         except Exception:
             return {}
