@@ -49,7 +49,9 @@ INSTALLED_APPS = [
     'apps.ppmi_report',
     'apps.comments',
     'apps.meeting',
-    'apps.faq'
+    'apps.faq',
+    'apps.phone_book',
+    'apps.service_manager'
 ]
 
 MIDDLEWARE = [

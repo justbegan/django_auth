@@ -37,7 +37,8 @@ urlpatterns = [
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('comment/', include('apps.comments.urls')),
     path('meeting/', include('apps.meeting.urls')),
-    path('faq/', include('apps.faq.urls'))
+    path('faq/', include('apps.faq.urls')),
+    path('phone_book/', include('apps.phone_book.urls'))
 ]
 
 if settings.DEBUG:
