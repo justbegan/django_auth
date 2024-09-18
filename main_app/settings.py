@@ -48,10 +48,10 @@ INSTALLED_APPS = [
     'apps.report_manager',
     'apps.ppmi_report',
     'apps.comments',
-    'apps.meeting',
     'apps.faq',
     'apps.phone_book',
-    'apps.service_manager'
+    'apps.service_manager',
+    'apps_services.meeting',
 ]
 
 MIDDLEWARE = [

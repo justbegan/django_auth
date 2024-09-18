@@ -9,9 +9,9 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         apps_list = apps.get_app_configs()
         for app in apps_list:
-            # Проверяем, существует ли приложение, если нет - создаем
-            Apps.objects.get_or_create(
-                name=app.name,
-                defaults={'verbose_name': app.verbose_name}
-            )
+            if 'apps_services' in app.name:
+                Apps.objects.get_or_create(
+                    name=app.name,
+                    defaults={'verbose_name': app.verbose_name}
+                )
         self.stdout.write(self.style.SUCCESS('Приложения синхронизированы с базой данных.'))
