@@ -13,7 +13,7 @@ def redis_ping() -> bool:
         else:
             return False
     except Exception as e:
-        logger.exception(f"redis не найден {e}")
+        logger.warning(f"redis не найден {e}")
         return False
 
 
@@ -21,7 +21,7 @@ def get_redis_data(name: str):
     try:
         obj = cache.get(name, None)
     except Exception as e:
-        logger.exception(f"redis не найден {e}")
+        logger.warning(f"redis не найден {e}")
         obj = None
     if obj:
         return obj
@@ -31,7 +31,7 @@ def create_redis_data(name: str, data):
     try:
         cache.set(name, data, 3600 * 6)
     except Exception as e:
-        logger.exception(f"redis не удалось сохранить {e}")
+        logger.warning(f"redis не удалось сохранить {e}")
 
 
 def redis_wrapper(name):

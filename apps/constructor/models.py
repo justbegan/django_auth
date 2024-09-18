@@ -112,10 +112,9 @@ class Application(models.Model):
                 try:
                     exec(f.code)
                 except Exception:
-                    logger.exception("Ошибка при выполнение кода формулы")
-                    pass
+                    logger.warning("Ошибка при выполнение кода формулы")
         except Exception:
-            logger.exception("Ошибка при итерации формулы")
+            logger.warning("Ошибка при итерации формулы")
             return result
         return result
 
@@ -158,7 +157,7 @@ class Application(models.Model):
             values = [value for key, value in self.point_calculation().items()]
             return sum(values)
         except Exception:
-            logger.exception("Ошибка при расчете баллов")
+            logger.warning("Ошибка при расчете баллов, результат 0")
             return 0
 
     def get_lat_lon(self):

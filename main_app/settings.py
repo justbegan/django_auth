@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'codemirror2',
     'jsoneditor',
     'simple_history',
+    'apps.custom_logger',
     'apps.jwt_auth',
     'apps.api_getaway',
     'apps.profiles',
@@ -210,32 +211,33 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '{levelname} {asctime} {module} {message}',
-            'style': '{',
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
         },
         'simple': {
-            'format': '{levelname} {message}',
-            'style': '{',
+            'format': '%(levelname)s %(asctime)s %(message)s'
         },
     },
     'handlers': {
-        'file': {
-            'level': 'ERROR',  # Записываем только ошибки и критические ошибки
-            'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs', 'error.log'),  # Статичное имя файла
-            'when': 'midnight',  # Новый файл каждый день
-            'backupCount': 7,  # Хранить файлы за последние 7 дней
-            'formatter': 'verbose',
-            'encoding': 'utf-8',
+        'db_log': {
+            'level': 'DEBUG',
+            'class': 'apps.custom_logger.db_log_handler.DatabaseLogHandler'
         },
     },
     'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'ERROR',  # Логируем только ошибки
-            'propagate': True,
+        'db': {
+            'handlers': ['db_log'],
+            'level': 'DEBUG'
         },
-    },
+        'django': {
+            'handlers': ['db_log'],
+            'level': 'WARNING',
+        },
+        'django.request': {
+            'handlers': ['db_log'],
+            'level': 'ERROR',
+            'propagate': False,
+        }
+    }
 }
 
 CACHES = {
