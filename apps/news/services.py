@@ -2,7 +2,7 @@ from rest_framework.views import Request, Response
 
 from .models import News
 from .serializers import News_serializer
-from apps.constructor.api.services.crud import get_many, create, update, delete, get
+from services.crud import get_many, create, update, delete, get
 
 
 def get_all_news(request: Request):

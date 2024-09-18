@@ -5,7 +5,7 @@ from django.db import transaction
 
 from apps.constructor.models import Application, Contest
 from ..serializers import Applications_serializer, Application_for_map_serializer
-from .crud import update, get
+from services.crud import update, get
 from .custom_data import validate_custom_data
 from .current import get_current_section
 from .document import document_validation

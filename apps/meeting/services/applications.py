@@ -2,7 +2,7 @@ from rest_framework.views import Request, Response
 
 from ..models import Meeting_app
 from ..serializers import Meeting_app_serializer
-from apps.constructor.api.services.crud import update, get
+from services.crud import update, get
 from .custom_data import validate_custom_data
 from .document import document_validation
 

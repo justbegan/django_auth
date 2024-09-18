@@ -3,7 +3,7 @@ from copy import deepcopy
 
 from ...models import Project_type
 from ..serializers import Project_type_serializer
-from .crud import get_many, create, update
+from services.crud import get_many, create, update
 from .current import get_current_section
 
 

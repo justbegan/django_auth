@@ -2,7 +2,7 @@ from rest_framework.views import Response, Request
 
 from .models import Municipal_district, Settlement, Locality
 from .serializers import Municipal_district_serializer, Settlement_serializer, Locality_serializer
-from apps.constructor.api.services.crud import get_many, get, create, update
+from services.crud import get_many, get, create, update
 from services.redis import redis_wrapper
 
 

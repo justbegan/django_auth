@@ -1,6 +1,6 @@
 from rest_framework.views import Response, Request
 
-from apps.constructor.api.services.crud import get_many
+from services.crud import get_many
 from apps.constructor.api.services.current import get_current_section
 from .models import Report
 from .serializer import Report_serializer

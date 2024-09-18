@@ -3,7 +3,7 @@ from rest_framework.views import Response, Request
 from ..serializers import Main_table_fields_serializer
 from ...models import Main_table_fields
 from .current import get_current_section
-from .crud import get_many
+from services.crud import get_many
 
 
 def get_main_table_fields_by_section_method(request: Request):

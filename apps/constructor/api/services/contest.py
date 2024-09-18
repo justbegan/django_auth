@@ -1,7 +1,7 @@
 from rest_framework.views import Request, Response
 
 from .current import get_current_section
-from .crud import create, update, get_many
+from services.crud import create, update, get_many
 from ..serializers import Contest_serializer
 from ...models import Contest
 

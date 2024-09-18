@@ -5,7 +5,7 @@ from rest_framework.views import Response
 from django.contrib.auth.models import User
 
 from ..serializers import User_serializer
-from apps.constructor.api.services.crud import update, get, create
+from services.crud import update, get, create
 
 
 def get_profile(request):

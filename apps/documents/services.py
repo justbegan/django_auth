@@ -1,6 +1,6 @@
 from rest_framework.views import Request, Response
 
-from apps.constructor.api.services.crud import create, get_many, update
+from services.crud import create, get_many, update
 from .serializer import Document_serializer
 from .models import Document
 

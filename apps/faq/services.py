@@ -3,7 +3,7 @@ from copy import deepcopy
 
 from .models import Question
 from .serializer import Question_serializer
-from apps.constructor.api.services.crud import create, update, get_many, delete
+from services.crud import create, update, get_many, delete
 from apps.constructor.api.services.current import get_current_section
 
 

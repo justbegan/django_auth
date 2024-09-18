@@ -1,7 +1,7 @@
 from rest_framework.views import Response, Request
 
 from django.contrib.contenttypes.models import ContentType
-from apps.constructor.api.services.crud import create, get_many
+from services.crud import create, get_many
 from .serializers import Comments_serializer
 from .models import Comments
 

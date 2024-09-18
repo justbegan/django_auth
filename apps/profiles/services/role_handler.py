@@ -2,7 +2,7 @@ from rest_framework.views import Request, Response
 from copy import deepcopy
 from django.contrib.contenttypes.models import ContentType
 
-from apps.constructor.api.services.crud import create, update, get_many, delete, get
+from services.crud import create, update, get_many, delete, get
 from apps.constructor.api.services.current import get_current_section
 from ..serializers import Role_handler_serializer
 from ..models import Role_handler

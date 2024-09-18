@@ -8,7 +8,7 @@ import ast
 import re
 
 from .serializers import History_serializer
-from apps.constructor.api.services.crud import create
+from services.crud import create
 from apps.constructor.models import Application, Schema
 
 

@@ -1,6 +1,6 @@
 from rest_framework.views import Response, Request
 from apps.constructor.api.services.current import get_current_section
-from apps.constructor.api.services.crud import create, get_many, update
+from services.crud import create, get_many, update
 from copy import deepcopy
 
 from ..serializers import Document_type_serializer
