@@ -7,6 +7,7 @@ from .models import Profile, Role_handler, Roles
 
 class Profile_serializer(serializers.ModelSerializer):
     role_name = serializers.CharField(read_only=True, source='role.title')
+    get_modules = serializers.ListField(read_only=True)
 
     class Meta:
         model = Profile
@@ -16,11 +17,10 @@ class Profile_serializer(serializers.ModelSerializer):
 
 class User_serializer(serializers.ModelSerializer):
     profile = Profile_serializer(read_only=True)
-    modules = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'email', 'profile', 'username', 'modules', 'password']
+        fields = ['id', 'first_name', 'last_name', 'email', 'profile', 'username', 'password']
 
         extra_kwargs = {
             'password': {'write_only': True}  # Делаем пароль доступным только для записи
@@ -33,14 +33,6 @@ class User_serializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
-
-    def get_modules(self, obj):
-        # try:
-        #     contest_id = Profile.objects.get(user=obj).contest
-        # except:
-        #     raise Exception("user profile not found")
-        # return get_contest_modules_by_contest_id(contest_id)
-        pass
 
 
 class Role_handler_serializer(serializers.ModelSerializer):

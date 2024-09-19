@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from apps.service_manager.models import Apps
+from apps.module_manager.models import Apps
 from django.apps import apps
 
 
@@ -9,7 +9,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         apps_list = apps.get_app_configs()
         for app in apps_list:
-            if 'apps_services' in app.name:
+            if 'apps_modules' in app.name:
                 Apps.objects.get_or_create(
                     name=app.name,
                     defaults={'verbose_name': app.verbose_name}

@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class MeetingConfig(AppConfig):
+class ModuleManagerConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'apps_services.meeting'
+    name = 'apps.module_manager'

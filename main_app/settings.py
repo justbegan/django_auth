@@ -50,8 +50,8 @@ INSTALLED_APPS = [
     'apps.comments',
     'apps.faq',
     'apps.phone_book',
-    'apps.service_manager',
-    'apps_services.meeting',
+    'apps.module_manager',
+    'apps_modules.meeting',
 ]
 
 MIDDLEWARE = [

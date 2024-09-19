@@ -3,12 +3,14 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 
 from apps.locations.models import Municipal_district, Settlement, Locality, Settlement_type
+from apps.module_manager.models import Apps
 
 
 class Section(models.Model):
     title = models.CharField("Секция", max_length=120)
     logo = models.URLField("Ссылка на лого", blank=True, null=True)
     header = models.TextField("Заголовок", blank=True, null=True)
+    modules = models.ManyToManyField(Apps, verbose_name="Модули", blank=True)
 
     def __str__(self):
         return f"{self.title}"
@@ -53,6 +55,9 @@ class Profile(models.Model):
     class Meta:
         verbose_name = "Профиль"
         verbose_name_plural = "Профили"
+
+    def get_modules(self):
+        return self.section.modules.all().values()
 
 
 class Role_handler(models.Model):
