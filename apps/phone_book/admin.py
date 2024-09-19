@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Phone_book
+
+
+admin.site.register(Phone_book)

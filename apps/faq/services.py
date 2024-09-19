@@ -9,7 +9,6 @@ from apps.constructor.api.services.current import get_current_section
 
 def create_question(request: Request):
     data = deepcopy(request.data)
-    data['author'] = request.user.id
     data['section'] = get_current_section(request).id
     return Response(create(Question_serializer, data))
 
@@ -23,6 +22,7 @@ def get_all_question_by_section(request: Request):
 
 def update_question(request: Request, id: int):
     data = deepcopy(request.data)
+    data['section'] = get_current_section(request).id
     return Response(update(Question, Question_serializer, data, {"id": id}))
 
 

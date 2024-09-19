@@ -9,6 +9,8 @@ class Phone_book(models.Model):
     phone = models.CharField("Телефон", max_length=20)
     email = models.EmailField("Email", blank=True, null=True)
     section = models.ForeignKey(Section, verbose_name="Раздел", on_delete=models.PROTECT)
+    created_at = models.DateTimeField('Дата создания', auto_now_add=True)
+    updated_at = models.DateTimeField('Дата обновления', auto_now=True)
 
     def __str__(self):
         return self.fio

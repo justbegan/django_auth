@@ -3,7 +3,7 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework.permissions import IsAuthenticated
 
 from .services import (get_all_question_by_section, create_question, update_question, delete_question)
-from .serializer import Question_serializer
+from .serializer import Question_serializer_ff
 
 
 class Question_main(APIView):
@@ -12,7 +12,7 @@ class Question_main(APIView):
     def get(self, request: Request):
         return get_all_question_by_section(request)
 
-    @swagger_auto_schema(request_body=Question_serializer)
+    @swagger_auto_schema(request_body=Question_serializer_ff)
     def post(self, request: Request):
         return create_question(request)
 
@@ -20,9 +20,9 @@ class Question_main(APIView):
 class Question_detail(APIView):
     permission_classes = [IsAuthenticated]
 
-    @swagger_auto_schema(request_body=Question_serializer)
+    @swagger_auto_schema(request_body=Question_serializer_ff)
     def put(self, request: Request, id: int):
         return update_question(request, id)
 
-    def delete(self, request: Request):
+    def delete(self, request: Request, id: int):
         return delete_question(request, id)

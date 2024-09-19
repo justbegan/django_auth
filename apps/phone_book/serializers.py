@@ -8,7 +8,7 @@ class Phone_book_serializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class Phone_book_serializer_for_swagger(serializers.Serializer):
+class Phone_book_serializer_ff(serializers.Serializer):
     fio = serializers.CharField()
     position = serializers.CharField()
     description = serializers.CharField()

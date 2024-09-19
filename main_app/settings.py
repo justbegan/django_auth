@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'apps.phone_book',
     'apps.module_manager',
     'apps_modules.meeting',
+    'apps_modules.letter'
 ]
 
 MIDDLEWARE = [
