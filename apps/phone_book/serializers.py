@@ -13,5 +13,5 @@ class Phone_book_serializer_ff(serializers.Serializer):
     position = serializers.CharField()
     description = serializers.CharField()
     phone = serializers.CharField()
-    ip_phone = serializers.CharField()
+    ip_phone = serializers.CharField(required=False)
     email = serializers.CharField()
