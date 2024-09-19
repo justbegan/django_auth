@@ -5,9 +5,9 @@ from rest_framework.views import APIView, Request, Response, status
 from rest_framework.permissions import IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
 
-from .serializers import (Applications_serializer, Application_update_serializer, Document_type_serializer,
+from .serializers import (Applications_serializer, Application_serializer_ff, Document_type_serializer,
                           Status_serializer)
-from ..models import Application
+from ..models import Application, Contest, Status, Project_type, Document_type
 from .filter import Application_filter, Application_map_filter
 from .services.applications import get_by_application_id, update_application, win_lose_calculation, application_for_map
 from .services.current import get_current_contest, get_current_section
@@ -55,6 +55,7 @@ class Application_main(generics.ListCreateAPIView):
         return q.filter(author=self.request.user.id)
 
     @role_required_v2()
+    @swagger_auto_schema(request_body=Application_serializer_ff)
     def post(self, request, *args, **kwargs):
         request.data['author'] = self.request.user.id
         request.data['section'] = get_current_section(request).id
@@ -75,7 +76,7 @@ class Application_detail(APIView):
     def get(self, request: Request, id: int):
         return get_by_application_id(request, id)
 
-    @swagger_auto_schema(request_body=Application_update_serializer)
+    @swagger_auto_schema(request_body=Application_serializer_ff)
     @role_required_v2()
     def put(self, request: Request, id: int):
         return update_application(request, id)
@@ -94,21 +95,29 @@ class Main_table_fields_main(APIView):
 
 
 class Status_main(APIView):
+    model_used = Status
+
     def get(self, request: Request):
         return get_all_statuses_by_section(request)
 
+    @role_required_v2()
     @swagger_auto_schema(request_body=Status_serializer)
     def post(self, request: Request):
         return create_status(request)
 
 
 class Status_detail(APIView):
+    model_used = Status
+
     @swagger_auto_schema(request_body=Status_serializer)
+    @role_required_v2()
     def put(self, request: Request, id: int):
         return update_status(request, id)
 
 
 class Project_type_main(APIView):
+    model_used = Project_type
+
     def get(self, request: Request):
         return get_project_type_by_section(request)
 
@@ -118,12 +127,16 @@ class Project_type_main(APIView):
 
 
 class Project_type_detail(APIView):
+    model_used = Project_type
+
     @role_required_v2()
     def put(self, request: Request, id: int):
         return update_project_type(request, id)
 
 
 class Contest_main(APIView):
+    model_used = Contest
+
     def get(self, request: Request):
         return get_contests_by_section(request)
 
@@ -133,12 +146,16 @@ class Contest_main(APIView):
 
 
 class Contest_detail(APIView):
+    model_used = Contest
+
     @role_required_v2()
     def put(self, request: Request, id: int):
         return update_contest(request, id)
 
 
 class Document_type_main(APIView):
+    model_used = Document_type
+
     def get(self, request: Request):
         return get_all_document_types_by_section(request)
 
@@ -148,6 +165,8 @@ class Document_type_main(APIView):
 
 
 class Document_type_detail(APIView):
+    model_used = Document_type
+
     @swagger_auto_schema(request_body=Document_type_serializer)
     def put(self, request: Request, id: int):
         return update_document_type(request, id)

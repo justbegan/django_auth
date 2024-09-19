@@ -17,7 +17,7 @@ class Applications_serializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class Application_update_serializer(serializers.Serializer):
+class Application_serializer_ff(serializers.Serializer):
     """
     Кастомный сериализатор для изменения заявки
     из-за создания комментария и изменения статуса
@@ -33,6 +33,9 @@ class Application_update_serializer(serializers.Serializer):
     comment = Comments_change_status_serializer(required=False)
 
     def update(self, instance, validated_data):
+        return validated_data
+
+    def create(self, validated_data):
         return validated_data
 
 
