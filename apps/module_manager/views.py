@@ -1,3 +1,8 @@
-from django.shortcuts import render
+from rest_framework.views import APIView, Request
 
-# Create your views here.
+from .services import get_all_modules
+
+
+class Modules(APIView):
+    def get(self, request: Request):
+        return get_all_modules(request)

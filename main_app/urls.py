@@ -40,6 +40,7 @@ urlpatterns = [
     path('phone_book/', include('apps.phone_book.urls')),
     path('meeting/', include('apps_modules.meeting.urls')),
     path('letter/', include('apps_modules.letter.urls')),
+    path('module_manager/', include('apps.module_manager.urls')),
 ]
 
 if settings.DEBUG:
