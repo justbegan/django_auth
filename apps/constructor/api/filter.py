@@ -7,7 +7,7 @@ from ..models import Application
 
 class Application_filter(django_filters.FilterSet):
     id = django_filters.CharFilter(method='filter_id')
-    created_time = django_filters.CharFilter(method='filter_created_time')
+    created_at = django_filters.CharFilter(method='filter_created_at')
     municipal_district = django_filters.CharFilter(method='filter_municipal_district')
     project_type = django_filters.CharFilter(method='filter_project_type')
     status = django_filters.CharFilter(method='filter_status')
@@ -24,9 +24,9 @@ class Application_filter(django_filters.FilterSet):
     def filter_id(self, queryset, name, value):
         return queryset.filter(id=value)
 
-    def filter_created_time(self, queryset, name, value):
+    def filter_created_at(self, queryset, name, value):
         date = value.split(',')
-        return queryset.filter(created_time__range=date)
+        return queryset.filter(created_at__range=date)
 
     def filter_status(self, queryset, name, value):
         status = value.split(',')
