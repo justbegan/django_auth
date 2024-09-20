@@ -249,3 +249,15 @@ CACHES = {
         'LOCATION': os.environ.get('redis'),
     },
 }
+
+SITE_ID = 1
+EMAIL_HOST = 'mx.sakha.gov.ru'
+EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
+EMAIL_PORT = '465'
+EMAIL_USE_SSL = 1
+DEFAULT_FROM_EMAIL = "noreply@sakha.gov.ru"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+LOGIN_REDIRECT_URL = "/"
+# 993 Второй порт
