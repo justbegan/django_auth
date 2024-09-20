@@ -14,12 +14,14 @@ from .services.current import get_current_contest, get_current_section
 from .services.schema import get_schema_by_user
 from .services.custom_data import validate_custom_data
 from .services.main_table_fields import get_main_table_fields_by_section, get_main_table_fields_by_section_method
-from .services.status import get_all_statuses_by_section, create_status, update_status
-from .services.project_type import get_project_type_by_section, create_project_type, update_project_type
+from .services.status import get_all_statuses_by_section, create_status, update_status, delete_status
+from .services.project_type import (get_project_type_by_section, create_project_type, update_project_type,
+                                    delete_project_type)
 from .services.contest import create_contest, update_contest, get_contests_by_section
 from .services.document import document_validation
 from .services.decorators import role_required_v2
-from .services.document_type import create_document_type, update_document_type, get_all_document_types_by_section
+from .services.document_type import (create_document_type, update_document_type, get_all_document_types_by_section,
+                                     delete_document_type)
 from .services.custom_validation import custom_validation
 
 
@@ -114,6 +116,9 @@ class Status_detail(APIView):
     def put(self, request: Request, id: int):
         return update_status(request, id)
 
+    def delete(self, request: Request, id: int):
+        return delete_status(request, id)
+
 
 class Project_type_main(APIView):
     model_used = Project_type
@@ -134,6 +139,9 @@ class Project_type_detail(APIView):
     @role_required_v2()
     def put(self, request: Request, id: int):
         return update_project_type(request, id)
+
+    def delete(self, request: Request, id: int):
+        return delete_project_type(request, id)
 
 
 class Contest_main(APIView):
@@ -172,6 +180,9 @@ class Document_type_detail(APIView):
     @swagger_auto_schema(request_body=Document_type_serializer)
     def put(self, request: Request, id: int):
         return update_document_type(request, id)
+
+    def delete(self, request: Request, id: int):
+        return delete_document_type(request, id)
 
 
 class Application_for_map(APIView):

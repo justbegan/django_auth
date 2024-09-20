@@ -3,7 +3,7 @@ from copy import deepcopy
 
 from ...models import Project_type
 from ..serializers import Project_type_serializer
-from services.crud import get_many, create, update
+from services.crud import get_many, create, update, delete
 from .current import get_current_section
 
 
@@ -22,3 +22,7 @@ def update_project_type(request: Request, id: int):
     instance = Project_type.objects.get(id=id)
     data['section'] = instance.section.id
     return Response(update(Project_type, Project_type_serializer, data, {"id": id}))
+
+
+def delete_project_type(request: Request, id: int):
+    return Response(delete(Project_type, {"id": id}))
