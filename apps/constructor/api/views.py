@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
 
 from .serializers import (Applications_serializer, Application_serializer_ff, Document_type_serializer,
-                          Status_serializer)
+                          Status_serializer, Project_type_serializer_ff)
 from ..models import Application, Contest, Status, Project_type, Document_type
 from .filter import Application_filter, Application_map_filter
 from .services.applications import get_by_application_id, update_application, win_lose_calculation, application_for_map
@@ -121,6 +121,7 @@ class Project_type_main(APIView):
     def get(self, request: Request):
         return get_project_type_by_section(request)
 
+    @swagger_auto_schema(request_body=Project_type_serializer_ff)
     @role_required_v2()
     def post(self, request: Request):
         return create_project_type(request)
@@ -129,6 +130,7 @@ class Project_type_main(APIView):
 class Project_type_detail(APIView):
     model_used = Project_type
 
+    @swagger_auto_schema(request_body=Project_type_serializer_ff)
     @role_required_v2()
     def put(self, request: Request, id: int):
         return update_project_type(request, id)

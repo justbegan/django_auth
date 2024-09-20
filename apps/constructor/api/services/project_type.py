@@ -13,9 +13,12 @@ def get_project_type_by_section(request: Request):
 
 def create_project_type(request: Request):
     data = deepcopy(request.data)
-    data['section'] = get_current_section(request)
+    data['section'] = get_current_section(request).id
     return Response(create(Project_type_serializer, data))
 
 
 def update_project_type(request: Request, id: int):
-    return Response(update(Project_type, Project_type_serializer, request.data, {"id": id}))
+    data = deepcopy(request.data)
+    instance = Project_type.objects.get(id=id)
+    data['section'] = instance.section.id
+    return Response(update(Project_type, Project_type_serializer, data, {"id": id}))

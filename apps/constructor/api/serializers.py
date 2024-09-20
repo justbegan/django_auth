@@ -60,6 +60,10 @@ class Project_type_serializer(serializers.ModelSerializer):
         model = Project_type
 
 
+class Project_type_serializer_ff(serializers.Serializer):
+    title = serializers.CharField()
+
+
 class Status_serializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
