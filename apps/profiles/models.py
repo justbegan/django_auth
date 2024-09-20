@@ -33,6 +33,8 @@ class Roles(models.Model):
 
 
 class Profile(models.Model):
+    fio = models.CharField("ФИО", max_length=255, blank=True, null=True)
+    email = models.EmailField("Email", unique=True, blank=True, null=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="Профиль")
     role = models.ForeignKey(Roles, on_delete=models.PROTECT, verbose_name="Роль")
     section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Раздел", blank=True, null=True)

@@ -20,7 +20,7 @@ class User_serializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'email', 'profile', 'username', 'password']
+        fields = ['id', 'profile', 'username', 'password']
 
         extra_kwargs = {
             'password': {'write_only': True}  # Делаем пароль доступным только для записи
