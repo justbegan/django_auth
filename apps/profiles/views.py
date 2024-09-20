@@ -1,13 +1,16 @@
 from rest_framework.views import APIView, Response, Request
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.permissions import IsAuthenticated
+from drf_yasg import openapi
 
 from .services.profile_services import (get_profile, get_profile_by_user_id, update_user_data,
                                         update_profile_by_user_id, create_user)
-from .serializers import User_serializer
+from .serializers import User_serializer, Section_serializer_ff
 from .services.role_handler import (create_role_handler, update_role_handler, get_all_roles_handler,
                                     delete_role_handler, get_role_handler_by_id, get_all_models)
 from .services.role import (get_all_roles_by_section, create_role, update_role, delete_role)
+from .services.section import (get_all_sections, create_section, update_section, get_section_by_id,
+                               get_sections_by_user)
 
 
 class Profile_main(APIView):
@@ -74,3 +77,34 @@ class Role_detail(APIView):
 
     def delete(self, request: Request, id: int):
         return delete_role(request, id)
+
+
+class Section_main(APIView):
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(
+                'get_all', openapi.IN_QUERY,
+                description="Flag to retrieve all sections (0 or 1)",
+                type=openapi.TYPE_INTEGER
+            )
+        ]
+    )
+    def get(self, request: Request):
+        get_all = int(request.GET.get('get_all', True))
+        if get_all:
+            return get_all_sections(request)
+        else:
+            return get_sections_by_user(request)
+
+    @swagger_auto_schema(request_body=Section_serializer_ff)
+    def post(self, request: Request):
+        return create_section(request)
+
+
+class Section_detail(APIView):
+    def get(self, request: Request, id: int):
+        return get_section_by_id(request, id)
+
+    @swagger_auto_schema(request_body=Section_serializer_ff)
+    def put(self, request: Request, id: int):
+        return update_section(request, id)

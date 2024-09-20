@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
-from .models import Profile, Role_handler, Roles
+from .models import Profile, Role_handler, Roles, Section
 # from apps.profiles.services.services import get_contest_modules_by_contest_id
 
 
@@ -46,3 +46,16 @@ class Role_serializer(serializers.ModelSerializer):
     class Meta:
         model = Roles
         fields = '__all__'
+
+
+class Section_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Section
+        fields = '__all__'
+
+
+class Section_serializer_ff(serializers.Serializer):
+    title = serializers.CharField()
+    logo = serializers.CharField(required=False)
+    header = serializers.CharField(required=False)
+    modules = serializers.ListField(required=False)
