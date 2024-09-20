@@ -33,6 +33,7 @@ class Contest(models.Model):
     status = models.CharField("Статус", max_length=120, choices=STATUS, default=NEW)
     contest_types = models.ManyToManyField(Settlement_type, verbose_name="Для кого", help_text="Для кого этот конкурс")
     section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция")
+    year = models.PositiveIntegerField("Год проведения")
 
     def __str__(self):
         return self.title

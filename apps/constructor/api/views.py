@@ -17,7 +17,7 @@ from .services.main_table_fields import get_main_table_fields_by_section, get_ma
 from .services.status import get_all_statuses_by_section, create_status, update_status, delete_status
 from .services.project_type import (get_project_type_by_section, create_project_type, update_project_type,
                                     delete_project_type)
-from .services.contest import create_contest, update_contest, get_contests_by_section
+from .services.contest import create_contest, update_contest, get_contests_by_section, get_contest_by_year
 from .services.document import document_validation
 from .services.decorators import role_required_v2
 from .services.document_type import (create_document_type, update_document_type, get_all_document_types_by_section,
@@ -161,6 +161,9 @@ class Contest_detail(APIView):
     @role_required_v2()
     def put(self, request: Request, id: int):
         return update_contest(request, id)
+
+    def get(self, request: Request, id: int):
+        return get_contest_by_year(request, id)
 
 
 class Document_type_main(APIView):
