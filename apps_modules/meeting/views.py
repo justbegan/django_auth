@@ -6,10 +6,11 @@ from rest_framework.permissions import IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
 
 from .serializers import Meeting_app_serializer, Meeting_app_serializer_ff
-from .models import Meeting_app
+from .models import Meeting_app, Meeting_document_type
 from .filter import Meeting_app_filter
 from apps.constructor.services.applications import create_application, update_application, get_by_application_id
-from .services.document import document_validation
+from apps.constructor.services.document import document_validation
+from apps.constructor.services.main_table_fields import get_main_table_fields_by_section_method
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -19,7 +20,7 @@ class StandardResultsSetPagination(PageNumberPagination):
 
     def get_paginated_response(self, data):
         return Response({
-            # 'main_table_fields': get_main_table_fields_by_section_method(self.request),
+            'main_table_fields': get_main_table_fields_by_section_method(self.request, Meeting_app),
             'total_results': self.page.paginator.count,
             'total_pages': self.page.paginator.num_pages,
             'current_page': self.page.number,
@@ -42,9 +43,9 @@ class Application_main(generics.ListCreateAPIView):
         q = super().get_queryset()
         return q.filter(author=self.request.user.id)
 
+    @document_validation(Meeting_document_type)
     @swagger_auto_schema(request_body=Meeting_app_serializer_ff)
     def post(self, request, *args, **kwargs):
-        document_validation(request)
         return create_application(request, Meeting_app_serializer)
 
 
@@ -55,7 +56,7 @@ class Application_detail(APIView):
     def get(self, request: Request, id: int):
         return get_by_application_id(request, id, Meeting_app, Meeting_app_serializer)
 
+    @document_validation(Meeting_document_type)
     @swagger_auto_schema(request_body=Meeting_app_serializer_ff)
     def put(self, request: Request, id: int):
-        document_validation(request)
         return update_application(request, id, Meeting_app, Meeting_app_serializer)

@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 import logging
 from simple_history.models import HistoricalRecords
+from django.contrib.contenttypes.models import ContentType
 
 from apps.profiles.models import Section
 from apps.calculation.models import Formula
@@ -219,6 +220,7 @@ class Main_table_fields(models.Model):
     field = models.CharField("Транскрипция")
     pos = models.PositiveIntegerField("Позиция", default=100)
     section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция")
+    content_type = models.ForeignKey(ContentType, on_delete=models.PROTECT, verbose_name="Приложение")
 
     def __str__(self):
         return self.title

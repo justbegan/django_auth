@@ -1,14 +1,14 @@
 from rest_framework.exceptions import ValidationError
 import logging
 from functools import wraps
+from django.db.models import Model
 
-from apps.constructor.models import Document_type
 from .current import get_current_section, get_current_new_status
 
 logger = logging.getLogger('django')
 
 
-def document_validation():
+def document_validation(document_type: Model):
     def decorator(func):
         @wraps(func)
         def wrapper(self, request, *args, **kwargs):
@@ -25,7 +25,7 @@ def document_validation():
                 raise ValidationError("status не найден", code=400)
 
             if get_current_new_status(request) != status:
-                docs_req_types = Document_type.objects.filter(
+                docs_req_types = document_type.objects.filter(
                     section=get_current_section(request), required=True
                 ).values("id")
                 docs_obj = [d['type'] for d in docs]

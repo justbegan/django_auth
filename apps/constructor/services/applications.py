@@ -1,7 +1,8 @@
 from rest_framework.views import Request, Response
 from decimal import Decimal
 from copy import deepcopy
-from django.db import transaction, models
+from django.db import transaction
+from django.db.models import Model
 from rest_framework.serializers import Serializer
 
 from apps.constructor.models import Contest
@@ -24,7 +25,7 @@ def create_application(request: Request, serializer: Serializer) -> Response:
 
 
 @transaction.atomic
-def update_application(request: Request, id: int, model: models, serializer: Serializer) -> Response:
+def update_application(request: Request, id: int, model: Model, serializer: Serializer) -> Response:
     data = deepcopy(request.data)
     validate_custom_data(request)
     instance = model.objects.get(id=id)
@@ -38,7 +39,7 @@ def update_application(request: Request, id: int, model: models, serializer: Ser
     return Response(obj)
 
 
-def get_by_application_id(request: Request, id: int, model: models, serializer: Serializer) -> Response:
+def get_by_application_id(request: Request, id: int, model: Model, serializer: Serializer) -> Response:
     return Response(
         get(model, serializer, {"id": id})
     )

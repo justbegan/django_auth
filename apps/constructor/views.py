@@ -31,7 +31,7 @@ class StandardResultsSetPagination(PageNumberPagination):
 
     def get_paginated_response(self, data):
         return Response({
-            'main_table_fields': get_main_table_fields_by_section_method(self.request),
+            'main_table_fields': get_main_table_fields_by_section_method(self.request, Application),
             'win_lose': win_lose_calculation(self.request, data),
             'total_results': self.page.paginator.count,
             'total_pages': self.page.paginator.num_pages,
@@ -55,7 +55,7 @@ class Application_main(generics.ListCreateAPIView):
         q = super().get_queryset()
         return q.filter(author=self.request.user.id)
 
-    @document_validation()
+    @document_validation(Document_type)
     @role_required_v2()
     @swagger_auto_schema(request_body=Application_serializer_ff)
     def post(self, request, *args, **kwargs):
@@ -69,7 +69,7 @@ class Application_detail(APIView):
     def get(self, request: Request, id: int):
         return get_by_application_id(request, id, Application, Applications_serializer)
 
-    @document_validation()
+    @document_validation(Document_type)
     @swagger_auto_schema(request_body=Application_serializer_ff)
     @role_required_v2()
     def put(self, request: Request, id: int):
