@@ -9,6 +9,7 @@ from .serializers import Meeting_app_serializer, Meeting_app_serializer_ff
 from .models import Meeting_app
 from .filter import Meeting_app_filter
 from apps.constructor.services.applications import create_application, update_application, get_by_application_id
+from .services.document import document_validation
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -43,6 +44,7 @@ class Application_main(generics.ListCreateAPIView):
 
     @swagger_auto_schema(request_body=Meeting_app_serializer_ff)
     def post(self, request, *args, **kwargs):
+        document_validation(request)
         return create_application(request, Meeting_app_serializer)
 
 
@@ -55,4 +57,5 @@ class Application_detail(APIView):
 
     @swagger_auto_schema(request_body=Meeting_app_serializer_ff)
     def put(self, request: Request, id: int):
+        document_validation(request)
         return update_application(request, id, Meeting_app, Meeting_app_serializer)

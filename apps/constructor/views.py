@@ -21,6 +21,7 @@ from .services.contest import create_contest, update_contest, get_contests_by_se
 from .services.decorators import role_required_v2
 from .services.document_type import (create_document_type, update_document_type, get_all_document_types_by_section,
                                      delete_document_type)
+from .services.document import document_validation
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -54,6 +55,7 @@ class Application_main(generics.ListCreateAPIView):
         q = super().get_queryset()
         return q.filter(author=self.request.user.id)
 
+    @document_validation()
     @role_required_v2()
     @swagger_auto_schema(request_body=Application_serializer_ff)
     def post(self, request, *args, **kwargs):
@@ -67,6 +69,7 @@ class Application_detail(APIView):
     def get(self, request: Request, id: int):
         return get_by_application_id(request, id, Application, Applications_serializer)
 
+    @document_validation()
     @swagger_auto_schema(request_body=Application_serializer_ff)
     @role_required_v2()
     def put(self, request: Request, id: int):
