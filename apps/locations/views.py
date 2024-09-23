@@ -6,7 +6,7 @@ from .services import (get_all_municipal_district, create_municipal_district, up
                        get_settlement_by_distict_id, create_settlement, update_settlement, get_all_settlements,
                        get_locality_by_settlement_id, create_locality, update_locality, get_all_locality,
                        get_locality_by_district_id, get_locality_by_id)
-from apps.constructor.api.services.decorators import role_required
+from apps.constructor.services.decorators import role_required
 
 
 class CreateRa(APIView):

@@ -2,7 +2,7 @@ from rest_framework.views import Request, Response
 from copy import deepcopy
 
 from ..serializers import Status_serializer
-from ...models import Status
+from ..models import Status
 from services.crud import get_many, update, create, delete
 from .current import get_current_section
 

@@ -1,7 +1,7 @@
 from rest_framework.views import APIView, Request
 
 from .services import create_document, update_document, get_all_documents
-from apps.constructor.api.services.decorators import role_required
+from apps.constructor.services.decorators import role_required
 
 
 class Document_main(APIView):

@@ -27,7 +27,7 @@ urlpatterns = [
     path('api/v1/', include('apps.api_getaway.urls')),
     path('profile/', include('apps.profiles.urls')),
     path('locations/', include('apps.locations.urls')),
-    path('constructor/', include('apps.constructor.api.urls')),
+    path('constructor/', include('apps.constructor.urls')),
     path('filehandler/', include('apps.filehandler.urls')),
     path('document/', include('apps.documents.urls')),
     path('news/', include('apps.news.urls')),

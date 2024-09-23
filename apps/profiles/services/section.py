@@ -3,7 +3,7 @@ from rest_framework.views import Request, Response
 from ..models import Section
 from ..serializers import Section_serializer
 from services.crud import get_many, get, create, update
-from apps.constructor.api.services.current import get_current_section
+from apps.constructor.services.current import get_current_section
 
 
 def get_all_sections(request: Request):

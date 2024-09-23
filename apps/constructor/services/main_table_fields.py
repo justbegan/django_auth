@@ -1,7 +1,7 @@
 from rest_framework.views import Response, Request
 
 from ..serializers import Main_table_fields_serializer
-from ...models import Main_table_fields
+from ..models import Main_table_fields
 from .current import get_current_section
 from services.crud import get_many
 

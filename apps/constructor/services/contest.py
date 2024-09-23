@@ -4,7 +4,7 @@ from copy import deepcopy
 from .current import get_current_section
 from services.crud import create, update, get_many
 from ..serializers import Contest_serializer
-from ...models import Contest
+from ..models import Contest
 
 
 def create_contest(request: Request):

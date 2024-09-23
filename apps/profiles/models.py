@@ -8,7 +8,7 @@ from apps.module_manager.models import Apps
 
 class Section(models.Model):
     title = models.CharField("Секция", max_length=120)
-    logo = models.URLField("Ссылка на лого", blank=True, null=True)
+    logo = models.CharField("Ссылка на лого", blank=True, null=True, max_length=200)
     header = models.TextField("Заголовок", blank=True, null=True)
     modules = models.ManyToManyField(Apps, verbose_name="Модули", blank=True)
 

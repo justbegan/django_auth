@@ -33,7 +33,6 @@ services:
       python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/code
-      - ./logs:/app/logs
     working_dir: /code
     ports:
       - "8000:8000"

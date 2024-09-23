@@ -16,12 +16,12 @@ def document_validation(request: Request):
     """
     try:
         docs = request.data['documents']
-    except:
+    except Exception:
         raise ValidationError("documents не найден", code=400)
 
     try:
         status = request.data['status']
-    except:
+    except Exception:
         raise ValidationError("status не найден", code=400)
 
     if get_current_new_status(request) != status:

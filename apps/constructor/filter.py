@@ -2,7 +2,7 @@ import django_filters
 import json
 from django.db.models import Q
 
-from ..models import Application
+from .models import Application
 
 
 class Application_filter(django_filters.FilterSet):

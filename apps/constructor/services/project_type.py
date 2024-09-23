@@ -1,7 +1,7 @@
 from rest_framework.views import Request, Response
 from copy import deepcopy
 
-from ...models import Project_type
+from ..models import Project_type
 from ..serializers import Project_type_serializer
 from services.crud import get_many, create, update, delete
 from .current import get_current_section

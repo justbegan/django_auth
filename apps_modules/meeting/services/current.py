@@ -8,7 +8,7 @@ from ..serializers import Meetign_schema_serializer
 def get_current_profile_type(request: Request):
     try:
         return Profile.objects.get(user=request.user).profile_type
-    except:
+    except Exception:
         Exception("Ошибка при поиске поля profile_type")
 
 
@@ -25,7 +25,7 @@ def get_current_contest(request: Request) -> int:
 def get_current_section(request: Request):
     try:
         return Profile.objects.get(user=request.user).section
-    except:
+    except Exception:
         raise Exception("Ошибка при поиске поля profile section")
 
 
@@ -34,7 +34,7 @@ def get_current_schema(request: Request):
         section = get_current_section(request)
         obj = Meeting_schema.objects.get(section=section)
         return Meetign_schema_serializer(obj).data
-    except:
+    except Exception:
         raise Exception("Ошибка при поиске поля schema")
 
 
@@ -43,5 +43,5 @@ def get_current_new_status(request: Request) -> int:
         section = get_current_section(request)
         obj = Meeting_status.objects.get(section=section, title="Создан").id
         return obj
-    except:
+    except Exception:
         raise Exception("Не могу найти статус с именем 'Создан'")

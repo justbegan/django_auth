@@ -1,10 +1,10 @@
 from rest_framework.views import Response, Request
-from apps.constructor.api.services.current import get_current_section
+from ..services.current import get_current_section
 from services.crud import create, get_many, update, delete
 from copy import deepcopy
 
 from ..serializers import Document_type_serializer
-from ...models import Document_type
+from ..models import Document_type
 
 
 def create_document_type(request: Request):

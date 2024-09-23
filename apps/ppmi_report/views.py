@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from apps.constructor.models import Application
 from .serializers import (Application_registry_serializer, Results_of_applications_acceptance_serializer,
                           Application_rating_serializer)
-from apps.constructor.api.services.current import get_current_section
+from apps.constructor.services.current import get_current_section
 from .filter import Application_rating_filter
 
 

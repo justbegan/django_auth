@@ -5,7 +5,7 @@ from rest_framework.views import APIView, Request, Response, status
 from rest_framework.permissions import IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
 
-from .serializers import Meeting_app_serializer
+from .serializers import Meeting_app_serializer, Meeting_app_serializer_ff
 from .models import Meeting_app
 from .filter import Meeting_app_filter
 from .services.current import get_current_contest, get_current_section
@@ -43,16 +43,16 @@ class Meeting_application_main(generics.ListCreateAPIView):
         queryset = super().get_queryset()
         return queryset.filter(author=self.request.user.id)
 
+    @swagger_auto_schema(request_body=Meeting_app_serializer_ff)
     def post(self, request, *args, **kwargs):
+        request.data['author'] = self.request.user.id
+        request.data['section'] = get_current_section(request).id
+        request.data['contest'] = get_current_contest(request).id
+        request.data['custom_data'] = validate_custom_data(request)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         document_validation(request)
-        serializer.save(
-            custom_data=validate_custom_data(request),
-            author=self.request.user,
-            section=get_current_section(request),
-            contest=get_current_contest(request)
-        )
+        serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
@@ -62,6 +62,6 @@ class Meeting_application_detail(APIView):
     def get(self, request: Request, id: int):
         return get_by_meeting_application_id(request, id)
 
-    @swagger_auto_schema(request_body=Meeting_app_serializer)
+    @swagger_auto_schema(request_body=Meeting_app_serializer_ff)
     def put(self, request: Request, id: int):
         return update_meeting_application(request, id)

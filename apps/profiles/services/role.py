@@ -1,6 +1,6 @@
 from rest_framework.views import Request, Response
 from services.crud import get_many, create, update, delete
-from apps.constructor.api.services.current import get_current_section
+from apps.constructor.services.current import get_current_section
 from copy import deepcopy
 
 from ..models import Roles
