@@ -1,7 +1,8 @@
 from rest_framework.views import Request
 
 from apps.profiles.models import Profile
-from ..models import Contest, Meeting_schema, Meeting_status
+from ..models import Meeting_schema, Status
+from apps.constructor.models import Contest
 from ..serializers import Meetign_schema_serializer
 
 
@@ -41,7 +42,7 @@ def get_current_schema(request: Request):
 def get_current_new_status(request: Request) -> int:
     try:
         section = get_current_section(request)
-        obj = Meeting_status.objects.get(section=section, title="Создан").id
+        obj = Status.objects.get(section=section, title="Создан").id
         return obj
     except Exception:
         raise Exception("Не могу найти статус с именем 'Создан'")

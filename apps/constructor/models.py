@@ -3,10 +3,9 @@ from django.contrib.auth.models import User
 import logging
 from simple_history.models import HistoricalRecords
 
-from abstactions.application.models import Base_application
 from apps.profiles.models import Section
 from apps.calculation.models import Formula
-from apps.locations.models import Settlement_type
+from apps.locations.models import Settlement_type, Municipal_district, Settlement, Locality
 
 
 logger = logging.getLogger('django')
@@ -45,7 +44,8 @@ class Contest(models.Model):
 
 class Status(models.Model):
     title = models.CharField("Наименование", max_length=120)
-    section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция")
+    section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция",
+                                related_name='constuctor_statuses')
 
     def __str__(self):
         return self.title
@@ -78,6 +78,30 @@ class Document_type(models.Model):
     class Meta:
         verbose_name = "Тип документа"
         verbose_name_plural = "Типы документов"
+
+
+class Base_application(models.Model):
+    municipal_district = models.ForeignKey(Municipal_district, on_delete=models.PROTECT, verbose_name="Район",
+                                           related_name='%(class)s_set')
+    settlement = models.ForeignKey(Settlement, on_delete=models.PROTECT, verbose_name="Поселение",
+                                   related_name='%(class)s_set')
+    locality = models.ForeignKey(Locality, on_delete=models.PROTECT, verbose_name="Населенный пункт",
+                                 related_name='%(class)s_set')
+    created_at = models.DateTimeField('Дата создания обращения', auto_now_add=True)
+    updated_at = models.DateTimeField('Дата обновления', auto_now=True)
+    status = models.ForeignKey('Status', on_delete=models.PROTECT, verbose_name="Статус",
+                               related_name='%(class)s_set')
+    contest = models.ForeignKey(Contest, on_delete=models.PROTECT, verbose_name="Конкурс",
+                                related_name='%(class)s_set')
+    author = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Пользователь",
+                               related_name='%(class)s_set')
+    custom_data = models.JSONField("Кастомные поля", default=dict)
+    section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция",
+                                related_name='%(class)s_set')
+    documents = models.JSONField("Документы", default=list)
+
+    class Meta:
+        abstract = True
 
 
 class Application(Base_application):

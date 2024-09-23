@@ -143,7 +143,7 @@ if app_count >= app_quota_count:
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.token)
         url = reverse('application_main')
         response = self.client.post(url, self.application_data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Application.objects.count(), 1)
         self.assertEqual(Application.objects.get().title, 'Test Project')
 
@@ -152,7 +152,7 @@ if app_count >= app_quota_count:
         Custom_validation.objects.create(**self.custom_validatror)
         url = reverse('application_main')
         response = self.client.post(url, self.application_data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Application.objects.count(), 1)
         self.assertEqual(Application.objects.get().title, 'Test Project')
 

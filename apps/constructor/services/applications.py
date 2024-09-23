@@ -1,36 +1,51 @@
 from rest_framework.views import Request, Response
 from decimal import Decimal
 from copy import deepcopy
-from django.db import transaction
+from django.db import transaction, models
+from rest_framework.serializers import Serializer
 
-from apps.constructor.models import Application, Contest
-from ..serializers import Applications_serializer, Application_for_map_serializer
+from apps.constructor.models import Contest
+from ..serializers import Application_for_map_serializer
 from services.crud import update, get
 from .custom_data import validate_custom_data
-from .current import get_current_section
+from .current import get_current_section, get_current_contest
 from .document import document_validation
+from .custom_validation import custom_validation
 from apps.comments.services import create_comment_and_change_status
 
 
+def create_application(request: Request, serializer: Serializer) -> Response:
+    request.data['author'] = request.user.id
+    request.data['section'] = get_current_section(request).id
+    request.data['contest'] = get_current_contest(request).id
+    request.data['custom_data'] = validate_custom_data(request)
+    serializer = serializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    custom_validation(request)
+    document_validation(request)
+    serializer.save()
+    return Response(serializer.data)
+
+
 @transaction.atomic
-def update_application(request: Request, id: int) -> Response:
+def update_application(request: Request, id: int, model: models, serializer: Serializer) -> Response:
     data = deepcopy(request.data)
     validate_custom_data(request)
     document_validation(request)
-    instance = Application.objects.get(id=id)
+    instance = model.objects.get(id=id)
     data['author'] = instance.author.id
     data['section'] = instance.section.id
     data['contest'] = instance.contest.id
-    obj = update(Application, Applications_serializer, data, {"id": id})
+    obj = update(model, serializer, data, {"id": id})
     comment = data.get("comment")
     if comment:
         create_comment_and_change_status(request, comment, id)
     return Response(obj)
 
 
-def get_by_application_id(request: Request, id: int) -> Response:
+def get_by_application_id(request: Request, id: int, model: models, serializer: Serializer) -> Response:
     return Response(
-        get(Application, Applications_serializer, {"id": id})
+        get(model, serializer, {"id": id})
     )
 
 

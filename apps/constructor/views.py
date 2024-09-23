@@ -9,20 +9,18 @@ from .serializers import (Applications_serializer, Application_serializer_ff, Do
                           Status_serializer, Project_type_serializer_ff)
 from .models import Application, Contest, Status, Project_type, Document_type
 from .filter import Application_filter, Application_map_filter
-from .services.applications import get_by_application_id, update_application, win_lose_calculation, application_for_map
-from .services.current import get_current_contest, get_current_section
+from .services.applications import (get_by_application_id, update_application, win_lose_calculation,
+                                    application_for_map, create_application)
+from .services.current import get_current_section
 from .services.schema import get_schema_by_user
-from .services.custom_data import validate_custom_data
 from .services.main_table_fields import get_main_table_fields_by_section, get_main_table_fields_by_section_method
 from .services.status import get_all_statuses_by_section, create_status, update_status, delete_status
 from .services.project_type import (get_project_type_by_section, create_project_type, update_project_type,
                                     delete_project_type)
 from .services.contest import create_contest, update_contest, get_contests_by_section, get_contest_by_year
-from .services.document import document_validation
 from .services.decorators import role_required_v2
 from .services.document_type import (create_document_type, update_document_type, get_all_document_types_by_section,
                                      delete_document_type)
-from .services.custom_validation import custom_validation
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -59,16 +57,7 @@ class Application_main(generics.ListCreateAPIView):
     @role_required_v2()
     @swagger_auto_schema(request_body=Application_serializer_ff)
     def post(self, request, *args, **kwargs):
-        request.data['author'] = self.request.user.id
-        request.data['section'] = get_current_section(request).id
-        request.data['contest'] = get_current_contest(request).id
-        request.data['custom_data'] = validate_custom_data(request)
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        custom_validation(request)
-        document_validation(request)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return create_application(request, Applications_serializer)
 
 
 class Application_detail(APIView):
@@ -76,12 +65,12 @@ class Application_detail(APIView):
     model_used = Application
 
     def get(self, request: Request, id: int):
-        return get_by_application_id(request, id)
+        return get_by_application_id(request, id, Application, Applications_serializer)
 
     @swagger_auto_schema(request_body=Application_serializer_ff)
     @role_required_v2()
     def put(self, request: Request, id: int):
-        return update_application(request, id)
+        return update_application(request, id, Application, Applications_serializer)
 
 
 class Schema_main(APIView):

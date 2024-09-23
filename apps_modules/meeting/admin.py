@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.db import models
 from jsoneditor.forms import JSONEditor
 
-from .models import Meeting_app, Meeting_status, Meeting_schema, Meeting_document_type
+from .models import Meeting_app, Status, Meeting_schema, Meeting_document_type
 
 
 class BaseAdmin(admin.ModelAdmin):
@@ -14,7 +14,7 @@ class BaseAdmin(admin.ModelAdmin):
     }
 
 
-admin.site.register(Meeting_status)
+admin.site.register(Status)
 admin.site.register(Meeting_document_type)
 
 

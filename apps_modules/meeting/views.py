@@ -1,17 +1,14 @@
 from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.views import APIView, Request, Response, status
+from rest_framework.views import APIView, Request, Response
 from rest_framework.permissions import IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
 
 from .serializers import Meeting_app_serializer, Meeting_app_serializer_ff
 from .models import Meeting_app
 from .filter import Meeting_app_filter
-from .services.current import get_current_contest, get_current_section
-from .services.custom_data import validate_custom_data
-from .services.document import document_validation
-from .services.applications import get_by_meeting_application_id, update_meeting_application
+from apps.constructor.services.applications import create_application, update_application, get_by_application_id
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -31,37 +28,31 @@ class StandardResultsSetPagination(PageNumberPagination):
         })
 
 
-class Meeting_application_main(generics.ListCreateAPIView):
+class Application_main(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = Meeting_app_serializer
     queryset = Meeting_app.objects.all().order_by('-id')
     pagination_class = StandardResultsSetPagination
     filter_backends = [DjangoFilterBackend]
     filterset_class = Meeting_app_filter
+    model_used = Meeting_app
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.filter(author=self.request.user.id)
+        q = super().get_queryset()
+        return q.filter(author=self.request.user.id)
 
     @swagger_auto_schema(request_body=Meeting_app_serializer_ff)
     def post(self, request, *args, **kwargs):
-        request.data['author'] = self.request.user.id
-        request.data['section'] = get_current_section(request).id
-        request.data['contest'] = get_current_contest(request).id
-        request.data['custom_data'] = validate_custom_data(request)
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        document_validation(request)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return create_application(request, Meeting_app_serializer)
 
 
-class Meeting_application_detail(APIView):
+class Application_detail(APIView):
     permission_classes = [IsAuthenticated]
+    model_used = Meeting_app
 
     def get(self, request: Request, id: int):
-        return get_by_meeting_application_id(request, id)
+        return get_by_application_id(request, id, Meeting_app, Meeting_app_serializer)
 
     @swagger_auto_schema(request_body=Meeting_app_serializer_ff)
     def put(self, request: Request, id: int):
-        return update_meeting_application(request, id)
+        return update_application(request, id, Meeting_app, Meeting_app_serializer)
