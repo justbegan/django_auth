@@ -1,9 +1,9 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework import status
-from apps.constructor.models import (Application, Municipal_district, Settlement, Locality,
-                                     Settlement_type, Project_type, Status, Contest, User, Section,
+from apps.constructor.models import (Application, Settlement_type, Project_type, Status, Contest, User, Section,
                                      Schema, Custom_validation)
+from apps.locations.models import Municipal_district, Settlement, Locality
 from apps.locations.models import Locality_type
 from apps.profiles.models import Profile, Roles
 from apps.comments.models import Comments
@@ -54,6 +54,7 @@ class ApplicationAPITest(APITestCase):
         self.contest = Contest.objects.create(
             title="Contest 1",
             section=self.section, status='opened',
+            year=2024
         )
         self.contest.contest_types.add(self.settlement_type)
         self.contest.save()
