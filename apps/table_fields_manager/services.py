@@ -2,9 +2,9 @@ from rest_framework.views import Response, Request
 from django.db.models import Model
 from django.contrib.contenttypes.models import ContentType
 
-from ..serializers import Main_table_fields_serializer
-from ..models import Main_table_fields
-from .current import get_current_section
+from .serializers import Main_table_fields_serializer
+from .models import Main_table_fields
+from apps.constructor.services.current import get_current_section
 from services.crud import get_many
 
 

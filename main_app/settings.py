@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'apps.faq',
     'apps.phone_book',
     'apps.module_manager',
+    'apps.table_fields_manager',
     'apps_modules.meeting',
     'apps_modules.letter'
 ]

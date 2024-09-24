@@ -13,7 +13,7 @@ from .services.applications import (get_by_application_id, update_application, w
                                     application_for_map, create_application)
 from .services.current import get_current_section
 from .services.schema import get_schema_by_user
-from .services.main_table_fields import get_main_table_fields_by_section, get_main_table_fields_by_section_method
+from apps.table_fields_manager.services import get_main_table_fields_by_section_method
 from .services.status import get_all_statuses_by_section, create_status, update_status, delete_status
 from .services.project_type import (get_project_type_by_section, create_project_type, update_project_type,
                                     delete_project_type)
@@ -81,11 +81,6 @@ class Schema_main(APIView):
 
     def get(self, request: Request):
         return get_schema_by_user(request)
-
-
-class Main_table_fields_main(APIView):
-    def get(self, request: Request):
-        return get_main_table_fields_by_section(request)
 
 
 class Status_main(APIView):

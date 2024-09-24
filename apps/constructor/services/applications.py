@@ -48,6 +48,7 @@ def get_by_application_id(request: Request, id: int, model: Model, serializer: S
 def win_lose_calculation(request: Request, data: list) -> list:
     section = get_current_section(request)
     all_contests = Contest.objects.filter(section=section)
+    data = sorted(data, key=lambda x: (x['created_at'], -x['total_point']))
     result = []
     try:
         for c in all_contests:
