@@ -1,6 +1,17 @@
 from django.db import models
 
 
+class District_type(models.Model):
+    title = models.CharField("Наименование", max_length=120)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Тип района"
+        verbose_name_plural = "Типы районов"
+
+
 class Municipal_district(models.Model):
     RegionName = models.TextField("Полное наименование")
     RegionNameE = models.CharField("Наименование", max_length=120)
@@ -8,10 +19,11 @@ class Municipal_district(models.Model):
     Population = models.PositiveIntegerField("Население")
     RegOKTMO = models.CharField("ОКТМО региона")
     RegIsNorthern = models.BooleanField("Северный регион")
+    district_type = models.ForeignKey(District_type, on_delete=models.PROTECT, verbose_name="Тип района")
 
     class Meta:
-        verbose_name = "Регион"
-        verbose_name_plural = "Регионы"
+        verbose_name = "Район"
+        verbose_name_plural = "Районы"
 
     def __str__(self):
         return self.RegionNameE

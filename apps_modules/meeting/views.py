@@ -10,7 +10,7 @@ from .models import Meeting_app, Meeting_document_type
 from .filter import Meeting_app_filter
 from apps.constructor.services.applications import create_application, update_application, get_by_application_id
 from apps.constructor.services.document import document_validation
-from apps.constructor.services.main_table_fields import get_main_table_fields_by_section_method
+from apps.table_fields_manager.services import get_main_table_fields_by_section_method
 
 
 class StandardResultsSetPagination(PageNumberPagination):

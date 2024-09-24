@@ -9,9 +9,17 @@ from ..serializers import Schema_serializer
 logger = logging.getLogger('django')
 
 
+def get_current_profile(request: Request) -> Profile:
+    try:
+        return Profile.objects.get(user=request.user)
+    except Exception as e:
+        logger.exception(f"Ошибка при поиске профиля пользователя {e}")
+        raise Exception("Ошибка при поиске профиля пользователя")
+
+
 def get_current_profile_type(request: Request):
     try:
-        return Profile.objects.get(user=request.user).profile_type
+        return Profile.objects.get(user=request.user).municipal_district.district_type
     except Exception as e:
         logger.exception(f"Ошибка при поиске поля profile_type {e}")
         Exception("Ошибка при поиске поля profile_type")
@@ -20,7 +28,7 @@ def get_current_profile_type(request: Request):
 def get_current_contest(request: Request) -> int:
     section = get_current_section(request)
     profile_type = get_current_profile_type(request).id
-    contest = Contest.objects.filter(section=section, status='opened', contest_types=profile_type)
+    contest = Contest.objects.filter(section=section, status='opened', district_type=profile_type)
     if contest.count() == 0:
         raise Exception("Конкурс с вашими критериями не найден")
     else:

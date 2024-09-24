@@ -1,12 +1,11 @@
 from django.db import models
-from django.contrib.auth.models import User
 import logging
 from simple_history.models import HistoricalRecords
 from django.contrib.contenttypes.models import ContentType
 
-from apps.profiles.models import Section
+from apps.profiles.models import Section, Profile
 from apps.calculation.models import Formula
-from apps.locations.models import Settlement_type, Municipal_district, Settlement, Locality
+from apps.locations.models import Municipal_district, Settlement, Locality, District_type
 
 
 logger = logging.getLogger('django')
@@ -31,7 +30,7 @@ class Contest(models.Model):
     title = models.CharField("Наименование", max_length=120)
     grant_sum = models.DecimalField("Сумма гранта", max_digits=12, decimal_places=2, default=0.00)
     status = models.CharField("Статус", max_length=120, choices=STATUS, default=NEW)
-    contest_types = models.ManyToManyField(Settlement_type, verbose_name="Для кого", help_text="Для кого этот конкурс")
+    district_type = models.ManyToManyField(District_type, verbose_name="Для кого", help_text="Для кого этот конкурс")
     section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция")
     year = models.PositiveIntegerField("Год проведения")
 
@@ -94,7 +93,7 @@ class Base_application(models.Model):
                                related_name='%(class)s_set')
     contest = models.ForeignKey(Contest, on_delete=models.PROTECT, verbose_name="Конкурс",
                                 related_name='%(class)s_set')
-    author = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Пользователь",
+    author = models.ForeignKey(Profile, on_delete=models.PROTECT, verbose_name="Пользователь",
                                related_name='%(class)s_set')
     custom_data = models.JSONField("Кастомные поля", default=dict)
     section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция",
@@ -187,17 +186,6 @@ class Application(Base_application):
         Цель проекта
         """
         return self.custom_data.get("project_problem", "")
-
-
-class History(models.Model):
-    application = models.ForeignKey(Application, on_delete=models.PROTECT, verbose_name="Заявка")
-    created_at = models.DateTimeField('Дата создания обращения', auto_now_add=True)
-    text = models.TextField("Текст")
-    author = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Пользователь")
-
-    class Meta:
-        verbose_name = "История"
-        verbose_name_plural = "Истории"
 
 
 class Schema(models.Model):

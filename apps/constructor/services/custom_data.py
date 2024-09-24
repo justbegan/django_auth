@@ -20,6 +20,8 @@ def validate_custom_data(request: Request):
     required = status != get_current_new_status(request)
 
     custom_data = data.get("custom_data")
+    if not isinstance(custom_data, dict):
+        raise CustomDataValidationError({"custom_data": f"Ожидалось dict, получено {type(custom_data).__name__}."})
     schema = get_current_schema(request)
     if not schema:
         raise SchemaNotFoundError({"schema": "Schema could not be found."})

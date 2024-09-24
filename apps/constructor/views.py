@@ -11,7 +11,7 @@ from .models import Application, Contest, Status, Project_type, Document_type
 from .filter import Application_filter, Application_map_filter
 from .services.applications import (get_by_application_id, update_application, win_lose_calculation,
                                     application_for_map, create_application)
-from .services.current import get_current_section
+from .services.current import get_current_section, get_current_profile
 from .services.schema import get_schema_by_user
 from apps.table_fields_manager.services import get_main_table_fields_by_section_method
 from .services.status import get_all_statuses_by_section, create_status, update_status, delete_status
@@ -53,7 +53,7 @@ class Application_main(generics.ListCreateAPIView):
 
     def get_queryset(self):
         q = super().get_queryset()
-        return q.filter(author=self.request.user.id)
+        return q.filter(author=get_current_profile(self.request))
 
     @document_validation(Document_type)
     @role_required_v2()

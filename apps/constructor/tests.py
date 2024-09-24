@@ -1,10 +1,11 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework import status
-from apps.constructor.models import (Application, Settlement_type, Project_type, Status, Contest, User, Section,
+from django.contrib.auth.models import User
+from apps.constructor.models import (Application, Project_type, Status, Contest, Section,
                                      Schema, Custom_validation)
-from apps.locations.models import Municipal_district, Settlement, Locality
-from apps.locations.models import Locality_type
+from apps.locations.models import Municipal_district, Settlement, Locality, Settlement_type
+from apps.locations.models import Locality_type, District_type
 from apps.profiles.models import Profile, Roles
 from apps.comments.models import Comments
 
@@ -12,13 +13,15 @@ from apps.comments.models import Comments
 class ApplicationAPITest(APITestCase):
 
     def setUp(self):
+        self.district_type = District_type.objects.create(title="Тест 123")
         self.municipal_district = Municipal_district.objects.create(
             RegionName="Тестовый регион",
             RegionNameE="Регион",
             OKTMO="123456",
             Population=50000,
             RegOKTMO="654321",
-            RegIsNorthern=True
+            RegIsNorthern=True,
+            district_type=self.district_type
         )
         self.settlement_type = Settlement_type.objects.create(
             title="Муниципальный район",
@@ -56,7 +59,7 @@ class ApplicationAPITest(APITestCase):
             section=self.section, status='opened',
             year=2024
         )
-        self.contest.contest_types.add(self.settlement_type)
+        self.contest.district_type.add(self.district_type)
         self.contest.save()
         self.user = User.objects.create_user(username='testuser', password='testpassword')
         self.role = Roles.objects.create(title="admin", section=self.section)
@@ -94,7 +97,7 @@ class ApplicationAPITest(APITestCase):
             "project_type": self.project_type,
             "status": self.status,
             "contest": self.contest,
-            "author": self.user,
+            "author": self.profile,
             "custom_data": {"key": "value"},
             "section": self.section,
             "documents": []
@@ -111,6 +114,7 @@ try:
     current_contest = get_current_contest(request)
     current_section = get_current_section(request)
     profile_type = Profile.objects.get(user=current_user).profile_type.title
+    current_profile = Profile.objects.get(user=current_user)
 
     if profile_type == 'Муниципальный район':
         app_quota_count = 3
@@ -120,7 +124,7 @@ try:
         app_quota_count = 0
 
     app_count = Application.objects.filter(
-        contest=current_contest, section=current_section, author=current_user).count()
+        contest=current_contest, section=current_section, author=current_profile).count()
 except Exception:
     raise ValidationError('Custom validation failed')
 

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from apps.constructor.models import Application
-from apps.constructor.models import (Contest, Project_type, Status, Schema, Main_table_fields, Document_type)
+from apps.constructor.models import (Contest, Project_type, Status, Schema, Document_type)
 from apps.comments.serializers import Comments_change_status_serializer
 
 
@@ -80,9 +80,3 @@ class Schema_serializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Schema
-
-
-class Main_table_fields_serializer(serializers.ModelSerializer):
-    class Meta:
-        fields = '__all__'
-        model = Main_table_fields
