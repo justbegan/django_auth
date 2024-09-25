@@ -64,7 +64,6 @@ class ApplicationAPITest(APITestCase):
         self.user = User.objects.create_user(username='testuser', password='testpassword')
         self.role = Roles.objects.create(title="admin", section=self.section)
         self.profile = Profile.objects.create(
-            user=self.user,
             role=self.role,
             section=self.section,
             municipal_district=self.municipal_district,
@@ -72,6 +71,8 @@ class ApplicationAPITest(APITestCase):
             locality=self.locality,
             profile_type=self.settlement_type
         )
+        self.profile.user.add(self.user)
+        self.profile.save()
         self.schema = Schema.objects.create(
             title='Схема проекта',
             properties={},

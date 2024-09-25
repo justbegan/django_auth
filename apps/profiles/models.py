@@ -35,7 +35,7 @@ class Roles(models.Model):
 class Profile(models.Model):
     fio = models.CharField("ФИО", max_length=255, blank=True, null=True)
     email = models.EmailField("Email", unique=True, blank=True, null=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="Профиль")
+    user = models.ManyToManyField(User, verbose_name="Пользователи")
     role = models.ForeignKey(Roles, on_delete=models.PROTECT, verbose_name="Роль")
     section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Раздел", blank=True, null=True)
     municipal_district = models.ForeignKey(
@@ -51,7 +51,7 @@ class Profile(models.Model):
                                      null=True)
 
     def __str__(self):
-        return f"{self.user.username}"
+        return str(self.user.filter(is_active=True).last()) if self.user.exists() else "Нет пользователей"
 
     class Meta:
         verbose_name = "Профиль"

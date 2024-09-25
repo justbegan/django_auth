@@ -16,11 +16,12 @@ class Profile_serializer(serializers.ModelSerializer):
 
 
 class User_serializer(serializers.ModelSerializer):
-    profile = Profile_serializer(read_only=True)
+    profile = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
         fields = ['id', 'profile', 'username', 'password', 'is_active']
+        read_only_fields = ['profile']
 
         extra_kwargs = {
             'password': {'write_only': True}  # Делаем пароль доступным только для записи
@@ -33,6 +34,9 @@ class User_serializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
+
+    def get_profile(self, obj):
+        return Profile_serializer(Profile.objects.get(user=obj)).data
 
 
 class Role_handler_serializer(serializers.ModelSerializer):
