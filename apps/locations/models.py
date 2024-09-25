@@ -19,7 +19,8 @@ class Municipal_district(models.Model):
     Population = models.PositiveIntegerField("Население")
     RegOKTMO = models.CharField("ОКТМО региона")
     RegIsNorthern = models.BooleanField("Северный регион")
-    district_type = models.ForeignKey(District_type, on_delete=models.PROTECT, verbose_name="Тип района")
+    district_type = models.ForeignKey(District_type, on_delete=models.PROTECT, verbose_name="Тип района", null=True,
+                                      blank=True)
 
     class Meta:
         verbose_name = "Район"
