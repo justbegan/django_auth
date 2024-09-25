@@ -39,5 +39,16 @@ def update_user_data(request: Request):
 
 def create_user(request: Request):
     data = request.data
-    # profile_data = data['profile']
-    return Response(create(User_serializer, data))
+    data['is_active'] = False
+    user_id = create(User_serializer, data)['id']
+    municipal_district_id = data['municipal_district_id']
+    settlement_id = data['settlement_id']
+    locality_id = data['locality_id']
+    profile = Profile.objects.get(
+        municipal_district=municipal_district_id,
+        settlement=settlement_id,
+        locality=locality_id
+    )
+    profile.user.add(User.objects.get(id=user_id))
+    profile.save()
+    return Response(get(User, User_serializer, {"id": user_id}))
