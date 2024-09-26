@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'codemirror2',
     'jsoneditor',
     'simple_history',
+    'users.apps.UsersConfig',
     'apps.custom_logger',
     'apps.jwt_auth',
     'apps.api_getaway',
@@ -55,6 +56,8 @@ INSTALLED_APPS = [
     'apps_modules.meeting',
     'apps_modules.letter'
 ]
+
+AUTH_USER_MODEL = 'users.CustomUser'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

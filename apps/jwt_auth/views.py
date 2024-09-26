@@ -3,7 +3,7 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework.views import Response, status
 from rest_framework.request import Request
 
-from apps.profiles.models import Profile
+from users.models import CustomUser
 
 
 class CustomTokenRefresh(TokenRefreshView):
@@ -38,8 +38,9 @@ class CustomGetToken(TokenObtainPairView):
             )
             del response.data['refresh']
         try:
-            response.data['role'] = Profile.objects.get(user__username=request.data["username"]).role.id
-            response.data['role_name'] = Profile.objects.get(user__username=request.data["username"]).role.title
+            user = CustomUser.objects.get(username=request.data["username"])
+            response.data['role'] = user.profile.role.id
+            response.data['role_name'] = user.profile.role.title
         except Exception:
             pass
         return response

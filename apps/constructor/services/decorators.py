@@ -2,7 +2,7 @@ from functools import wraps
 from rest_framework.response import Response
 from rest_framework import status
 
-from apps.profiles.models import Profile, Role_handler
+from apps.profiles.models import Role_handler
 from .current import get_current_section
 import logging
 from django.contrib.contenttypes.models import ContentType
@@ -15,7 +15,7 @@ def role_required(allowed_roles):
     def decorator(func):
         @wraps(func)
         def wrapper(self, request, *args, **kwargs):
-            user_role = Profile.objects.get(user=request.user).role.title
+            user_role = request.user.profile.role.title
             if user_role not in allowed_roles:
                 return Response(
                     {"detail": "У вас нет прав для создания записи."},
@@ -30,7 +30,7 @@ def role_required_v2():
     def decorator(func):
         @wraps(func)
         def wrapper(self, request, *args, **kwargs):
-            user_role = Profile.objects.get(user=request.user).role
+            user_role = request.user.profile.role.title
             used_model_content_type = ContentType.objects.get_for_model(self.model_used)
             try:
                 method_roles = Role_handler.objects.get(

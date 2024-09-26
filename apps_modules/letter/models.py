@@ -1,12 +1,12 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 
 from apps.profiles.models import Section
 
 
 class Letter(models.Model):
     text = models.TextField("Текст")
-    author = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name="Автор")
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name="Автор")
     section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Раздел")
     created_at = models.DateTimeField('Дата создания', auto_now_add=True)
     updated_at = models.DateTimeField('Дата обновления', auto_now=True)

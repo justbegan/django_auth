@@ -1,7 +1,7 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework import status
-from django.contrib.auth.models import User
+from users.models import CustomUser
 from apps.constructor.models import (Application, Project_type, Status, Contest, Section,
                                      Schema, Custom_validation)
 from apps.locations.models import Municipal_district, Settlement, Locality, Settlement_type
@@ -61,7 +61,6 @@ class ApplicationAPITest(APITestCase):
         )
         self.contest.district_type.add(self.district_type)
         self.contest.save()
-        self.user = User.objects.create_user(username='testuser', password='testpassword')
         self.role = Roles.objects.create(title="admin", section=self.section)
         self.profile = Profile.objects.create(
             role=self.role,
@@ -71,8 +70,7 @@ class ApplicationAPITest(APITestCase):
             locality=self.locality,
             profile_type=self.settlement_type
         )
-        self.profile.user.add(self.user)
-        self.profile.save()
+        self.user = CustomUser.objects.create_user(username='testuser', password='testpassword', profile=self.profile)
         self.schema = Schema.objects.create(
             title='Схема проекта',
             properties={},
@@ -114,8 +112,8 @@ try:
     current_user = request.user
     current_contest = get_current_contest(request)
     current_section = get_current_section(request)
-    profile_type = Profile.objects.get(user=current_user).profile_type.title
-    current_profile = Profile.objects.get(user=current_user)
+    profile_type = request.user.profile.profile_type.title
+    current_profile = request.user.profile
 
     if profile_type == 'Муниципальный район':
         app_quota_count = 3

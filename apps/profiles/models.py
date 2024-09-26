@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 
 from apps.locations.models import Municipal_district, Settlement, Locality, Settlement_type
@@ -33,9 +32,6 @@ class Roles(models.Model):
 
 
 class Profile(models.Model):
-    fio = models.CharField("ФИО", max_length=255, blank=True, null=True)
-    email = models.EmailField("Email", unique=True, blank=True, null=True)
-    user = models.ManyToManyField(User, verbose_name="Пользователи")
     role = models.ForeignKey(Roles, on_delete=models.PROTECT, verbose_name="Роль")
     section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Раздел", blank=True, null=True)
     municipal_district = models.ForeignKey(
@@ -51,7 +47,7 @@ class Profile(models.Model):
                                      null=True)
 
     def __str__(self):
-        return str(self.user.filter(is_active=True).last()) if self.user.exists() else "Нет пользователей"
+        return str(self.id)
 
     class Meta:
         verbose_name = "Профиль"

@@ -11,7 +11,7 @@ logger = logging.getLogger('django')
 
 def get_current_profile(request: Request) -> Profile:
     try:
-        return Profile.objects.get(user=request.user)
+        return request.user.profile
     except Exception as e:
         logger.exception(f"Ошибка при поиске профиля пользователя {e}")
         raise Exception("Ошибка при поиске профиля пользователя")
@@ -19,7 +19,7 @@ def get_current_profile(request: Request) -> Profile:
 
 def get_current_profile_type(request: Request):
     try:
-        return Profile.objects.get(user=request.user).municipal_district.district_type
+        return request.user.profile.municipal_district.district_type
     except Exception as e:
         logger.exception(f"Ошибка при поиске поля profile_type {e}")
         Exception("Ошибка при поиске поля profile_type")
@@ -36,11 +36,7 @@ def get_current_contest(request: Request) -> int:
 
 
 def get_current_section(request: Request):
-    try:
-        return Profile.objects.get(user=request.user).section
-    except Exception as e:
-        logger.exception(f"Ошибка при поиске поля profile section {e}")
-        raise Exception("Ошибка при поиске поля profile section")
+    return request.user.profile.section
 
 
 def get_current_schema(request: Request):
@@ -54,10 +50,6 @@ def get_current_schema(request: Request):
 
 
 def get_current_new_status(request: Request) -> int:
-    try:
-        section = get_current_section(request)
-        obj = Status.objects.get(section=section, title="Создана").id
-        return obj
-    except Exception as e:
-        logger.exception(f"Не могу найти статус с именем 'Создана' {e}")
-        raise Exception("Не могу найти статус с именем 'Создана'")
+    section = get_current_section(request)
+    obj = Status.objects.get(section=section, title="Создана").id
+    return obj

@@ -41,6 +41,7 @@ urlpatterns = [
     path('meeting/', include('apps_modules.meeting.urls')),
     path('letter/', include('apps_modules.letter.urls')),
     path('module_manager/', include('apps.module_manager.urls')),
+    path('users/', include('users.urls')),
 ]
 
 if settings.DEBUG:
