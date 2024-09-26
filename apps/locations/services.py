@@ -18,7 +18,7 @@ def update_municipal_district(request: Request, id: int):
     return Response(update(Municipal_district, Municipal_district_serializer, request.data, {"id": id}))
 
 
-@redis_wrapper("all_settlement")
+@redis_wrapper("all_settlements")
 def get_all_settlements_method(request: Request):
     return get_many(Settlement, Settlement_serializer)
 
