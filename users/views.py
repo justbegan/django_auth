@@ -1,32 +1,44 @@
-from rest_framework.views import Request, APIView
 from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
+from rest_framework import generics
+from rest_framework.pagination import PageNumberPagination
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.views import APIView, Request, Response
+from rest_framework.permissions import IsAuthenticated
 
-from .services import get_user, get_user_id, update_user, create_user, get_all_users, get_new_users
-from .serializers import User_serializer_ff, User_serializer
+from .services import get_user, get_user_id, update_user, create_user
+from .serializers import User_serializer
+from users.models import CustomUser
+from .filters import Custom_user_filter
 
 
-class Users_main(APIView):
-    @swagger_auto_schema(
-        manual_parameters=[
-            openapi.Parameter(
-                'get_all',
-                in_=openapi.IN_QUERY,
-                type=openapi.TYPE_BOOLEAN,
-                description='Filter by active status',
-                required=False
-            )
-        ]
-    )
-    def get(self, request: Request):
-        get_all = request.query_params.get('get_all', 'true')
-        if get_all == 'true':
-            return get_all_users(request)
-        else:
-            return get_new_users(request)
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 15
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
 
-    @swagger_auto_schema(request_body=User_serializer_ff)
-    def post(self, request: Request):
+    def get_paginated_response(self, data):
+        return Response({
+            'total_results': self.page.paginator.count,
+            'total_pages': self.page.paginator.num_pages,
+            'current_page': self.page.number,
+            'next': self.get_next_link(),
+            'previous': self.get_previous_link(),
+            'results': data,
+        })
+
+
+class Users_main(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = User_serializer
+    queryset = CustomUser.objects.all().order_by('-id')
+    pagination_class = StandardResultsSetPagination
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = Custom_user_filter
+
+    def get_queryset(self):
+        return super().get_queryset()
+
+    def post(self, request, *args, **kwargs):
         return create_user(request)
 
 

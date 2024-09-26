@@ -1,14 +1,11 @@
 from rest_framework.views import Request, Response
 from rest_framework.exceptions import NotFound
 from deepdiff import DeepDiff
-from copy import deepcopy
 import logging
 from django.core.exceptions import ObjectDoesNotExist
 import ast
 import re
 
-from .serializers import History_serializer
-from services.crud import create
 from apps.constructor.models import Application, Schema
 
 
@@ -135,20 +132,3 @@ def get_histories_by_user(request: Request, only_status: int):
                 if change_data:
                     changes.append(change_data)
     return Response(changes)
-
-
-def create_history(request: Request, new: dict, created: bool = False):
-    try:
-        old = deepcopy(request.data)
-        data = {
-            "application": new["id"],
-            "author": request.user.id
-        }
-        if created:
-            data["diff"] = {"created": True}
-        else:
-            data["diff"] = DeepDiff(old, new)
-    except Exception as e:
-        logger.exception(f"Ошибка при создании истории в заявке № {new.id} {e}")
-
-    return Response(create(History_serializer, data))
