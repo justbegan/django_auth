@@ -1,7 +1,20 @@
 from django.contrib import admin
 from .models import (Roles, Profile, Section, Role_handler)
+from users.models import CustomUser
+
 
 admin.site.register(Roles)
-admin.site.register(Profile)
 admin.site.register(Section)
 admin.site.register(Role_handler)
+
+
+@admin.register(Profile)
+class Profile_admin(admin.ModelAdmin):
+    list_display = ['id', 'get_username', 'profile_type', 'municipal_district', 'settlement', 'locality']
+
+    def get_username(self, obj):
+        try:
+            return CustomUser.objects.filter(profile=obj, is_active=True).last().username
+        except Exception:
+            return "-"
+    get_username.short_description = 'Учетная запись'  # Заголовок колонки

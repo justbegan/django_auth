@@ -1,6 +1,6 @@
 from rest_framework.views import Request
 from copy import deepcopy
-from jsonschema import validate, ValidationError
+from jsonschema import validate, ValidationError, draft7_format_checker
 
 from ..services.current import get_current_schema
 from .current import get_current_new_status
@@ -36,7 +36,7 @@ def validate_custom_data(request: Request):
     }
 
     try:
-        validate(instance=obj, schema=schema)
+        validate(instance=obj, schema=schema, format_checker=draft7_format_checker)
     except ValidationError as e:
         raise CustomDataValidationError({"custom_data": str(e)})
 

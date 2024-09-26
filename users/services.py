@@ -40,3 +40,9 @@ def create_user(request: Request):
 def get_all_users(request: Request):
     users = get_many(CustomUser, User_serializer, {"profile__section": get_current_section(request)})
     return Response(users)
+
+
+def get_new_users(request: Request):
+    users = get_many(CustomUser, User_serializer,
+                     {"profile__section": get_current_section(request), "is_active": False})
+    return Response(users)
