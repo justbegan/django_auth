@@ -11,6 +11,7 @@ from .filter import Profiles_manager_app_filter
 from .services import create_profile_manager_app, update_profile_manager_and_change_profile
 from apps.constructor.services.current import get_current_section
 
+
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 15
     page_size_query_param = 'page_size'

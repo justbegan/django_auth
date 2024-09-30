@@ -1,15 +1,13 @@
 from rest_framework import serializers
 from users.models import CustomUser
 
-from apps.profiles.serializers import Profile_serializer
-
 
 class User_serializer(serializers.ModelSerializer):
-    profile = Profile_serializer()
+    profiles = serializers.ListField(read_only=True)
 
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'password', 'is_active', 'profile', 'email',
+        fields = ['id', 'username', 'password', 'is_active', 'profiles', 'email',
                   'first_name', 'middle_name', 'last_name']
         extra_kwargs = {
             'password': {'write_only': True}
