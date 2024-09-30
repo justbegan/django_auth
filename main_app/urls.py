@@ -26,6 +26,7 @@ urlpatterns = [
     path('', include('apps.jwt_auth.urls')),
     path('api/v1/', include('apps.api_getaway.urls')),
     path('profile/', include('apps.profiles.urls')),
+    path('profile_manager/', include('apps.profiles_manager.urls')),
     path('locations/', include('apps.locations.urls')),
     path('constructor/', include('apps.constructor.urls')),
     path('filehandler/', include('apps.filehandler.urls')),

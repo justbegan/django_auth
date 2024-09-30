@@ -11,7 +11,8 @@ logger = logging.getLogger('django')
 
 def get_current_profile(request: Request) -> Profile:
     try:
-        return request.user.profile
+        obj = Profile.objects.get(user=request.user)
+        return obj
     except Exception as e:
         logger.exception(f"Ошибка при поиске профиля пользователя {e}")
         raise Exception("Ошибка при поиске профиля пользователя")
@@ -19,7 +20,8 @@ def get_current_profile(request: Request) -> Profile:
 
 def get_current_profile_type(request: Request):
     try:
-        return request.user.profile.municipal_district.district_type
+        obj = Profile.objects.get(user=request.user).municipal_district.district_type
+        return obj
     except Exception as e:
         logger.exception(f"Ошибка при поиске поля profile_type {e}")
         Exception("Ошибка при поиске поля profile_type")
@@ -36,7 +38,8 @@ def get_current_contest(request: Request) -> int:
 
 
 def get_current_section(request: Request):
-    return request.user.profile.section
+    obj = Profile.objects.get(user=request.user).section
+    return obj
 
 
 def get_current_schema(request: Request):

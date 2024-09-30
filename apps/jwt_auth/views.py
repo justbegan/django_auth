@@ -4,6 +4,7 @@ from rest_framework.views import Response, status
 from rest_framework.request import Request
 
 from users.models import CustomUser
+from apps.profiles.models import Profile
 
 
 class CustomTokenRefresh(TokenRefreshView):
@@ -39,8 +40,9 @@ class CustomGetToken(TokenObtainPairView):
             del response.data['refresh']
         try:
             user = CustomUser.objects.get(username=request.data["username"])
-            response.data['role'] = user.profile.role.id
-            response.data['role_name'] = user.profile.role.title
+            profile = Profile.objects.get(user=user)
+            response.data['role'] = profile.role.id
+            response.data['role_name'] = profile.role.title
         except Exception:
             pass
         return response

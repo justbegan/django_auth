@@ -218,20 +218,12 @@ class Main_table_fields(models.Model):
         verbose_name_plural = "Отображаемые значения в главной таблице"
 
 
-code_template = """#python!
-# imported models Application, Profile
-current_user = request.user
-current_contest = get_current_contest(request)
-profile_type = request.user.profile.profile_type
-"""
-
-
 class Custom_validation(models.Model):
     code_template = """#python!
 # imported models Application, Profile
 current_user = request.user
 current_contest = get_current_contest(request)
-profile_type = request.user.profile.profile_type
+profile_type = Profile.objects.get(user__id=current_user.id).profile_type
 """
 
     title = models.CharField("Наименование", max_length=120)

@@ -45,6 +45,7 @@ class Profile(models.Model):
     )
     profile_type = models.ForeignKey(Settlement_type, on_delete=models.PROTECT, verbose_name="Тип профиля", blank=True,
                                      null=True)
+    user = models.ForeignKey('users.CustomUser', on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return str(self.id)

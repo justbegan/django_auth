@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.db import models
 from jsoneditor.forms import JSONEditor
 from codemirror2.widgets import CodeMirrorEditor
+from simple_history.admin import SimpleHistoryAdmin
 
 from .models import (Contest, Status, Application, Project_type, Schema, Document_type, Custom_validation)
 
@@ -19,9 +20,9 @@ admin.site.register(Contest)
 admin.site.register(Status)
 
 
-@admin.register(Application)
-class Aplication_admin(BaseAdmin):
-    pass
+# @admin.register(Application)
+# class Aplication_admin(BaseAdmin):
+#     pass
 
 
 admin.site.register(Project_type)
@@ -43,3 +44,8 @@ class FormulaAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Custom_validation, FormulaAdmin)
+
+
+@admin.register(Application)
+class ApplicationAdmin(SimpleHistoryAdmin, BaseAdmin):
+    history_list_display = ['history_date', 'history_user']

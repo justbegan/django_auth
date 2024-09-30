@@ -5,11 +5,11 @@ from apps.profiles.serializers import Profile_serializer
 
 
 class User_serializer(serializers.ModelSerializer):
-    profile_obj = Profile_serializer(source='profile', read_only=True)
+    profile = Profile_serializer()
 
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'password', 'is_active', 'profile_obj', 'profile', 'email',
+        fields = ['id', 'username', 'password', 'is_active', 'profile', 'email',
                   'first_name', 'middle_name', 'last_name']
         extra_kwargs = {
             'password': {'write_only': True}
