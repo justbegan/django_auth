@@ -1,10 +1,13 @@
 from rest_framework.views import Response, Request
 from copy import deepcopy
+from django.db import transaction
 
 from services.crud import create, update
 from apps.constructor.services.current import get_current_section
 from .serializers import Profiles_manager_app_serializer
 from .models import Profiles_manager_app
+from apps.profiles.models import Profile
+from users.models import CustomUser
 
 
 def create_profile_manager_app(request: Request):
@@ -19,4 +22,19 @@ def update_profile_manager_app(request: Request, id: int):
     instance = Profiles_manager_app.objects.get(id=id)
     data['section'] = instance.section.id
     data['author'] = instance.author.id
-    return Response(update(Profiles_manager_app, Profiles_manager_app_serializer, data, {"id": id}))
+    return update(Profiles_manager_app, Profiles_manager_app_serializer, data, {"id": id})
+
+
+def change_profile(profile_id, user_id):
+    profile = Profile.objects.get(id=profile_id)
+    user = CustomUser.objects.get(id=user_id)
+    profile.user = user
+    profile.save()
+
+
+@transaction.atomic
+def update_profile_manager_and_change_profile(request: Request, id: int):
+    profile_manger = update_profile_manager_app(request, id)
+    if profile_manger['status'] == '2':
+        change_profile(profile_manger['profile'], profile_manger['author'])
+    return Response(profile_manger)

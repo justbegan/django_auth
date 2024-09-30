@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import Profiles_manager_app_serializer, Profiles_manager_app_serializer_ff
 from .models import Profiles_manager_app
 from .filter import Profiles_manager_app_filter
-from .services import create_profile_manager_app, update_profile_manager_app
+from .services import create_profile_manager_app, update_profile_manager_and_change_profile
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -46,4 +46,4 @@ class Profiles_manager_app_main(generics.ListCreateAPIView):
 class Profiles_manager_app_detail(APIView):
     @swagger_auto_schema(request_body=Profiles_manager_app_serializer_ff)
     def put(self, request: Request, id: int):
-        return update_profile_manager_app(request, id)
+        return update_profile_manager_and_change_profile(request, id)
