@@ -9,7 +9,7 @@ from .serializers import Profiles_manager_app_serializer, Profiles_manager_app_s
 from .models import Profiles_manager_app
 from .filter import Profiles_manager_app_filter
 from .services import create_profile_manager_app, update_profile_manager_and_change_profile
-
+from apps.constructor.services.current import get_current_section
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 15
@@ -36,7 +36,8 @@ class Profiles_manager_app_main(generics.ListCreateAPIView):
     filterset_class = Profiles_manager_app_filter
 
     def get_queryset(self):
-        return super().get_queryset()
+        q = super().get_queryset()
+        return q.filter(section=get_current_section(self.request))
 
     @swagger_auto_schema(request_body=Profiles_manager_app_serializer_ff)
     def post(self, request, *args, **kwargs):
