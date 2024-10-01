@@ -11,5 +11,6 @@ class Profiles_manager_app_serializer(serializers.ModelSerializer):
 
 class Profiles_manager_app_serializer_ff(serializers.Serializer):
     text = serializers.CharField(required=False)
-    profile = serializers.CharField()
+    profile = serializers.IntegerField()
     status = serializers.IntegerField(required=False)
+    section = serializers.IntegerField()

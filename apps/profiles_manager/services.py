@@ -3,7 +3,6 @@ from copy import deepcopy
 from django.db import transaction
 
 from services.crud import create, update
-from apps.constructor.services.current import get_current_section
 from .serializers import Profiles_manager_app_serializer
 from .models import Profiles_manager_app
 from apps.profiles.models import Profile
@@ -12,7 +11,6 @@ from users.models import CustomUser
 
 def create_profile_manager_app(request: Request):
     data = deepcopy(request.data)
-    data['section'] = get_current_section(request).id
     data['author'] = request.user.id
     return Response(create(Profiles_manager_app_serializer, data))
 

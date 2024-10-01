@@ -33,6 +33,7 @@ class Contest(models.Model):
     district_type = models.ManyToManyField(District_type, verbose_name="Для кого", help_text="Для кого этот конкурс")
     section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция")
     year = models.PositiveIntegerField("Год проведения")
+    history = HistoricalRecords("История")
 
     def __str__(self):
         return self.title
