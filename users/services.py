@@ -1,11 +1,15 @@
 from rest_framework.request import Request
 from rest_framework.views import Response
+from django.core.mail import send_mail
+import random
+from django.conf import settings
 
 from users.models import CustomUser
 from .serializers import User_serializer
 from services.crud import update, get, create, get_many
 from apps.constructor.services.current import get_current_section
 from apps.profiles.models import Profile
+from .models import VerificationCode
 
 
 def get_user(request):
@@ -46,3 +50,20 @@ def get_new_users(request: Request):
     users = get_many(CustomUser, User_serializer,
                      {"profile__section": get_current_section(request), "is_active": False})
     return Response(users)
+
+
+def repeat_email(request: Request):
+    email = request.data['email']
+    user = CustomUser.objects.get(email=email)
+    VerificationCode.objects.filter(user=user).delete()
+    code = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+    VerificationCode.objects.create(user=user, code=code)
+
+    send_mail(
+        'Подтверждение регистрации',
+        f'Ваш код подтверждения: {code}',
+        settings.DEFAULT_FROM_EMAIL,
+        [email],
+        fail_silently=False,
+    )
+    return Response({"success": True})

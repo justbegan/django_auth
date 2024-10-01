@@ -4,9 +4,11 @@ from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.views import APIView, Request, Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+from .serializers import VerifyCodeSerializer
 
-from .services import get_user, get_user_id, update_user, create_user
-from .serializers import User_serializer
+from .services import get_user, get_user_id, update_user, create_user, repeat_email
+from .serializers import User_serializer, Repeat_email_ff
 from users.models import CustomUser
 from .filters import Custom_user_filter
 
@@ -54,3 +56,20 @@ class Users_detail(APIView):
 class Current_user(APIView):
     def get(self, request: Request):
         return get_user(request)
+
+
+class Verify_code(generics.GenericAPIView):
+    serializer_class = VerifyCodeSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Учетная запись успешно активирована!"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class Repeat_email(APIView):
+    @swagger_auto_schema(request_body=Repeat_email_ff)
+    def post(self, request):
+        return repeat_email(request)
