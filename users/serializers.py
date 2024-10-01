@@ -29,6 +29,7 @@ class User_serializer_ff(serializers.Serializer):
     municipal_district_id = serializers.IntegerField(required=True)
     settlement_id = serializers.IntegerField()
     locality_id = serializers.IntegerField()
+    email = serializers.EmailField(required=True)
 
     def create(self, validated_data):
         return validated_data
@@ -59,6 +60,13 @@ class VerifyCodeSerializer(serializers.Serializer):
 
 
 class Repeat_email_ff(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def create(self, validated_data):
+        return validated_data
+
+
+class Recover_password_ff(serializers.Serializer):
     email = serializers.EmailField()
 
     def create(self, validated_data):

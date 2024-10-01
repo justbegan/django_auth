@@ -7,8 +7,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from .serializers import VerifyCodeSerializer
 
-from .services import get_user, get_user_id, update_user, create_user, repeat_email
-from .serializers import User_serializer, Repeat_email_ff
+from .services import get_user, get_user_id, update_user, create_user, repeat_email, recover_password
+from .serializers import User_serializer, Repeat_email_ff, Recover_password_ff
 from users.models import CustomUser
 from .filters import Custom_user_filter
 
@@ -73,3 +73,9 @@ class Repeat_email(APIView):
     @swagger_auto_schema(request_body=Repeat_email_ff)
     def post(self, request):
         return repeat_email(request)
+
+
+class Recover_password(APIView):
+    @swagger_auto_schema(request_body=Recover_password_ff)
+    def post(self, request: Request):
+        return recover_password(request)

@@ -1,8 +1,9 @@
 from rest_framework.request import Request
-from rest_framework.views import Response
+from rest_framework.views import Response, status
 from django.core.mail import send_mail
 import random
 from django.conf import settings
+import string
 
 from users.models import CustomUser
 from .serializers import User_serializer
@@ -54,7 +55,13 @@ def get_new_users(request: Request):
 
 def repeat_email(request: Request):
     email = request.data['email']
-    user = CustomUser.objects.get(email=email)
+    try:
+        user = CustomUser.objects.get(email=email)
+    except Exception:
+        return Response(
+            {"success": False, "text": "Пользователь с таким e-mail не найден"},
+            status=status.HTTP_404_NOT_FOUND
+        )
     VerificationCode.objects.filter(user=user).delete()
     code = ''.join([str(random.randint(0, 9)) for _ in range(6)])
     VerificationCode.objects.create(user=user, code=code)
@@ -66,4 +73,34 @@ def repeat_email(request: Request):
         [email],
         fail_silently=False,
     )
-    return Response({"success": True})
+    return Response({"success": True, "text": "Код повторно отправлен"})
+
+
+def generate_password():
+    password_length = 9
+    password = ''.join(random.choices(
+        string.ascii_letters + string.digits + string.punctuation, k=password_length)
+    )
+    return password
+
+
+def recover_password(request: Request):
+    email = request.data['email']
+    try:
+        user = CustomUser.objects.get(email=email)
+    except Exception:
+        return Response(
+            {"success": False, "text": "Пользователь с таким e-mail не найден"},
+            status=status.HTTP_404_NOT_FOUND
+        )
+    new_pass = generate_password()
+    user.set_password(new_pass)
+    user.save()
+    send_mail(
+        'Востановления доступа',
+        f'Ваш новый пароль: {new_pass}',
+        settings.DEFAULT_FROM_EMAIL,
+        [email],
+        fail_silently=False,
+    )
+    return Response({"success": True, "text": "Пароль сброшен. Новый пароль сгенерирован, проверьте свой e-mail."})
