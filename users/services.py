@@ -9,7 +9,6 @@ from users.models import CustomUser
 from .serializers import User_serializer
 from services.crud import update, get, create, get_many
 from apps.constructor.services.current import get_current_section
-from apps.profiles.models import Profile
 from .models import VerificationCode
 
 
@@ -30,16 +29,7 @@ def update_user(request: Request, user_id: int):
 def create_user(request: Request):
     data = request.data
     data['is_active'] = False
-    municipal_district_id = data['municipal_district_id']
-    settlement_id = data['settlement_id']
-    locality_id = data['locality_id']
-    profile = Profile.objects.get(
-        municipal_district=municipal_district_id,
-        settlement=settlement_id,
-        locality=locality_id
-    )
-    data['profile'] = profile.id
-    return Response(create(User_serializer, data)['id'])
+    return Response(create(User_serializer, data))
 
 
 def get_all_users(request: Request):

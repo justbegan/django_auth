@@ -3,12 +3,11 @@ from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.views import APIView, Request, Response
-from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from .serializers import VerifyCodeSerializer
 
 from .services import get_user, get_user_id, update_user, create_user, repeat_email, recover_password
-from .serializers import User_serializer, Repeat_email_ff, Recover_password_ff
+from .serializers import User_serializer, Repeat_email_ff, Recover_password_ff, User_serializer_ff
 from users.models import CustomUser
 from .filters import Custom_user_filter
 
@@ -30,7 +29,6 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 
 class Users_main(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
     serializer_class = User_serializer
     queryset = CustomUser.objects.all().order_by('-id')
     pagination_class = StandardResultsSetPagination
@@ -40,6 +38,7 @@ class Users_main(generics.ListCreateAPIView):
     def get_queryset(self):
         return super().get_queryset()
 
+    @swagger_auto_schema(request_body=User_serializer_ff)
     def post(self, request, *args, **kwargs):
         return create_user(request)
 

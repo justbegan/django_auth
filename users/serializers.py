@@ -26,9 +26,9 @@ class User_serializer(serializers.ModelSerializer):
 class User_serializer_ff(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
-    municipal_district_id = serializers.IntegerField(required=True)
-    settlement_id = serializers.IntegerField()
-    locality_id = serializers.IntegerField()
+    first_name = serializers.CharField()
+    middle_name = serializers.CharField(required=False)
+    last_name = serializers.CharField()
     email = serializers.EmailField(required=True)
 
     def create(self, validated_data):
