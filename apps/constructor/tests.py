@@ -62,7 +62,8 @@ class ApplicationAPITest(APITestCase):
         self.contest.district_type.add(self.district_type)
         self.contest.save()
         self.role = Roles.objects.create(title="admin", section=self.section)
-        self.user = CustomUser.objects.create_user(username='testuser', password='testpassword')
+        self.user = CustomUser.objects.create_user(username='testuser', password='testpassword',
+                                                   current_section=self.section)
         self.profile = Profile.objects.create(
             role=self.role,
             section=self.section,
