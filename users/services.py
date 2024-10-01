@@ -85,6 +85,7 @@ def recover_password(request: Request):
         )
     new_pass = generate_password()
     user.set_password(new_pass)
+    user.is_active = True
     user.save()
     send_mail(
         'Востановления доступа',

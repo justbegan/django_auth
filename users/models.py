@@ -7,6 +7,7 @@ from apps.profiles.serializers import Profile_serializer
 
 
 class CustomUser(AbstractUser):
+    email = models.EmailField("эл. почта", unique=True)
     middle_name = models.CharField(max_length=50, blank=True, null=True)
     current_section = models.ForeignKey('profiles.Section', on_delete=models.CASCADE, blank=True, null=True,
                                         verbose_name="Текущая секция")

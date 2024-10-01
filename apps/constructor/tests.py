@@ -63,7 +63,7 @@ class ApplicationAPITest(APITestCase):
         self.contest.save()
         self.role = Roles.objects.create(title="admin", section=self.section)
         self.user = CustomUser.objects.create_user(username='testuser', password='testpassword',
-                                                   current_section=self.section)
+                                                   current_section=self.section, email="gogolev.vd@rcitsakha.ru")
         self.profile = Profile.objects.create(
             role=self.role,
             section=self.section,
