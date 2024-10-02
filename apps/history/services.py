@@ -7,6 +7,7 @@ import ast
 import re
 
 from apps.constructor.models import Application, Schema
+from apps.profiles.models import Profile
 
 
 logger = logging.getLogger('django')
@@ -39,24 +40,26 @@ def custom_data_handler(data: dict):
         values_changed
     """
     result = {}
-    obj = ast.literal_eval(str(data))
-    for key, value in obj.items():
-        if key == "dictionary_item_added" or key == "dictionary_item_removed":
-            dictionary_item_added_list = []
-            for i in value:
-                match = re.search(r"root\['(.+?)'\]", i)
-                word = match.group(1)
-                dictionary_item_added_list.append(get_custom_field_description(word))
-            result[key] = dictionary_item_added_list
+    try:
+        obj = ast.literal_eval(str(data))
+        for key, value in obj.items():
+            if key == "dictionary_item_added" or key == "dictionary_item_removed":
+                dictionary_item_added_list = []
+                for i in value:
+                    match = re.search(r"root\['(.+?)'\]", i)
+                    word = match.group(1)
+                    dictionary_item_added_list.append(get_custom_field_description(word))
+                result[key] = dictionary_item_added_list
 
-        elif key == "values_changed":
-            values_changed_dict = {}
-            for k, v in value.items():
-                k2 = re.search(r"root\['(.+?)'\]", k)
-                word = k2.group(1)
-                values_changed_dict[get_custom_field_description(word)] = v
-            result[key] = values_changed_dict
-
+            elif key == "values_changed":
+                values_changed_dict = {}
+                for k, v in value.items():
+                    k2 = re.search(r"root\['(.+?)'\]", k)
+                    word = k2.group(1)
+                    values_changed_dict[get_custom_field_description(word)] = v
+                result[key] = values_changed_dict
+    except Exception:
+        return result
     return result
 
 
@@ -118,17 +121,18 @@ def get_histories_by_user_id(request: Request, id: int, only_status: int):
 
 
 def get_histories_by_user(request: Request, only_status: int):
-    apps = Application.objects.filter(author=request.user.id)
+    profile = Profile.objects.filter(user=request.user)
     changes = []
-    for app in apps:
-        history = app.history.all()
-        if len(history) < 2:
-            continue
-        for new_record, old_record in zip(history, history[1:]):
-            delta = new_record.diff_against(old_record)
-
-            for change in delta.changes:
-                change_data = process_change(new_record, change, only_status)
-                if change_data:
-                    changes.append(change_data)
+    for p in profile:
+        apps = Application.objects.filter(author=p)
+        for app in apps:
+            history = app.history.all()
+            if len(history) < 2:
+                continue
+            for new_record, old_record in zip(history, history[1:]):
+                delta = new_record.diff_against(old_record)
+                for change in delta.changes:
+                    change_data = process_change(new_record, change, only_status)
+                    if change_data:
+                        changes.append(change_data)
     return Response(changes)
