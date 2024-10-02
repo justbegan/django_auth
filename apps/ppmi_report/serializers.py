@@ -95,10 +95,10 @@ class Application_rating_serializer(serializers.ModelSerializer):
             data['get_financing_republic_grant'])
         return data
 
-    def format_percent(self, value):
+    def format_number(self, value):
         try:
-            percent_value = float(value)
-            return f"{percent_value:.2f}%"
+            number = float(value)
+            return f"{number:,.2f}".replace(",", " ")
         except (ValueError, TypeError):
             return value
 
