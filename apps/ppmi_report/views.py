@@ -7,7 +7,7 @@ from drf_yasg import openapi
 
 from apps.constructor.models import Application
 from .serializers import (Application_registry_serializer, Results_of_applications_acceptance_serializer,
-                          Application_rating_serializer)
+                          Application_rating_serializer, Application_stat_by_district_serializer)
 from apps.constructor.services.current import get_current_section
 from .filter import Application_rating_filter
 from apps.locations.models import Municipal_district, Settlement
@@ -128,6 +128,7 @@ class Application_stat_by_district(APIView):
         }
         settlement_obj = Settlement.objects
         application_obj = Application.objects.filter(**filter)
+        d = []
         for municipal_district in Municipal_district.objects.all():
             app_by_md = application_obj.filter(municipal_district=municipal_district)
             settlement_count = settlement_obj.filter(RegID=municipal_district).count()
@@ -161,7 +162,9 @@ class Application_stat_by_district(APIView):
                 "application_financing_republic_grant": application_financing_republic_grant,
                 "application_finded_sum_percent": application_finded_sum_percent,
             }
-            result['data'].append(obj)
+            d.append(obj)
+        ser = Application_stat_by_district_serializer(d, many=True).data
+        result['data'] = ser
         return Response(result)
 
     def get_percentage(self, val1, val2):
