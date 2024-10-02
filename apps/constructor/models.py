@@ -2,6 +2,7 @@ from django.db import models
 import logging
 from simple_history.models import HistoricalRecords
 from django.contrib.contenttypes.models import ContentType
+from decimal import Decimal
 
 from apps.profiles.models import Section, Profile
 from apps.calculation.models import Formula
@@ -135,25 +136,25 @@ class Application(Base_application):
         """
             Бюджет поселения (муниципального района)
         """
-        return self.custom_data.get("financing_settlement_budget", 0.0)
+        return Decimal(str(self.custom_data.get("financing_settlement_budget", 0.0)))
 
     def get_financing_people(self) -> float:
         """
             Население (поступления от жителей)
         """
-        return self.custom_data.get("financing_people", 0.0)
+        return Decimal(str(self.custom_data.get("financing_people", 0.0)))
 
     def get_financing_sponsors(self) -> float:
         """
             Спонсоры (денежные поступления от юр.лиц, инд.предпринимателей и т.д.)
         """
-        return self.custom_data.get("financing_sponsors", 0.0)
+        return Decimal(str(self.custom_data.get("financing_sponsors", 0.0)))
 
     def get_financing_republic_grant(self) -> float:
         """
             Субсидия из бюджета Республики Саха (Якутия)
         """
-        return self.custom_data.get("financing_republic_grant", 0.0)
+        return Decimal(str(self.custom_data.get("financing_republic_grant", 0.0)))
 
     def total_price(self):
         return sum(
