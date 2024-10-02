@@ -89,6 +89,19 @@ class Application_rating_serializer(serializers.ModelSerializer):
             'created_at'
         ]
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['get_financing_republic_grant'] = self.format_number(
+            data['get_financing_republic_grant'])
+        return data
+
+    def format_percent(self, value):
+        try:
+            percent_value = float(value)
+            return f"{percent_value:.2f}%"
+        except (ValueError, TypeError):
+            return value
+
 
 class Application_stat_by_district_serializer(serializers.Serializer):
     municipal_district = serializers.CharField()
