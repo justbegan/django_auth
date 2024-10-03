@@ -134,6 +134,15 @@ if app_count >= app_quota_count:
             """,
             "section": self.section
         }
+        self.user = {
+            "username": "testuser_99",
+            "password": "testpassword",
+            "first_name": "string1",
+            "middle_name": "string2",
+            "last_name": "string3",
+            "email": "test214124@gmail.com",
+            "is_active": True
+        }
 
         # Аутентификация пользователя
         self.client.login(username='testuser', password='testpassword')
@@ -182,9 +191,35 @@ if app_count >= app_quota_count:
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertGreater(response.data["total_results"], 0)
 
-    # def test_get_application_detail(self):
-    #     application = Application.objects.create(**self.application_data)
-    #     url = reverse('application-detail', args=[application.id])
-    #     response = self.client.get(url, format='json')
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(response.data['title'], 'Test Project')
+    def test_profile_create(self):
+        url = reverse('users_main')
+        response = self.client.post(url, self.user, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_profiles(self):
+        user = CustomUser.objects.create(**self.user)
+        Profile.objects.create(
+            role=self.role,
+            section=self.section,
+            municipal_district=self.municipal_district,
+            settlement=self.settlement,
+            locality=self.locality,
+            profile_type=self.settlement_type,
+            user=user
+        )
+        Profile.objects.create(
+            role=self.role,
+            section=self.section,
+            municipal_district=self.municipal_district,
+            settlement=self.settlement,
+            locality=self.locality,
+            profile_type=self.settlement_type,
+            user=user
+        )
+        url = reverse('current_user')
+        self.client.login(username='testuser', password='testpassword')
+        token = self.get_jwt_token()
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["profiles"][0]["role_name"], 'admin')
