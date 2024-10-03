@@ -120,17 +120,19 @@ class Application(Base_application):
 
     def point_calculation(self) -> dict:
         result = {}
-        try:
-            formulas = Formula.objects.filter(section=self.section)
-            for f in formulas:
-                try:
-                    exec(f.code)
-                except Exception:
-                    logger.warning("Ошибка при выполнение кода формулы")
-        except Exception:
-            logger.warning("Ошибка при итерации формулы")
+        if self.contest.title != "new":
+            try:
+                formulas = Formula.objects.filter(section=self.section)
+                for f in formulas:
+                    try:
+                        exec(f.code)
+                    except Exception:
+                        logger.warning("Ошибка при выполнение кода формулы")
+            except Exception:
+                logger.warning("Ошибка при итерации формулы")
+                return result
+        else:
             return result
-        return result
 
     def get_financing_settlement_budget(self) -> float:
         """

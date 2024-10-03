@@ -58,3 +58,9 @@ def get_current_new_status(request: Request) -> int:
     section = get_current_section(request)
     obj = Status.objects.get(section=section, title="Создана").id
     return obj
+
+
+def get_current_win_status(request: Request) -> int:
+    section = get_current_section(request)
+    obj = Status.objects.get(section=section, title="Победила").id
+    return obj

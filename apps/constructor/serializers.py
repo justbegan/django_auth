@@ -80,3 +80,7 @@ class Schema_serializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Schema
+
+
+class Application_change_status_serializer(serializers.Serializer):
+    id_list = serializers.ListField(child=serializers.IntegerField())

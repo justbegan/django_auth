@@ -7,11 +7,11 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
 from .serializers import (Applications_serializer, Application_serializer_ff, Document_type_serializer,
-                          Status_serializer, Project_type_serializer_ff)
+                          Status_serializer, Project_type_serializer_ff, Application_change_status_serializer)
 from .models import Application, Contest, Status, Project_type, Document_type
 from .filter import Application_filter, Application_map_filter
 from .services.applications import (get_by_application_id, update_application, win_lose_calculation,
-                                    application_for_map, create_application)
+                                    application_for_map, create_application, change_applictions_statuses_to_win)
 from .services.current import get_current_section, get_current_profile
 from .services.schema import get_schema_by_user
 from apps.table_fields_manager.services import get_main_table_fields_by_section_method
@@ -196,3 +196,11 @@ class Application_for_map(APIView):
             return application_for_map(queryset, request)
         else:
             return Response(filterset.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class Application_change_status_to_win(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(request_body=Application_change_status_serializer)
+    def post(self, request):
+        return change_applictions_statuses_to_win(request)

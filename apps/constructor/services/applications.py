@@ -5,7 +5,7 @@ from django.db import transaction
 from django.db.models import Model
 from rest_framework.serializers import Serializer
 
-from apps.constructor.models import Contest
+from apps.constructor.models import Contest, Application
 from ..serializers import Application_for_map_serializer
 from services.crud import update, get
 from .custom_data import validate_custom_data
@@ -13,6 +13,7 @@ from .current import get_current_section, get_current_contest, get_current_profi
 from .custom_validation import custom_validation
 from apps.comments.services import create_comment_and_change_status
 from services.crud import create
+from .current import get_current_win_status
 
 
 def create_application(request: Request, serializer: Serializer) -> Response:
@@ -78,3 +79,9 @@ def win_lose_calculation(request: Request, data: list) -> list:
 
 def application_for_map(queryset: list, request: Request) -> list:
     return Response(Application_for_map_serializer(queryset, many=True).data)
+
+
+def change_applictions_statuses_to_win(request: Request):
+    ids = request.data['id_list']
+    Application.objects.filter(id__in=ids).update(status=get_current_win_status(request))
+    return Response({"message": "Statuses updated successfully"})

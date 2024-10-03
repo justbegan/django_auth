@@ -6,6 +6,7 @@ urlpatterns = [
     path('api/v1/applications', views.Application_main.as_view(), name='application_main'),
     path('api/v1/applications_detail/<int:id>', views.Application_detail.as_view(), name='application_detail'),
     path('api/v1/applications_for_map', views.Application_for_map.as_view(), name='application_for_map_main'),
+    path('api/v1/applications_change_statuses', views.Application_change_status_to_win.as_view()),
     path('api/v1/schema', views.Schema_main.as_view()),
     path('api/v1/status', views.Status_main.as_view()),
     path('api/v1/status_detail/<int:id>', views.Status_detail.as_view()),
