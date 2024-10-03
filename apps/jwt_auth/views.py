@@ -40,7 +40,7 @@ class CustomGetToken(TokenObtainPairView):
             del response.data['refresh']
         try:
             user = CustomUser.objects.get(username=request.data["username"])
-            profile = Profile.objects.get(user=user)
+            profile = Profile.objects.filter(user=user, section=user.current_section).last()
             response.data['role'] = profile.role.id
             response.data['role_name'] = profile.role.title
         except Exception:
