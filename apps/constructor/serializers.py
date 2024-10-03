@@ -41,11 +41,11 @@ class Application_serializer_ff(serializers.Serializer):
 
 class Application_for_map_serializer(serializers.ModelSerializer):
     get_lat_lon = serializers.JSONField(read_only=True)
-    get_project_prolbem = serializers.CharField(read_only=True)
+    get_project_problem = serializers.CharField(read_only=True)
 
     class Meta:
         model = Application
-        fields = ['id', 'title', 'get_project_prolbem', 'get_lat_lon']
+        fields = ['id', 'title', 'get_project_problem', 'get_lat_lon']
 
 
 class Contest_serializer(serializers.ModelSerializer):

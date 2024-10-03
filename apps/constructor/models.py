@@ -183,7 +183,7 @@ class Application(Base_application):
         except Exception:
             return {}
 
-    def get_project_prolbem(self):
+    def get_project_problem(self):
         """
         Цель проекта
         """

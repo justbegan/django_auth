@@ -21,8 +21,12 @@ def update_contest(request: Request, id: int):
 
 
 def get_contests_by_section(request: Request):
-    section = get_current_section(request)
-    return Response(get_many(Contest, Contest_serializer, {"section": section}))
+    filter = {
+        'section__id': get_current_section(request).id
+    }
+    for key, value in request.query_params.items():
+        filter[key] = value
+    return Response(get_many(Contest, Contest_serializer, filter))
 
 
 def get_contest_by_year(request: Request, year: int):

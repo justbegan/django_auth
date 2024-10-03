@@ -4,6 +4,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.views import APIView, Request, Response, status
 from rest_framework.permissions import IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 from .serializers import (Applications_serializer, Application_serializer_ff, Document_type_serializer,
                           Status_serializer, Project_type_serializer_ff)
@@ -134,6 +135,11 @@ class Project_type_detail(APIView):
 class Contest_main(APIView):
     model_used = Contest
 
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter('year', in_=openapi.IN_QUERY, type=openapi.TYPE_STRING, required=False)
+        ]
+    )
     def get(self, request: Request):
         return get_contests_by_section(request)
 
