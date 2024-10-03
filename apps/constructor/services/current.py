@@ -12,7 +12,8 @@ logger = logging.getLogger('django')
 
 def get_current_profile(request: Request) -> Profile:
     try:
-        obj = Profile.objects.get(user=request.user)
+        section = get_current_section(request)
+        obj = Profile.objects.filter(user=request.user, section=section).last()
         return obj
     except Exception as e:
         logger.exception(f"Ошибка при поиске профиля пользователя {e}")

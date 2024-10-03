@@ -128,7 +128,7 @@ class Application_stat_by_district(APIView):
         }
         settlement_obj = Settlement.objects
         application_obj = Application.objects.filter(**filter)
-        d = []
+        objects = []
         for municipal_district in Municipal_district.objects.all():
             app_by_md = application_obj.filter(municipal_district=municipal_district)
             settlement_count = settlement_obj.filter(RegID=municipal_district).count()
@@ -162,8 +162,8 @@ class Application_stat_by_district(APIView):
                 "application_financing_republic_grant": application_financing_republic_grant,
                 "application_finded_sum_percent": application_finded_sum_percent,
             }
-            d.append(obj)
-        ser = Application_stat_by_district_serializer(d, many=True).data
+            objects.append(obj)
+        ser = Application_stat_by_district_serializer(objects, many=True).data
         result['data'] = ser
         return Response(result)
 
