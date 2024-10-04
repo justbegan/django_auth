@@ -48,33 +48,35 @@ def get_by_application_id(request: Request, id: int, model: Model, serializer: S
 
 def win_lose_calculation(request: Request, data: list) -> list:
     section = get_current_section(request)
-    all_contests = Contest.objects.filter(section=section)
-    data = sorted(data, key=lambda x: (x['created_at'], -x['total_point']))
-    result = []
-    try:
-        for c in all_contests:
-            grant_sum = Contest.objects.get(id=c.id).grant_sum
-            for i in data:
-                if c.id == i["contest"]:
-                    req_sum = i["get_financing_republic_grant"]
-                    grant_sum = grant_sum - Decimal(req_sum)
-                    if grant_sum < 0:
-                        result.append(
-                            {
-                                "id": i["id"],
-                                "status": "loose"
-                            }
-                        )
-                    else:
-                        result.append(
-                            {
-                                "id": i["id"],
-                                "status": "win"
-                            }
-                        )
-        return result
-    except Exception:
-        return result
+    if section.modules.filter(verbose_name='Calculation').exists():
+        all_contests = Contest.objects.filter(section=section)
+        data = sorted(data, key=lambda x: (x['created_at'], -x['total_point']))
+        result = []
+        try:
+            for c in all_contests:
+                grant_sum = Contest.objects.get(id=c.id).grant_sum
+                for i in data:
+                    if c.id == i["contest"]:
+                        req_sum = i["get_financing_republic_grant"]
+                        grant_sum = grant_sum - Decimal(req_sum)
+                        if grant_sum < 0:
+                            result.append(
+                                {
+                                    "id": i["id"],
+                                    "status": "loose"
+                                }
+                            )
+                        else:
+                            result.append(
+                                {
+                                    "id": i["id"],
+                                    "status": "win"
+                                }
+                            )
+            return result
+        except Exception:
+            return result
+    return []
 
 
 def application_for_map(queryset: list, request: Request) -> list:

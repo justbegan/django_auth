@@ -46,15 +46,15 @@ INSTALLED_APPS = [
     'apps.documents',
     'apps.news',
     'apps.history',
-    'apps.calculation',
     'apps.report_manager',
-    'apps.ppmi_report',
     'apps.comments',
     'apps.faq',
     'apps.phone_book',
     'apps.module_manager',
     'apps.table_fields_manager',
     'apps.profiles_manager',
+    'apps_modules.ppmi_report',
+    'apps_modules.calculation',
     'apps_modules.meeting',
     'apps_modules.letter'
 ]

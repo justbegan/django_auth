@@ -19,7 +19,7 @@ from .services.status import get_all_statuses_by_section, create_status, update_
 from .services.project_type import (get_project_type_by_section, create_project_type, update_project_type,
                                     delete_project_type)
 from .services.contest import create_contest, update_contest, get_contests_by_section, get_contest_by_year
-from .services.decorators import role_required_v2
+from .services.decorators import role_required_v2, application_number_validator
 from .services.document_type import (create_document_type, update_document_type, get_all_document_types_by_section,
                                      delete_document_type)
 from .services.document import document_validation
@@ -58,6 +58,7 @@ class Application_main(generics.ListCreateAPIView):
 
     @document_validation(Document_type)
     @role_required_v2()
+    @application_number_validator()
     @swagger_auto_schema(request_body=Application_serializer_ff)
     def post(self, request, *args, **kwargs):
         return create_application(request, Applications_serializer)

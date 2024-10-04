@@ -65,7 +65,7 @@ class MyModelHistoryAdmin(admin.ModelAdmin):
                 old_value = getattr(prev_record, field_name, None)
                 new_value = getattr(obj.instance, field_name, None)
                 if old_value != new_value:
-                    changes.append(f'{field.verbose_name}: {old_value} → {new_value}')
+                    changes.append(f'{field.verbose_name}: {old_value} ➔➔➔ {new_value}')
 
             if changes:
                 return changes

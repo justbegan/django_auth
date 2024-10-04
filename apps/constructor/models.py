@@ -5,9 +5,8 @@ from django.contrib.contenttypes.models import ContentType
 from decimal import Decimal
 
 from apps.profiles.models import Section, Profile
-from apps.calculation.models import Formula
+from apps_modules.calculation.models import Formula
 from apps.locations.models import Municipal_district, Settlement, Locality, District_type
-
 
 logger = logging.getLogger('django')
 
@@ -120,6 +119,8 @@ class Application(Base_application):
 
     def point_calculation(self) -> dict:
         result = {}
+        if not self.section.modules.filter(verbose_name='Calculation').exists():
+            return result
         if self.contest.title != "new":
             try:
                 formulas = Formula.objects.filter(section=self.section)
