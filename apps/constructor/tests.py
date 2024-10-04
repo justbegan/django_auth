@@ -71,7 +71,8 @@ class ApplicationAPITest(APITestCase):
             settlement=self.settlement,
             locality=self.locality,
             profile_type=self.settlement_type,
-            user=self.user
+            user=self.user,
+            allowed_number_projects=3
         )
         self.schema = Schema.objects.create(
             title='Схема проекта',
