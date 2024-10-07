@@ -6,7 +6,7 @@ from apps.constructor.models import (Application, Project_type, Status, Contest,
                                      Schema, Custom_validation)
 from apps.locations.models import Municipal_district, Settlement, Locality, Settlement_type
 from apps.locations.models import Locality_type, District_type
-from apps.profiles.models import Profile, Roles
+from apps.profiles.models import Profile, Roles, Profile_type
 from apps.comments.models import Comments
 
 
@@ -64,13 +64,17 @@ class ApplicationAPITest(APITestCase):
         self.role = Roles.objects.create(title="admin", section=self.section)
         self.user = CustomUser.objects.create_user(username='testuser', password='testpassword',
                                                    current_section=self.section, email="gogolev.vd@rcitsakha.ru")
+        self.profile_type = Profile_type.objects.create(
+            title="Муниципальный район",
+            abbreviation="МР",
+        )
         self.profile = Profile.objects.create(
             role=self.role,
             section=self.section,
             municipal_district=self.municipal_district,
             settlement=self.settlement,
             locality=self.locality,
-            profile_type=self.settlement_type,
+            profile_type=self.profile_type,
             user=self.user,
             allowed_number_projects=3
         )
@@ -205,7 +209,7 @@ if app_count >= app_quota_count:
             municipal_district=self.municipal_district,
             settlement=self.settlement,
             locality=self.locality,
-            profile_type=self.settlement_type,
+            profile_type=self.profile_type,
             user=user
         )
         Profile.objects.create(
@@ -214,7 +218,7 @@ if app_count >= app_quota_count:
             municipal_district=self.municipal_district,
             settlement=self.settlement,
             locality=self.locality,
-            profile_type=self.settlement_type,
+            profile_type=self.profile_type,
             user=user
         )
         url = reverse('current_user')

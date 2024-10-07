@@ -11,6 +11,7 @@ class Applications_serializer(serializers.ModelSerializer):
     get_financing_republic_grant = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     author_type = serializers.CharField(source='author.profile.profile_type', read_only=True)
     total_price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+    profile_type = serializers.CharField(source='author.profile_type.abbreviation', read_only=True)
 
     class Meta:
         model = Application

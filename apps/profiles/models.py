@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 
-from apps.locations.models import Municipal_district, Settlement, Locality, Settlement_type
+from apps.locations.models import Municipal_district, Settlement, Locality
 from apps.module_manager.models import Apps
 
 
@@ -34,6 +34,18 @@ class Roles(models.Model):
         verbose_name_plural = "Роли"
 
 
+class Profile_type(models.Model):
+    title = models.CharField("Наименование", max_length=120)
+    abbreviation = models.CharField("Аббревиатура", max_length=10)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Тип профиля"
+        verbose_name_plural = "Типы профилей"
+
+
 class Profile(models.Model):
     role = models.ForeignKey(Roles, on_delete=models.PROTECT, verbose_name="Роль")
     section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Раздел", blank=True, null=True)
@@ -46,7 +58,7 @@ class Profile(models.Model):
     locality = models.ForeignKey(
         Locality, on_delete=models.PROTECT, verbose_name="Населенный пункт", blank=True, null=True
     )
-    profile_type = models.ForeignKey(Settlement_type, on_delete=models.PROTECT, verbose_name="Тип профиля", blank=True,
+    profile_type = models.ForeignKey(Profile_type, on_delete=models.PROTECT, verbose_name="Тип профиля", blank=True,
                                      null=True)
     user = models.ForeignKey('users.CustomUser', on_delete=models.CASCADE, blank=True, null=True)
     allowed_number_projects = models.PositiveIntegerField("Допустимое количество проектов", default=0)

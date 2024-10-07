@@ -1,16 +1,18 @@
 from django.contrib import admin
-from .models import (Roles, Profile, Section, Role_handler)
+from .models import (Roles, Profile, Section, Role_handler, Profile_type)
 from users.models import CustomUser
 
 
 admin.site.register(Roles)
 admin.site.register(Section)
 admin.site.register(Role_handler)
+admin.site.register(Profile_type)
 
 
 @admin.register(Profile)
 class Profile_admin(admin.ModelAdmin):
-    list_display = ['id', 'get_username', 'profile_type', 'municipal_district', 'settlement', 'locality']
+    list_display = ['id', 'get_username', 'profile_type',
+                    'municipal_district', 'settlement', 'locality', 'profile_type']
 
     def get_username(self, obj):
         try:
