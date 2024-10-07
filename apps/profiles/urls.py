@@ -10,4 +10,5 @@ urlpatterns = [
     path('api/v1/role_handler_models', views.Model_main.as_view()),
     path('api/v1/section', views.Section_main.as_view()),
     path('api/v1/section_detail/<int:id>', views.Section_detail.as_view()),
+    path('api/v1/profile_type', views.Profile_type_main.as_view()),
 ]

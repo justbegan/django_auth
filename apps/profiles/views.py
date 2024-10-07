@@ -8,6 +8,7 @@ from .services.role_handler import (create_role_handler, update_role_handler, ge
 from .services.role import (get_all_roles_by_section, create_role, update_role, delete_role)
 from .services.section import (get_all_sections, create_section, update_section, get_section_by_id,
                                get_sections_by_user)
+from .services.profile_type import get_all_profile_types
 
 
 class Role_handler_main(APIView):
@@ -81,3 +82,8 @@ class Section_detail(APIView):
     @swagger_auto_schema(request_body=Section_serializer_ff)
     def put(self, request: Request, id: int):
         return update_section(request, id)
+
+
+class Profile_type_main(APIView):
+    def get(self, request: Request):
+        return get_all_profile_types(request)

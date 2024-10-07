@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Profile, Role_handler, Roles, Section
+from .models import Profile, Role_handler, Roles, Section, Profile_type
 
 
 class Profile_serializer(serializers.ModelSerializer):
@@ -38,3 +38,9 @@ class Section_serializer_ff(serializers.Serializer):
     logo = serializers.CharField(required=False)
     header = serializers.CharField(required=False)
     modules = serializers.ListField(required=False)
+
+
+class Profile_type_serializer(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        model = Profile_type
