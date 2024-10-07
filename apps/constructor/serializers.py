@@ -83,4 +83,4 @@ class Schema_serializer(serializers.ModelSerializer):
 
 
 class Application_change_status_serializer(serializers.Serializer):
-    id_list = serializers.ListField(child=serializers.IntegerField())
+    contest_id = serializers.IntegerField()

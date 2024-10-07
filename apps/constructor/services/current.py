@@ -60,7 +60,13 @@ def get_current_new_status(request: Request) -> int:
     return obj
 
 
-def get_current_win_status(request: Request) -> int:
+def get_current_win_status(request: Request) -> Status:
     section = get_current_section(request)
-    obj = Status.objects.get(section=section, title="Победила").id
+    obj = Status.objects.get(section=section, title="Победила")
+    return obj
+
+
+def get_current_lose_status(request: Request) -> Status:
+    section = get_current_section(request)
+    obj = Status.objects.get(section=section, title="Проиграла")
     return obj
