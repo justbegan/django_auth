@@ -24,7 +24,7 @@ def document_validation(request: Request):
     except Exception:
         raise ValidationError("status не найден", code=400)
 
-    if get_current_new_status(request) != status:
+    if get_current_new_status(request).id != status:
         docs_req_types = Meeting_document_type.objects.filter(
             section=get_current_section(request), required=True
         ).values("id")

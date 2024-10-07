@@ -54,9 +54,9 @@ def get_current_schema(request: Request):
         raise Exception("Ошибка при поиске поля schema")
 
 
-def get_current_new_status(request: Request) -> int:
+def get_current_new_status(request: Request) -> Status:
     section = get_current_section(request)
-    obj = Status.objects.get(section=section, title="Создана").id
+    obj = Status.objects.get(section=section, title="Создана")
     return obj
 
 

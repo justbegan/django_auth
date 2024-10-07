@@ -85,7 +85,7 @@ def application_for_map(queryset: list, request: Request) -> list:
 
 def change_applications_statuses_to_win(request: Request, contest_id: int):
     section = get_current_section(request)
-    data = Application.objects.filter(section=section)
+    data = Application.objects.filter(section=section, contest__id=contest_id)
     if section.modules.filter(verbose_name='Calculation').exists():
         all_contests = Contest.objects.filter(section=section)
         data = sorted(data, key=lambda x: (x.created_at, -x.total_point()))

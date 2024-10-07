@@ -17,7 +17,7 @@ class SchemaNotFoundError(Exception):
 def validate_custom_data(request: Request):
     data = deepcopy(request.data)
     status = data.get("status")
-    required = status != get_current_new_status(request)
+    required = status != get_current_new_status(request).id
 
     custom_data = data.get("custom_data")
     schema = get_current_schema(request)

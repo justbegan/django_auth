@@ -24,7 +24,7 @@ def document_validation(document_type: Model):
                 logger.exception(f"status не найден {e}")
                 raise ValidationError("status не найден", code=400)
 
-            if get_current_new_status(request) != status:
+            if get_current_new_status(request).id != status:
                 docs_req_types = document_type.objects.filter(
                     section=get_current_section(request), required=True
                 ).values("id")

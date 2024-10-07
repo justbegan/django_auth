@@ -205,5 +205,5 @@ class Application_change_status_to_win(APIView):
 
     @swagger_auto_schema(request_body=Application_change_status_serializer)
     def post(self, request):
-        contest_id = request.GET.get("contest_id")
+        contest_id = request.data.get("contest_id")
         return change_applications_statuses_to_win(request, contest_id)

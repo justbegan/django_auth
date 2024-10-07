@@ -41,10 +41,10 @@ def get_current_schema(request: Request):
         raise Exception("Ошибка при поиске поля schema")
 
 
-def get_current_new_status(request: Request) -> int:
+def get_current_new_status(request: Request) -> Status:
     try:
         section = get_current_section(request)
-        obj = Status.objects.get(section=section, title="Создан").id
+        obj = Status.objects.get(section=section, title="Создан")
         return obj
     except Exception:
         raise Exception("Не могу найти статус с именем 'Создан'")

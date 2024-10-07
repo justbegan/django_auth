@@ -26,9 +26,11 @@ class Role_serializer(serializers.ModelSerializer):
 
 
 class Section_serializer(serializers.ModelSerializer):
+    modules_data = serializers.ListField(read_only=True)
+
     class Meta:
         model = Section
-        fields = '__all__'
+        exclude = ['modules']
 
 
 class Section_serializer_ff(serializers.Serializer):

@@ -18,6 +18,9 @@ class Section(models.Model):
         verbose_name = "Раздел"
         verbose_name_plural = "Разделы"
 
+    def modules_data(self):
+        return self.modules.all().values()
+
 
 class Roles(models.Model):
     title = models.TextField("Название")
