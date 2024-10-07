@@ -7,8 +7,9 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
 from .serializers import (Applications_serializer, Application_serializer_ff, Document_type_serializer,
-                          Status_serializer, Project_type_serializer_ff, Application_change_status_serializer)
-from .models import Application, Contest, Status, Project_type, Document_type
+                          Status_serializer, Project_type_serializer_ff, Application_change_status_serializer,
+                          Schema_serializer)
+from .models import Application, Contest, Status, Project_type, Document_type, Schema
 from .filter import Application_filter, Application_map_filter
 from .services.applications import (get_by_application_id, update_application, win_lose_calculation,
                                     application_for_map, create_application, change_applictions_statuses_to_win)
@@ -82,7 +83,7 @@ class Schema_main(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request: Request):
-        return get_schema_by_user(request)
+        return get_schema_by_user(request, Schema, Schema_serializer)
 
 
 class Status_main(APIView):
@@ -164,7 +165,7 @@ class Document_type_main(APIView):
     model_used = Document_type
 
     def get(self, request: Request):
-        return get_all_document_types_by_section(request)
+        return get_all_document_types_by_section(request, Document_type, Document_type_serializer)
 
     @swagger_auto_schema(request_body=Document_type_serializer)
     def post(self, request: Request):

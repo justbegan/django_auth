@@ -1,5 +1,7 @@
 from rest_framework.views import Request, Response
 from copy import deepcopy
+from rest_framework.serializers import ModelSerializer
+from django.db.models import Model
 
 from ..serializers import Status_serializer
 from ..models import Status
@@ -7,8 +9,8 @@ from services.crud import get_many, update, create, delete
 from .current import get_current_section
 
 
-def get_all_statuses_by_section(request: Request):
-    return Response(get_many(Status, Status_serializer, {"section": get_current_section(request)}))
+def get_all_statuses_by_section(request: Request, model: Model, serializer: ModelSerializer):
+    return Response(get_many(model, serializer, {"section": get_current_section(request)}))
 
 
 def update_status(request: Request, id: int):

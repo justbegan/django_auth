@@ -2,6 +2,8 @@ from rest_framework.views import Response, Request
 from ..services.current import get_current_section
 from services.crud import create, get_many, update, delete
 from copy import deepcopy
+from django.db.models import Model
+from rest_framework.serializers import ModelSerializer
 
 from ..serializers import Document_type_serializer
 from ..models import Document_type
@@ -13,9 +15,9 @@ def create_document_type(request: Request):
     return Response(create(Document_type_serializer, data))
 
 
-def get_all_document_types_by_section(request: Request):
+def get_all_document_types_by_section(request: Request, model: Model, serializer: ModelSerializer):
     section = get_current_section(request)
-    return Response(get_many(Document_type, Document_type_serializer, {'section': section}))
+    return Response(get_many(model, serializer, {'section': section}))
 
 
 def update_document_type(request: Request, id: int):

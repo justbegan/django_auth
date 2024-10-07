@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Meeting_schema, Meeting_app
+from .models import Meeting_schema, Meeting_app, Meeting_document_type, Status
 
 
 class Meetign_schema_serializer(serializers.ModelSerializer):
@@ -28,3 +28,15 @@ class Meeting_app_serializer_ff(serializers.Serializer):
 
     def create(self, validated_data):
         return validated_data
+
+
+class Meeting_document_type_serializer(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        model = Meeting_document_type
+
+
+class Meeting_status_serializer(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        model = Status

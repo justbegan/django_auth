@@ -5,12 +5,16 @@ from rest_framework.views import APIView, Request, Response
 from rest_framework.permissions import IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
 
-from .serializers import Meeting_app_serializer, Meeting_app_serializer_ff
-from .models import Meeting_app, Meeting_document_type
+from .serializers import (Meeting_app_serializer, Meeting_app_serializer_ff, Meetign_schema_serializer,
+                          Meeting_document_type_serializer, Meeting_status_serializer)
+from .models import Meeting_app, Meeting_document_type, Meeting_schema, Status
 from .filter import Meeting_app_filter
 from apps.constructor.services.applications import create_application, update_application, get_by_application_id
+from apps.constructor.services.schema import get_schema_by_user
 from apps.constructor.services.document import document_validation
 from apps.table_fields_manager.services import get_main_table_fields_by_section_method
+from apps.constructor.services.document_type import get_all_document_types_by_section
+from apps.constructor.services.status import get_all_statuses_by_section
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -60,3 +64,24 @@ class Application_detail(APIView):
     @swagger_auto_schema(request_body=Meeting_app_serializer_ff)
     def put(self, request: Request, id: int):
         return update_application(request, id, Meeting_app, Meeting_app_serializer)
+
+
+class Schema_main(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request: Request):
+        return get_schema_by_user(request, Meeting_schema, Meetign_schema_serializer)
+
+
+class Document_type_main(APIView):
+    model_used = Meeting_document_type
+
+    def get(self, request: Request):
+        return get_all_document_types_by_section(request, Meeting_document_type, Meeting_document_type_serializer)
+
+
+class Status_main(APIView):
+    model_used = Status
+
+    def get(self, request: Request):
+        return get_all_statuses_by_section(request, Status, Meeting_status_serializer)
