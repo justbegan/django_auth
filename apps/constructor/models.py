@@ -107,7 +107,9 @@ class Base_application(models.Model):
 
 class Application(Base_application):
     title = models.TextField("Наименование проекта")
-    project_type = models.ForeignKey(Project_type, on_delete=models.PROTECT, verbose_name="Типология проекта")
+    project_type = models.ForeignKey(
+        Project_type, on_delete=models.PROTECT, verbose_name="Типология проекта", blank=True, null=True
+    )
     history = HistoricalRecords("История")
 
     def __str__(self):

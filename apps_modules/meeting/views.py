@@ -15,6 +15,7 @@ from apps.constructor.services.document import document_validation
 from apps.table_fields_manager.services import get_main_table_fields_by_section_method
 from apps.constructor.services.document_type import get_all_document_types_by_section
 from apps.constructor.services.status import get_all_statuses_by_section
+from .services.create_app_by_meeting_id import create_app
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -85,3 +86,8 @@ class Status_main(APIView):
 
     def get(self, request: Request):
         return get_all_statuses_by_section(request, Status, Meeting_status_serializer)
+
+
+class Create_application_by_meeting_id(APIView):
+    def post(self, request: Request, meeting_id: int):
+        return create_app(request, meeting_id)

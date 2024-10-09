@@ -20,7 +20,7 @@ from .services.status import get_all_statuses_by_section, create_status, update_
 from .services.project_type import (get_project_type_by_section, create_project_type, update_project_type,
                                     delete_project_type)
 from .services.contest import create_contest, update_contest, get_contests_by_section, get_contest_by_year
-from .services.decorators import role_required_v2, application_number_validator
+from .services.decorators import role_required_v2, application_number_validator, application_project_type_validator
 from .services.document_type import (create_document_type, update_document_type, get_all_document_types_by_section,
                                      delete_document_type)
 from .services.document import document_validation
@@ -75,6 +75,7 @@ class Application_detail(APIView):
     @document_validation(Document_type)
     @swagger_auto_schema(request_body=Application_serializer_ff)
     @role_required_v2()
+    @application_project_type_validator()
     def put(self, request: Request, id: int):
         return update_application(request, id, Application, Applications_serializer)
 

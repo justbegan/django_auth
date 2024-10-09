@@ -68,3 +68,18 @@ def application_number_validator():
             return func(self, request, *args, **kwargs)
         return wrapper
     return decorator
+
+
+def application_project_type_validator():
+    def decorator(func):
+        @wraps(func)
+        def wrapper(self, request, *args, **kwargs):
+            project_type = request.data.get('project_type', None)
+            if project_type is None:
+                return Response(
+                    {"message": False, "error": "Поле 'Типология проекта' не может быть пустым"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            return func(self, request, *args, **kwargs)
+        return wrapper
+    return decorator

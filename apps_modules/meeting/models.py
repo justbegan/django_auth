@@ -25,6 +25,13 @@ class Meeting_app(Base_application):
         verbose_name = "Собрание"
         verbose_name_plural = "Собрания"
 
+    def get_selected_project(self):
+        try:
+            obj = self.custom_data.get('projects_under_discussion')
+            return max(obj, key=lambda x: x['voter_count'])['project_title']
+        except Exception:
+            return None
+
 
 class Meeting_schema(models.Model):
     title = models.CharField("Наименование", max_length=120)
