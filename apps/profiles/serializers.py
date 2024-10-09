@@ -4,6 +4,7 @@ from .models import Profile, Role_handler, Roles, Section, Profile_type
 
 
 class Profile_serializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username')
     role_name = serializers.CharField(read_only=True, source='role.title')
     get_modules = serializers.ListField(read_only=True)
 
