@@ -11,6 +11,7 @@ class CustomUser(AbstractUser):
     middle_name = models.CharField(max_length=50, blank=True, null=True)
     current_section = models.ForeignKey('profiles.Section', on_delete=models.CASCADE, blank=True, null=True,
                                         verbose_name="Текущая секция")
+    last_activity = models.DateTimeField("Последняя активность", blank=True, null=True)
     history = HistoricalRecords("История")
 
     def __str__(self):

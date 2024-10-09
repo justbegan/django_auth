@@ -71,7 +71,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',
-    'main_app.custom_middleware.Process500'
+    'main_app.custom_middleware.Process500',
+    'main_app.custom_middleware.Register_last_request'
 ]
 
 ROOT_URLCONF = 'main_app.urls'

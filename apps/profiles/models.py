@@ -47,6 +47,7 @@ class Profile_type(models.Model):
 
 
 class Profile(models.Model):
+    title = models.CharField("Имя", max_length=120)
     role = models.ForeignKey(Roles, on_delete=models.PROTECT, verbose_name="Роль")
     section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Раздел", blank=True, null=True)
     municipal_district = models.ForeignKey(
