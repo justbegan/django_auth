@@ -3,6 +3,7 @@ from . import views
 
 
 urlpatterns = [
+    path('api/v1/profile', views.Profile_main.as_view()),
     path('api/v1/role', views.Role_main.as_view()),
     path('api/v1/role/<int:id>', views.Role_detail.as_view()),
     path('api/v1/role_handler', views.Role_handler_main.as_view()),

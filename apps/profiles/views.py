@@ -1,14 +1,47 @@
-from rest_framework.views import APIView, Request
+from rest_framework.views import APIView, Request, Response
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from rest_framework.pagination import PageNumberPagination
+from rest_framework import generics
+from django_filters.rest_framework import DjangoFilterBackend
 
-from .serializers import Section_serializer_ff
+from .serializers import Section_serializer_ff, Profile_serializer
 from .services.role_handler import (create_role_handler, update_role_handler, get_all_roles_handler,
                                     delete_role_handler, get_role_handler_by_id, get_all_models)
 from .services.role import (get_all_roles_by_section, create_role, update_role, delete_role)
 from .services.section import (get_all_sections, create_section, update_section, get_section_by_id,
                                get_sections_by_user)
 from .services.profile_type import get_all_profile_types
+from .models import Profile
+from .filters import Profile_filter
+from apps.constructor.services.current import get_current_section
+
+
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 15
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
+
+    def get_paginated_response(self, data):
+        return Response({
+            'total_results': self.page.paginator.count,
+            'total_pages': self.page.paginator.num_pages,
+            'current_page': self.page.number,
+            'next': self.get_next_link(),
+            'previous': self.get_previous_link(),
+            'results': data,
+        })
+
+
+class Profile_main(generics.ListAPIView):
+    serializer_class = Profile_serializer
+    queryset = Profile.objects.all().order_by('-id')
+    pagination_class = StandardResultsSetPagination
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = Profile_filter
+
+    def get_queryset(self):
+        return super().get_queryset().filter(section=get_current_section(self.request))
 
 
 class Role_handler_main(APIView):
