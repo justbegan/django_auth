@@ -33,6 +33,6 @@ def change_profile(profile_id, user_id):
 @transaction.atomic
 def update_profile_manager_and_change_profile(request: Request, id: int):
     profile_manger = update_profile_manager_app(request, id)
-    if profile_manger['status'] == '2':
+    if profile_manger['status'] == 2:
         change_profile(profile_manger['profile'], profile_manger['author'])
     return Response(profile_manger)
