@@ -4,9 +4,10 @@ from .models import Comments
 
 
 class Comments_serializer(serializers.ModelSerializer):
+    author_obj = serializers.DictField(read_only=True)
 
     class Meta:
-        fields = ['text', 'object_id', 'author', 'content_type']
+        fields = ['text', 'object_id', 'author', 'content_type', 'author_obj']
         model = Comments
 
 

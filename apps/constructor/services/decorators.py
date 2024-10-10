@@ -31,20 +31,30 @@ def role_required_v2():
     def decorator(func):
         @wraps(func)
         def wrapper(self, request, *args, **kwargs):
-            user_role = get_current_profile(request).role.title
+            if request.method == 'POST':
+                error_text = "У вас нет прав для создания записи."
+            else:
+                error_text = "У вас нет прав для изменения записи."
+            user_role = get_current_profile(request).role
+            if user_role.title == 'admin':
+                return func(self, request, *args, **kwargs)
             used_model_content_type = ContentType.objects.get_for_model(self.model_used)
             try:
                 method_roles = Role_handler.objects.get(
                     section=get_current_section(request),
                     model=used_model_content_type
                 )
-                if user_role not in method_roles.roles.all():
+                if not method_roles.roles.filter(id=user_role.id):
                     return Response(
-                        {"detail": "У вас нет прав для создания записи."},
+                        {"detail": error_text},
                         status=status.HTTP_403_FORBIDDEN
                     )
             except Exception as e:
                 logger.exception(f"Не могу найти роль метода {e}")
+                return Response(
+                    {"detail": error_text},
+                    status=status.HTTP_403_FORBIDDEN
+                )
 
             return func(self, request, *args, **kwargs)
         return wrapper

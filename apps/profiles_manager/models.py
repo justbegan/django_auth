@@ -1,4 +1,6 @@
 from django.db import models
+from users.serializers import User_serializer
+from apps.profiles.serializers import Profile_serializer
 
 
 class Profiles_manager_app(models.Model):
@@ -21,3 +23,9 @@ class Profiles_manager_app(models.Model):
 
     def __str__(self):
         return f"{self.author}"
+
+    def author_obj(self):
+        return User_serializer(self.author).data
+
+    def profile_obj(self):
+        return Profile_serializer(self.profile).data
