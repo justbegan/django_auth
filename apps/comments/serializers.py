@@ -7,7 +7,7 @@ class Comments_serializer(serializers.ModelSerializer):
     author_obj = serializers.DictField(read_only=True)
 
     class Meta:
-        fields = ['text', 'object_id', 'author', 'content_type', 'author_obj']
+        fields = ['text', 'object_id', 'author', 'content_type', 'author_obj', 'created_at']
         model = Comments
 
 
