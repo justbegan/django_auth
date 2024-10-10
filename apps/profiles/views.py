@@ -14,7 +14,6 @@ from .services.section import (get_all_sections, create_section, update_section,
 from .services.profile_type import get_all_profile_types
 from .models import Profile
 from .filters import Profile_filter
-from apps.constructor.services.current import get_current_section
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -41,7 +40,7 @@ class Profile_main(generics.ListAPIView):
     filterset_class = Profile_filter
 
     def get_queryset(self):
-        return super().get_queryset().filter(section=get_current_section(self.request))
+        return super().get_queryset()
 
 
 class Role_handler_main(APIView):

@@ -1,4 +1,5 @@
 from django.db import models
+from simple_history.models import HistoricalRecords
 
 
 class District_type(models.Model):
@@ -80,6 +81,7 @@ class Locality(models.Model):
     LocTypeID = models.ForeignKey(Locality_type, on_delete=models.PROTECT, verbose_name="Тип")
     Latitude = models.CharField("Широта", max_length=120, null=True, blank=True)
     Longitude = models.CharField("Долгота", max_length=120, null=True, blank=True)
+    history = HistoricalRecords("История")
 
     def __str__(self):
         return self.LocNameE
