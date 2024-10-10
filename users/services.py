@@ -6,8 +6,8 @@ from django.conf import settings
 import string
 
 from users.models import CustomUser
-from .serializers import User_serializer
-from services.crud import update, get, create, get_many
+from .serializers import User_serializer, User_put_serializer
+from services.crud import update, get, create, get_many, patch
 from apps.constructor.services.current import get_current_section
 from .models import VerificationCode
 
@@ -22,7 +22,7 @@ def get_user_id(request: Request, user_id: int):
 
 def update_user(request: Request, user_id: int):
     data = request.data
-    user = update(CustomUser, User_serializer, data, {"id": user_id})
+    user = update(CustomUser, User_put_serializer, data, {"id": user_id})
     return Response(user)
 
 
@@ -95,3 +95,7 @@ def recover_password(request: Request):
         fail_silently=False,
     )
     return Response({"success": True, "text": "Пароль сброшен. Новый пароль сгенерирован, проверьте свой e-mail."})
+
+
+def patch_user(request: Request, id: int):
+    return Response(patch(CustomUser, User_serializer, request.data, {'id': id}))

@@ -16,16 +16,35 @@ class User_serializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        password = validated_data.pop('password')
+        password = validated_data.pop('password', None)
         user = CustomUser(**validated_data)
-        user.set_password(password)
+        if password:
+            user.set_password(password)
         user.save()
         return user
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+        if password:
+            instance.set_password(password)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.save()
+        return instance
+
+
+class User_put_serializer(serializers.ModelSerializer):
+    profiles = serializers.ListField(read_only=True)
+
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'username', 'is_active', 'profiles', 'email',
+                  'first_name', 'middle_name', 'last_name', 'current_section']
 
 
 class User_serializer_ff(serializers.Serializer):
     username = serializers.CharField()
-    password = serializers.CharField()
     first_name = serializers.CharField()
     middle_name = serializers.CharField(required=False)
     last_name = serializers.CharField()
@@ -33,6 +52,13 @@ class User_serializer_ff(serializers.Serializer):
 
     def create(self, validated_data):
         return validated_data
+
+    def update(self, validated_data):
+        return validated_data
+
+
+class User_post_serializer_ff(User_serializer_ff):
+    password = serializers.CharField()
 
 
 class VerifyCodeSerializer(serializers.Serializer):

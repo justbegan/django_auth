@@ -13,7 +13,7 @@ def report_service(url: str) -> bool:
         if url == 'report':
             return True
         return False
-    except:
+    except Exception:
         return False
 
 
@@ -75,7 +75,7 @@ def check_path(request: Request, path: str) -> bool:
     """
     try:
         r_path = Remaining_paths.objects.get(name=path)
-    except:
+    except Exception:
         return True
     if r_path:
         role = r_path.role

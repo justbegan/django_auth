@@ -7,6 +7,7 @@ from .models import Profile
 class Profile_filter(django_filters.FilterSet):
     municipal_district = django_filters.CharFilter(method='filter_municipal_district')
     all_field = django_filters.CharFilter(method='search_all_field')
+    roles = django_filters.CharFilter(method='filter_roles')
 
     class Meta:
         model = Profile
@@ -15,6 +16,10 @@ class Profile_filter(django_filters.FilterSet):
     def filter_municipal_district(self, queryset, name, value):
         district = value.split(',')
         return queryset.filter(municipal_district__id__in=district)
+
+    def filter_roles(self, queryset, name, value):
+        roles = value.split(',')
+        return queryset.filter(role__id__in=roles)
 
     def search_all_field(self, queryset, name, value):
         q = queryset.filter(

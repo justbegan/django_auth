@@ -43,3 +43,13 @@ def delete(model: Model, parameter: dict):
     obj = model.objects.get(**parameter)
     obj.delete()
     return True
+
+
+def patch(model: Model, serializer: ModelSerializer, data: dict, parameters: dict):
+    instance = model.objects.get(**parameters)
+    serializer = serializer(instance, data=data, partial=True)
+
+    if serializer.is_valid():
+        serializer.save()
+        return serializer.data
+    raise serializers.ValidationError(serializer.errors)

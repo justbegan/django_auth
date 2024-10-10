@@ -1,7 +1,7 @@
 from rest_framework.views import Request
 import logging
 
-from apps.profiles.models import Profile
+from apps.profiles.models import Profile, Roles
 from apps.constructor.models import Contest, Schema, Status
 from ..serializers import Schema_serializer
 from users.models import CustomUser
@@ -70,3 +70,21 @@ def get_current_lose_status(request: Request) -> Status:
     section = get_current_section(request)
     obj = Status.objects.get(section=section, title="Проиграла")
     return obj
+
+
+def get_current_moder_role() -> Roles:
+    try:
+        obj = Roles.objects.get(title="moderator")
+        return obj
+    except Exception:
+        logger.exception("Ошибка при поиске роли Модератор")
+        raise Exception("Ошибка при поиске роли Модератор")
+
+
+def get_current_admin_role() -> Roles:
+    try:
+        obj = Roles.objects.get(title="admin")
+        return obj
+    except Exception:
+        logger.exception("Ошибка при поиске роли Админ")
+        raise Exception("Ошибка при поиске роли Админ")

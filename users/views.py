@@ -6,8 +6,10 @@ from rest_framework.views import APIView, Request, Response
 from rest_framework import status
 from .serializers import VerifyCodeSerializer
 
-from .services import get_user, get_user_id, update_user, create_user, repeat_email, recover_password
-from .serializers import User_serializer, Repeat_email_ff, Recover_password_ff, User_serializer_ff
+from .services import (get_user, get_user_id, update_user, create_user, repeat_email, recover_password,
+                       patch_user)
+from .serializers import (User_serializer, Repeat_email_ff, Recover_password_ff, User_serializer_ff,
+                          User_post_serializer_ff)
 from users.models import CustomUser
 from .filters import Custom_user_filter
 
@@ -38,7 +40,7 @@ class Users_main(generics.ListCreateAPIView):
     def get_queryset(self):
         return super().get_queryset()
 
-    @swagger_auto_schema(request_body=User_serializer_ff)
+    @swagger_auto_schema(request_body=User_post_serializer_ff)
     def post(self, request, *args, **kwargs):
         return create_user(request)
 
@@ -47,9 +49,13 @@ class Users_detail(APIView):
     def get(self, request: Request, id: int):
         return get_user_id(request, id)
 
-    @swagger_auto_schema(request_body=User_serializer)
+    @swagger_auto_schema(request_body=User_serializer_ff)
     def put(self, request: Request, id: int):
         return update_user(request, id)
+
+    @swagger_auto_schema(request_body=User_serializer_ff)
+    def patch(self, request: Request, id: int):
+        return patch_user(request, id)
 
 
 class Current_user(APIView):

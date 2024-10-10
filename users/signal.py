@@ -13,7 +13,7 @@ def create_verification_code(sender, instance, created, **kwargs):
     if created:
         code = ''.join([str(random.randint(0, 9)) for _ in range(6)])
         VerificationCode.objects.create(user=instance, code=code)
-        if 'testuser' in instance.username:
+        if 'testuser' not in instance.username:
             send_mail(
                 'Подтверждение регистрации',
                 f'Ваш код подтверждения: {code}',
