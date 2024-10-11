@@ -5,11 +5,10 @@ from django.db.models import Q
 from .models import Application
 
 
-class Application_filter(django_filters.FilterSet):
+class Base_application_filter(django_filters.FilterSet):
     id = django_filters.CharFilter(method='filter_id')
     created_at = django_filters.CharFilter(method='filter_created_at')
     municipal_district = django_filters.CharFilter(method='filter_municipal_district')
-    project_type = django_filters.CharFilter(method='filter_project_type')
     status = django_filters.CharFilter(method='filter_status')
     contest = django_filters.CharFilter(method='filter_contest')
     custom_data = django_filters.CharFilter(method='fiter_custom_data')
@@ -19,8 +18,7 @@ class Application_filter(django_filters.FilterSet):
     profile_type = django_filters.CharFilter(method='filter_profile_type')
 
     class Meta:
-        model = Application
-        fields = ['id', 'created_at', 'status']
+        abstract = True
 
     def filter_id(self, queryset, name, value):
         return queryset.filter(id=value)
@@ -40,10 +38,6 @@ class Application_filter(django_filters.FilterSet):
     def filter_municipal_district(self, queryset, name, value):
         district = value.split(',')
         return queryset.filter(municipal_district__RegionNameE__in=district)
-
-    def filter_project_type(self, queryset, name, value):
-        project_type = value.split(',')
-        return queryset.filter(project_type__title__in=project_type)
 
     def fiter_custom_data(self, queryset, name, value: dict):
         value = json.loads(value)
@@ -68,8 +62,7 @@ class Application_filter(django_filters.FilterSet):
                 Q(title__icontains=value)
                 | Q(municipal_district__RegionNameE__icontains=value)
                 | Q(settlement__MunicNameE__icontains=value)
-                | Q(locality__LocNameE__icontains=value)
-                | Q(project_type__title__icontains=value))
+                | Q(locality__LocNameE__icontains=value))
         )
         q2 = queryset.filter(custom_data__icontains=value)
         combined_queryset = q1.union(q2)
@@ -77,7 +70,32 @@ class Application_filter(django_filters.FilterSet):
 
     def filter_profile_type(self, queryset, name, value):
         profile_types = value.split(',')
-        return queryset.filter(author__profile_type__id__in=profile_types)
+        return queryset.filter(author__profile_type__abbreviation__in=profile_types)
+
+
+class Application_filter(django_filters.FilterSet):
+    project_type = django_filters.CharFilter(method='filter_project_type')
+
+    class Meta:
+        model = Application
+        fields = ['id', 'created_at', 'status']
+
+    def filter_project_type(self, queryset, name, value):
+        project_type = value.split(',')
+        return queryset.filter(project_type__title__in=project_type)
+
+    def search_all_field(self, queryset, name, value):
+        q1 = queryset.filter(
+            (
+                Q(title__icontains=value)
+                | Q(municipal_district__RegionNameE__icontains=value)
+                | Q(settlement__MunicNameE__icontains=value)
+                | Q(locality__LocNameE__icontains=value)
+                | Q(project_type__title__icontains=value))
+        )
+        q2 = queryset.filter(custom_data__icontains=value)
+        combined_queryset = q1.union(q2)
+        return combined_queryset
 
 
 class Application_map_filter(django_filters.FilterSet):
