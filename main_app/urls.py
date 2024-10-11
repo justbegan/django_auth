@@ -41,6 +41,7 @@ urlpatterns = [
     path('ppmi_report/', include('apps_modules.ppmi_report.urls')),
     path('meeting/', include('apps_modules.meeting.urls')),
     path('letter/', include('apps_modules.letter.urls')),
+    path('mo_report/', include('apps_modules.mo_report.urls')),
     path('module_manager/', include('apps.module_manager.urls')),
     path('users/', include('users.urls')),
 ]
