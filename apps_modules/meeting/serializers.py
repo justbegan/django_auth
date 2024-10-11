@@ -4,7 +4,7 @@ from .models import Meeting_schema, Meeting_app, Meeting_document_type, Status
 from apps.constructor.serializers import Base_applications_serializer, Base_application_serializer_ff
 
 
-class Meetign_schema_serializer(serializers.ModelSerializer):
+class Meeting_schema_serializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Meeting_schema

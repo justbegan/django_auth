@@ -5,7 +5,7 @@ from rest_framework.views import APIView, Request, Response
 from rest_framework.permissions import IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
 
-from .serializers import (Meeting_app_serializer, Meeting_app_serializer_ff, Meetign_schema_serializer,
+from .serializers import (Meeting_app_serializer, Meeting_app_serializer_ff, Meeting_schema_serializer,
                           Meeting_document_type_serializer, Meeting_status_serializer)
 from .models import Meeting_app, Meeting_document_type, Meeting_schema, Status
 from .filter import Meeting_app_filter
@@ -71,7 +71,7 @@ class Schema_main(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request: Request):
-        return get_schema_by_user(request, Meeting_schema, Meetign_schema_serializer)
+        return get_schema_by_user(request, Meeting_schema, Meeting_schema_serializer)
 
 
 class Document_type_main(APIView):

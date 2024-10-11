@@ -5,8 +5,8 @@ from rest_framework.views import APIView, Request, Response
 from rest_framework.permissions import IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
 
-from .serializers import (Meeting_app_serializer, Meeting_app_serializer_ff, Meetign_schema_serializer,
-                          Meeting_document_type_serializer, Meeting_status_serializer)
+from .serializers import (Mo_report_app_serializer, Mo_report_app_serializer_ff, Mo_report_schema_serializer,
+                          Mo_report_document_type_serializer, Mo_report_status_serializer)
 from .models import Mo_report_app, Mo_report_document_type, Mo_report_schema, Status
 from .filter import Meeting_app_filter
 from apps.constructor.services.applications import create_application, update_application, get_by_application_id
@@ -36,7 +36,7 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 class Application_main(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = Meeting_app_serializer
+    serializer_class = Mo_report_app_serializer
     queryset = Mo_report_app.objects.all().order_by('-id')
     pagination_class = StandardResultsSetPagination
     filter_backends = [DjangoFilterBackend]
@@ -48,9 +48,9 @@ class Application_main(generics.ListCreateAPIView):
         return q.filter(author=self.request.user.id)
 
     @document_validation(Mo_report_document_type)
-    @swagger_auto_schema(request_body=Meeting_app_serializer_ff)
+    @swagger_auto_schema(request_body=Mo_report_app_serializer_ff)
     def post(self, request, *args, **kwargs):
-        return create_application(request, Meeting_app_serializer)
+        return create_application(request, Mo_report_app_serializer)
 
 
 class Application_detail(APIView):
@@ -58,30 +58,30 @@ class Application_detail(APIView):
     model_used = Mo_report_app
 
     def get(self, request: Request, id: int):
-        return get_by_application_id(request, id, Mo_report_app, Meeting_app_serializer)
+        return get_by_application_id(request, id, Mo_report_app, Mo_report_app_serializer)
 
     @document_validation(Mo_report_document_type)
-    @swagger_auto_schema(request_body=Meeting_app_serializer_ff)
+    @swagger_auto_schema(request_body=Mo_report_app_serializer_ff)
     def put(self, request: Request, id: int):
-        return update_application(request, id, Mo_report_app, Meeting_app_serializer)
+        return update_application(request, id, Mo_report_app, Mo_report_app_serializer)
 
 
 class Schema_main(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request: Request):
-        return get_schema_by_user(request, Mo_report_schema, Meetign_schema_serializer)
+        return get_schema_by_user(request, Mo_report_schema, Mo_report_schema_serializer)
 
 
 class Document_type_main(APIView):
     model_used = Mo_report_document_type
 
     def get(self, request: Request):
-        return get_all_document_types_by_section(request, Mo_report_document_type, Meeting_document_type_serializer)
+        return get_all_document_types_by_section(request, Mo_report_document_type, Mo_report_document_type_serializer)
 
 
 class Status_main(APIView):
     model_used = Status
 
     def get(self, request: Request):
-        return get_all_statuses_by_section(request, Status, Meeting_status_serializer)
+        return get_all_statuses_by_section(request, Status, Mo_report_status_serializer)
