@@ -5,44 +5,49 @@ from apps.constructor.models import (Contest, Project_type, Status, Schema, Docu
 from apps.comments.serializers import Comments_change_status_serializer
 
 
-class Applications_serializer(serializers.ModelSerializer):
-    point_calculation = serializers.DictField(read_only=True)
-    total_point = serializers.FloatField(read_only=True)
-    get_financing_republic_grant = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+class Base_applications_serializer(serializers.ModelSerializer):
     author_type = serializers.CharField(source='author.profile.profile_type', read_only=True)
-    total_price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     profile_type = serializers.CharField(source='author.profile_type.abbreviation', read_only=True)
     municipal_district_title = serializers.CharField(source='municipal_district.RegionNameE', read_only=True)
     settlement_title = serializers.CharField(read_only=True, source='settlement.MunicNameE')
     locality_title = serializers.CharField(read_only=True, source='locality.LocNameE')
-    project_type_title = serializers.CharField(read_only=True, source='project_type.title')
     status_title = serializers.CharField(read_only=True, source='status.title')
+
+    class Meta:
+        abstract = True
+
+
+class Applications_serializer(Base_applications_serializer):
+    point_calculation = serializers.DictField(read_only=True)
+    total_point = serializers.FloatField(read_only=True)
+    get_financing_republic_grant = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+    total_price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+    project_type_title = serializers.CharField(read_only=True, source='project_type.title')
 
     class Meta:
         model = Application
         fields = "__all__"
 
 
-class Application_serializer_ff(serializers.Serializer):
-    """
-    Кастомный сериализатор для изменения заявки
-    из-за создания комментария и изменения статуса
-    """
+class Base_application_serializer_ff(serializers.Serializer):
     title = serializers.CharField()
     municipal_district = serializers.IntegerField()
     settlement = serializers.IntegerField()
     locality = serializers.IntegerField()
-    project_type = serializers.IntegerField()
     status = serializers.IntegerField()
     custom_data = serializers.JSONField()
     documents = serializers.JSONField()
-    comment = Comments_change_status_serializer(required=False)
 
     def update(self, instance, validated_data):
         return validated_data
 
     def create(self, validated_data):
         return validated_data
+
+
+class Application_serializer_ff(Base_application_serializer_ff):
+    project_type = serializers.IntegerField()
+    comment = Comments_change_status_serializer(required=False)
 
 
 class Application_for_map_serializer(serializers.ModelSerializer):

@@ -5,6 +5,14 @@ from apps.profiles.models import Section
 
 
 class Main_table_fields(models.Model):
+    filter_config_help_text = """
+    {
+        "mapping": {
+            "title1": "title"
+        },
+        "current_section": true
+    }
+    """
     TYPE_CH = (
         (1, "Справочник"),
         (2, "Кастомный"),
@@ -21,7 +29,7 @@ class Main_table_fields(models.Model):
     filter_class = models.ForeignKey(ContentType, on_delete=models.PROTECT, verbose_name="Класс справочника",
                                      related_name="table_fields_manager_filter_type", blank=True, null=True)
     filter_custom_data = models.JSONField("Кастомные данные", blank=True, null=True)
-    filter_config = models.JSONField("Настройки поля", blank=True, null=True)
+    filter_config = models.JSONField("Настройки поля", blank=True, null=True, help_text=filter_config_help_text)
 
     def __str__(self):
         return self.title
