@@ -36,7 +36,7 @@ class Roles(models.Model):
 
 class Profile_type(models.Model):
     title = models.CharField("Наименование", max_length=120)
-    abbreviation = models.CharField("Аббревиатура", max_length=10)
+    abbreviation = models.CharField("Описание", max_length=120)
 
     def __str__(self):
         return self.title

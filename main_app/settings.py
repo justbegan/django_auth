@@ -56,7 +56,8 @@ INSTALLED_APPS = [
     'apps_modules.ppmi_report',
     'apps_modules.calculation',
     'apps_modules.meeting',
-    'apps_modules.letter'
+    'apps_modules.letter',
+    'apps_modules.mo_report'
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
