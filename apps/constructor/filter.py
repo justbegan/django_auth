@@ -70,7 +70,7 @@ class Base_application_filter(django_filters.FilterSet):
 
     def filter_profile_type(self, queryset, name, value):
         profile_types = value.split(',')
-        return queryset.filter(author__profile_type__abbreviation__in=profile_types)
+        return queryset.filter(author__profile_type__title__in=profile_types)
 
 
 class Application_filter(Base_application_filter):

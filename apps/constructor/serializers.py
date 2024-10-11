@@ -6,8 +6,7 @@ from apps.comments.serializers import Comments_change_status_serializer
 
 
 class Base_applications_serializer(serializers.ModelSerializer):
-    author_type = serializers.CharField(source='author.profile.profile_type', read_only=True)
-    profile_type = serializers.CharField(source='author.profile_type.abbreviation', read_only=True)
+    profile_type = serializers.CharField(source='author.profile_type.title', read_only=True)
     municipal_district_title = serializers.CharField(source='municipal_district.RegionNameE', read_only=True)
     settlement_title = serializers.CharField(read_only=True, source='settlement.MunicNameE')
     locality_title = serializers.CharField(read_only=True, source='locality.LocNameE')
