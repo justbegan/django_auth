@@ -73,7 +73,7 @@ class Base_application_filter(django_filters.FilterSet):
         return queryset.filter(author__profile_type__abbreviation__in=profile_types)
 
 
-class Application_filter(django_filters.FilterSet):
+class Application_filter(Base_application_filter):
     project_type = django_filters.CharFilter(method='filter_project_type')
 
     class Meta:
