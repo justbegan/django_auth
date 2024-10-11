@@ -31,7 +31,7 @@ class Application_filter(django_filters.FilterSet):
 
     def filter_status(self, queryset, name, value):
         status = value.split(',')
-        return queryset.filter(status__id__in=status)
+        return queryset.filter(status__title__in=status)
 
     def filter_contest(self, queryset, name, value):
         contest = value.split(',')
@@ -39,11 +39,11 @@ class Application_filter(django_filters.FilterSet):
 
     def filter_municipal_district(self, queryset, name, value):
         district = value.split(',')
-        return queryset.filter(municipal_district__id__in=district)
+        return queryset.filter(municipal_district__RegionNameE__in=district)
 
     def filter_project_type(self, queryset, name, value):
         project_type = value.split(',')
-        return queryset.filter(project_type__id__in=project_type)
+        return queryset.filter(project_type__title__in=project_type)
 
     def fiter_custom_data(self, queryset, name, value: dict):
         value = json.loads(value)

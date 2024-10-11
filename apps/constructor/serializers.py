@@ -12,6 +12,11 @@ class Applications_serializer(serializers.ModelSerializer):
     author_type = serializers.CharField(source='author.profile.profile_type', read_only=True)
     total_price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     profile_type = serializers.CharField(source='author.profile_type.abbreviation', read_only=True)
+    municipal_district_title = serializers.CharField(source='municipal_district.RegionNameE', read_only=True)
+    settlement_title = serializers.CharField(read_only=True, source='settlement.MunicNameE')
+    locality_title = serializers.CharField(read_only=True, source='locality.LocNameE')
+    project_type_title = serializers.CharField(read_only=True, source='project_type.title')
+    status_title = serializers.CharField(read_only=True, source='status.title')
 
     class Meta:
         model = Application
