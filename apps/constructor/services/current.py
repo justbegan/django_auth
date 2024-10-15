@@ -56,19 +56,19 @@ def get_current_schema(request: Request):
 
 def get_current_new_status(request: Request) -> Status:
     section = get_current_section(request)
-    obj = Status.objects.get(section=section, title="Создана")
+    obj = Status.objects.get(section=section, tech_name="new")
     return obj
 
 
 def get_current_win_status(request: Request) -> Status:
     section = get_current_section(request)
-    obj = Status.objects.get(section=section, title="Победила")
+    obj = Status.objects.get(section=section, tech_name="win")
     return obj
 
 
 def get_current_lose_status(request: Request) -> Status:
     section = get_current_section(request)
-    obj = Status.objects.get(section=section, title="Проиграла")
+    obj = Status.objects.get(section=section, tech_name="lose")
     return obj
 
 
