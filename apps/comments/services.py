@@ -8,6 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 from services.crud import create, get_many
 from .serializers import Comments_serializer
 from .models import Comments
+from apps.constructor.models import Application
 from apps.profiles.models import Profile
 from apps.constructor.services.current import get_current_section, get_current_moder_role
 
@@ -56,7 +57,11 @@ def send_email_for_app_comment(request: Request):
             section=get_current_section(request), role=get_current_moder_role())
         ]
         if Profile.objects.get(user__id=request.user.id).role == get_current_moder_role():
-            recipient = [request.user.email]
+            app_id = request.data.get('object_id', None)
+            if app_id is not None:
+                raise Exception("object_id is not found")
+            user_email = Application.objects.get(id=app_id).author.user.email
+            recipient = [user_email]
         else:
             recipient = moders_mail_list
     except Exception as e:

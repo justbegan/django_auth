@@ -42,8 +42,11 @@ def get_current_contest(request: Request) -> int:
 
 
 def get_current_section(request: Request):
-    obj = CustomUser.objects.get(id=request.user.id).current_section
-    return obj
+    if request.user.is_authenticated:
+        obj = CustomUser.objects.get(id=request.user.id).current_section
+        return obj
+    else:
+        raise Exception("Пользователь не авторизован")
 
 
 def get_current_schema(request: Request):
