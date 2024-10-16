@@ -15,6 +15,7 @@ from apps.constructor.services.document import document_validation
 from apps.table_fields_manager.services import get_main_table_fields_by_section_method
 from apps.constructor.services.document_type import get_all_document_types_by_section
 from apps.constructor.services.status import get_all_statuses_by_section
+from apps.constructor.services.current import get_current_profile, get_current_section
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -45,7 +46,14 @@ class Application_main(generics.ListCreateAPIView):
 
     def get_queryset(self):
         q = super().get_queryset()
-        return q.filter(author=self.request.user.id)
+        condition = [
+            get_current_profile(self.request).role.title == 'moderator',
+            get_current_profile(self.request).role.title == 'admin'
+        ]
+        if any(condition):
+            return q.filter(contest__section=get_current_section(self.request))
+        else:
+            return q.filter(author=get_current_profile(self.request))
 
     @document_validation(Mo_report_document_type)
     @swagger_auto_schema(request_body=Mo_report_app_serializer_ff)

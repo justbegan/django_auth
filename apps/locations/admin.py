@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from .models import (Municipal_district, Settlement, Locality, Settlement_type, Locality_type,
                      Region_center, District_type)
+from apps.constructor.admin import MyModelHistoryAdmin
 
 
 admin.site.register(Settlement)
@@ -20,3 +21,6 @@ class Locality_admin(admin.ModelAdmin):
 @admin.register(Municipal_district)
 class Municipal_district_admin(admin.ModelAdmin):
     list_display = ['id', 'RegionNameE', 'district_type']
+
+
+admin.site.register(Locality.history.model, MyModelHistoryAdmin)

@@ -55,7 +55,14 @@ class Application_main(generics.ListCreateAPIView):
 
     def get_queryset(self):
         q = super().get_queryset()
-        return q.filter(author=get_current_profile(self.request))
+        condition = [
+            get_current_profile(self.request).role.title == 'moderator',
+            get_current_profile(self.request).role.title == 'admin'
+        ]
+        if any(condition):
+            return q.filter(contest__section=get_current_section(self.request))
+        else:
+            return q.filter(author=get_current_profile(self.request))
 
     @document_validation(Document_type)
     @role_required_v2()
