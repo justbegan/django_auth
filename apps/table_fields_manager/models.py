@@ -16,6 +16,7 @@ class Main_table_fields(models.Model):
     TYPE_CH = (
         (1, "Справочник"),
         (2, "Кастомный"),
+        (3, "Булево")
     )
     title = models.CharField("Наименование", max_length=120)
     field = models.CharField("Транскрипция")

@@ -40,6 +40,9 @@ class Base_application_filter(django_filters.FilterSet):
         return queryset.filter(municipal_district__RegionNameE__in=district)
 
     def fiter_custom_data(self, queryset, name, value: dict):
+        """
+        {"smi_used": 2}
+        """
         value = json.loads(value)
         filter = {}
         for key, value in value.items():
