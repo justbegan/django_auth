@@ -18,7 +18,7 @@ def create_default_user_profile(sender, instance, created, **kwargs):
             municipal_district=instance.municipal_district,
             settlement=instance.settlement,
             locality=instance.locality,
-            status=Status.objects.get(tech_name='presented', section=instance.section),
+            status=Status.objects.get(tech_name='new', section=instance.section),
             contest=instance.contest,
             author=instance.author,
             section=instance.section,
