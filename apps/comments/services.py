@@ -57,9 +57,7 @@ def send_email_for_app_comment(request: Request):
             section=get_current_section(request), role=get_current_moder_role())
         ]
         if Profile.objects.get(user__id=request.user.id).role == get_current_moder_role():
-            app_id = request.data.get('object_id', None)
-            if app_id is not None:
-                raise Exception("object_id is not found")
+            app_id = request.data.get('object_id')
             user_email = Application.objects.get(id=app_id).author.user.email
             recipient = [user_email]
         else:
