@@ -22,13 +22,17 @@ class Status_admin(admin.ModelAdmin):
     list_filter = ['section']
 
 
-admin.site.register(Project_type)
+@admin.register(Project_type)
+class Project_type_admin(admin.ModelAdmin):
+    list_display = ['title', 'section']
+
+
 admin.site.register(Document_type)
 
 
 @admin.register(Schema)
 class Schema_admin(BaseAdmin):
-    pass
+    list_display = ['title', 'section']
 
 
 class FormulaAdmin(admin.ModelAdmin):
@@ -45,12 +49,13 @@ admin.site.register(Custom_validation, FormulaAdmin)
 
 @admin.register(Application)
 class ApplicationAdmin(SimpleHistoryAdmin, BaseAdmin):
+    list_display = ['title', 'contest', 'section', 'status']
     history_list_display = ['history_date', 'history_user']
 
 
 @admin.register(Contest)
 class ContestAdmin(SimpleHistoryAdmin):
-    pass
+    list_display = ['title', 'section', 'status']
 
 
 class MyModelHistoryAdmin(admin.ModelAdmin):

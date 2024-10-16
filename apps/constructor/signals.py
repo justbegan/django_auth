@@ -10,7 +10,8 @@ def create_default_user_profile(sender, instance, created, **kwargs):
     conditions = [
         instance.section.modules.filter(name='apps_modules.mo_report').exists(),
         instance.status.tech_name == 'presented',
-        not created
+        not created,
+        Mo_report_app.objects.filter(application=instance).count() == 0
     ]
     if all(conditions):
         mo_report = Mo_report_app.objects.create(
