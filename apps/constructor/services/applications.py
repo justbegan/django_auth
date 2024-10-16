@@ -7,13 +7,12 @@ from rest_framework.serializers import Serializer
 
 from apps.constructor.models import Contest, Application
 from ..serializers import Application_for_map_serializer
-from services.crud import update, get
+from services.crud import get, create, patch
 from .custom_data import validate_custom_data
 from .current import (get_current_section, get_current_contest, get_current_profile,
                       get_current_win_status, get_current_lose_status)
 from .custom_validation import custom_validation
 from apps.comments.services import create_comment_and_change_status
-from services.crud import create
 
 
 def create_application(request: Request, serializer: Serializer) -> Response:
@@ -29,11 +28,7 @@ def create_application(request: Request, serializer: Serializer) -> Response:
 def update_application(request: Request, id: int, model: Model, serializer: Serializer) -> Response:
     data = deepcopy(request.data)
     validate_custom_data(request)
-    instance = model.objects.get(id=id)
-    data['author'] = instance.author.id
-    data['section'] = instance.section.id
-    data['contest'] = instance.contest.id
-    obj = update(model, serializer, data, {"id": id})
+    obj = patch(model, serializer, data, {"id": id})
     comment = data.get("comment")
     if comment:
         create_comment_and_change_status(request, comment, id)
