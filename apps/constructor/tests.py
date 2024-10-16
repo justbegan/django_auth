@@ -53,7 +53,7 @@ class ApplicationAPITest(APITestCase):
             title="Project Type 1",
             section=self.section
         )
-        self.status = Status.objects.create(title="Создана", section=self.section)
+        self.status = Status.objects.create(title="Создана", section=self.section, tech_name='new')
         self.contest = Contest.objects.create(
             title="Contest 1",
             section=self.section, status='opened',
