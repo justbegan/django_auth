@@ -1,16 +1,9 @@
 from django.db import models
 from apps.profiles.models import Section
-from apps.constructor.models import Base_application
+from apps.constructor.models import Base_application, Base_status
 
 
-class Status(models.Model):
-    title = models.CharField("Наименование", max_length=120)
-    section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция",
-                                related_name='meeting_statuses')
-
-    def __str__(self):
-        return self.title
-
+class Status(Base_status):
     class Meta:
         verbose_name = "Статус"
         verbose_name_plural = "Статусы"

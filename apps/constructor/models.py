@@ -43,14 +43,24 @@ class Contest(models.Model):
         verbose_name_plural = "Конкурсы"
 
 
-class Status(models.Model):
+class Base_status(models.Model):
     title = models.CharField("Наименование", max_length=120)
     section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция",
-                                related_name='constuctor_statuses')
+                                related_name='%(app_label)s_set')
     tech_name = models.CharField("Тех. название", max_length=30)
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        abstract = True
+
+
+class Status(Base_status):
+    title = models.CharField("Наименование", max_length=120)
+    section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция",
+                                related_name='constuctor_statuses')
+    tech_name = models.CharField("Тех. название", max_length=30)
 
     class Meta:
         verbose_name = "Статус"
