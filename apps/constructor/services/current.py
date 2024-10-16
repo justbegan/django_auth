@@ -1,5 +1,6 @@
 from rest_framework.views import Request
 import logging
+from django.db.models import Model
 
 from apps.profiles.models import Profile, Roles
 from apps.constructor.models import Contest, Schema, Status
@@ -22,7 +23,8 @@ def get_current_profile(request: Request) -> Profile:
 
 def get_current_profile_type(request: Request):
     try:
-        obj = Profile.objects.get(user=request.user).municipal_district.district_type
+        section = get_current_section(request)
+        obj = Profile.objects.get(user=request.user, section=section).municipal_district.district_type
         return obj
     except Exception as e:
         logger.exception(f"Ошибка при поиске поля profile_type {e}")
@@ -54,22 +56,34 @@ def get_current_schema(request: Request):
         raise Exception("Ошибка при поиске поля schema")
 
 
-def get_current_new_status(request: Request) -> Status:
-    section = get_current_section(request)
-    obj = Status.objects.get(section=section, tech_name="new")
-    return obj
+def get_current_new_status(model: Model, request: Request) -> Status:
+    try:
+        section = get_current_section(request)
+        obj = model.objects.get(section=section, tech_name="new")
+        return obj
+    except Exception as e:
+        logger.exception(f"Ошибка при поиске статуса 'new' {e}")
+        raise Exception("Ошибка при поиске статуса 'new'")
 
 
-def get_current_win_status(request: Request) -> Status:
-    section = get_current_section(request)
-    obj = Status.objects.get(section=section, tech_name="win")
-    return obj
+def get_current_win_status(model: Model, request: Request) -> Status:
+    try:
+        section = get_current_section(request)
+        obj = model.objects.get(section=section, tech_name="win")
+        return obj
+    except Exception as e:
+        logger.exception(f"Ошибка при поиске статуса 'win' {e}")
+        raise Exception("Ошибка при поиске статуса 'win'")
 
 
-def get_current_lose_status(request: Request) -> Status:
-    section = get_current_section(request)
-    obj = Status.objects.get(section=section, tech_name="lose")
-    return obj
+def get_current_lose_status(model: Model, request: Request) -> Status:
+    try:
+        section = get_current_section(request)
+        obj = model.objects.get(section=section, tech_name="lose")
+        return obj
+    except Exception as e:
+        logger.exception(f"Ошибка при поиске статуса 'lose' {e}")
+        raise Exception("Ошибка при поиске статуса 'lose'")
 
 
 def get_current_moder_role() -> Roles:

@@ -4,6 +4,7 @@ from jsonschema import validate, ValidationError, draft7_format_checker
 
 from ..services.current import get_current_schema
 from .current import get_current_new_status
+from ..models import Status
 
 
 class CustomDataValidationError(Exception):
@@ -16,9 +17,10 @@ class SchemaNotFoundError(Exception):
 
 def validate_custom_data(request: Request):
     data = deepcopy(request.data)
-    status = data.get("status")
-    required = status != get_current_new_status(request).id
-
+    status = data.get("status", None)
+    if status is None:
+        raise CustomDataValidationError({"status": "Статус обязатен к заполнению."})
+    required = status != get_current_new_status(Status, request).id
     custom_data = data.get("custom_data")
     if not isinstance(custom_data, dict):
         raise CustomDataValidationError({"custom_data": f"Ожидалось dict, получено {type(custom_data).__name__}."})

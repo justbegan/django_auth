@@ -2,8 +2,9 @@ from rest_framework.views import Request
 from copy import deepcopy
 from jsonschema import validate, ValidationError
 
-from .services.current import get_current_schema
-from .services.current import get_current_new_status
+from apps.constructor.services.current import get_current_schema
+from apps.constructor.services.current import get_current_new_status
+from .models import Status
 
 
 class CustomDataValidationError(Exception):
@@ -17,7 +18,7 @@ class SchemaNotFoundError(Exception):
 def validate_custom_data(request: Request):
     data = deepcopy(request.data)
     status = data.get("status")
-    required = status != get_current_new_status(request).id
+    required = status != get_current_new_status(Status, request).id
 
     custom_data = data.get("custom_data")
     schema = get_current_schema(request)
