@@ -16,7 +16,12 @@ class BaseAdmin(admin.ModelAdmin):
     }
 
 
-admin.site.register(Status)
+@admin.register(Status)
+class Status_admin(admin.ModelAdmin):
+    list_display = ['title', 'section']
+    list_filter = ['section']
+
+
 admin.site.register(Project_type)
 admin.site.register(Document_type)
 
