@@ -21,6 +21,7 @@ class Main_table_fields(models.Model):
     title = models.CharField("Наименование", max_length=120)
     field = models.CharField("Транскрипция")
     pos = models.PositiveIntegerField("Позиция", default=100)
+    width = models.PositiveIntegerField("Ширина", blank=True, null=True)
     section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция",
                                 related_name="table_fields_manager_section")
     content_type = models.ForeignKey(ContentType, on_delete=models.PROTECT, verbose_name="Приложение",
