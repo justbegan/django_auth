@@ -6,7 +6,7 @@ from apps.constructor.admin import MyModelHistoryAdmin
 
 
 @admin.register(Settlement)
-class Settlement_admin(admin.Admin):
+class Settlement_admin(admin.ModelAdmin):
     list_display = ['id', 'MunicNameE']
     search_fields = ['MunicNameE']
 
