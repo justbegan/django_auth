@@ -8,6 +8,7 @@ class Document(models.Model):
     file_url = models.CharField("ссылка")
     created_at = models.DateTimeField('Дата создания', auto_now_add=True)
     updated_at = models.DateTimeField('Дата обновления', auto_now=True)
+    section = models.ForeignKey("profiles.Section", on_delete=models.CASCADE, verbose_name="Секция")
 
     class Meta:
         verbose_name = "Документ"
