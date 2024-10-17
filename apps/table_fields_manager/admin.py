@@ -15,6 +15,6 @@ class BaseAdmin(admin.ModelAdmin):
 
 @admin.register(Main_table_fields)
 class Call_stat_admin(BaseAdmin):
-    list_display = ['id', 'title', 'content_type']
+    list_display = ['id', 'title', 'content_type', 'section']
     search_fields = ['title']
     ordering = ()

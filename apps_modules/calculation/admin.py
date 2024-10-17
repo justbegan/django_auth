@@ -5,7 +5,7 @@ from codemirror2.widgets import CodeMirrorEditor
 from .models import Formula
 
 
-class FormulaAdmin(admin.ModelAdmin):
+class BaseFormula(admin.ModelAdmin):
     formfield_overrides = {
         models.TextField: {'widget': CodeMirrorEditor(options={
             'mode': 'python',  # Вы можете изменить 'python' на необходимый язык
@@ -14,4 +14,6 @@ class FormulaAdmin(admin.ModelAdmin):
     }
 
 
-admin.site.register(Formula, FormulaAdmin)
+@admin.register(Formula)
+class Formula_admin(BaseFormula):
+    list_display = ['title', 'section']
