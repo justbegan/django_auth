@@ -7,7 +7,8 @@ from services.redis import redis_wrapper
 
 
 def get_all_municipal_district(request: Request):
-    return Response(get_many(Municipal_district, Municipal_district_serializer, {}))
+    params = request.GET.dict()
+    return Response(get_many(Municipal_district, Municipal_district_serializer, params))
 
 
 def create_municipal_district(request: Request):
@@ -20,7 +21,8 @@ def update_municipal_district(request: Request, id: int):
 
 @redis_wrapper("all_settlements")
 def get_all_settlements_method(request: Request):
-    return get_many(Settlement, Settlement_serializer)
+    params = request.GET.dict()
+    return get_many(Settlement, Settlement_serializer, params)
 
 
 def get_all_settlements(request: Request):
@@ -41,7 +43,8 @@ def update_settlement(request: Request, id: int):
 
 @redis_wrapper("all_locality")
 def get_all_locality_method(request: Request):
-    return get_many(Locality, Locality_serializer)
+    params = request.GET.dict()
+    return get_many(Locality, Locality_serializer, params)
 
 
 def get_all_locality(request: Request):
