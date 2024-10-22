@@ -14,13 +14,13 @@ def get_all_news(request: Request):
 def create_news(request: Request):
     data = deepcopy(request.data)
     data['section'] = get_current_section(request).id
-    return Response(create(News_serializer, request.data))
+    return Response(create(News_serializer, data))
 
 
 def update_news(request: Request, id: int):
     data = deepcopy(request.data)
     data['section'] = get_current_section(request).id
-    return Response(update(News, News_serializer, request.data, {"id": id}))
+    return Response(update(News, News_serializer, data, {"id": id}))
 
 
 def get_new_by_id(request: Request, id: int):
