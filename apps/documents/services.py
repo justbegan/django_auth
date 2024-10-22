@@ -10,7 +10,7 @@ from apps.constructor.services.current import get_current_section
 def create_document(request: Request):
     data = deepcopy(request.data)
     data['section'] = get_current_section(request)
-    return Response(create(Document_serializer, request.data))
+    return Response(create(Document_serializer, data))
 
 
 def get_all_documents(request: Request):
@@ -18,4 +18,6 @@ def get_all_documents(request: Request):
 
 
 def update_document(request: Request, id: int):
-    return Response(patch(Document, Document_serializer, request.data, {"id": id}))
+    data = deepcopy(request.data)
+    data['section'] = get_current_section(request)
+    return Response(patch(Document, Document_serializer, data, {"id": id}))
