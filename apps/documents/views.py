@@ -1,11 +1,14 @@
 from rest_framework.views import APIView, Request
 
 from .services import create_document, update_document, get_all_documents
-from apps.constructor.services.decorators import role_required
+from apps.constructor.services.decorators import role_required_v2
+from .models import Document
 
 
 class Document_main(APIView):
-    @role_required(allowed_roles=['admin'])
+    model_used = Document
+
+    @role_required_v2()
     def post(self, request: Request):
         return create_document(request)
 
@@ -14,6 +17,6 @@ class Document_main(APIView):
 
 
 class Document_detail(APIView):
-    @role_required(allowed_roles=['admin'])
+    @role_required_v2()
     def put(self, request: Request, id: int):
         return update_document(request, id)

@@ -68,7 +68,7 @@ class Status(Base_status):
 
 
 class Project_type(models.Model):
-    title = models.CharField("Наименование", max_length=120)
+    title = models.CharField("Наименование", max_length=300)
     section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция")
 
     def __str__(self):
