@@ -17,6 +17,8 @@ class Document_main(APIView):
 
 
 class Document_detail(APIView):
+    model_used = Document
+
     @role_required_v2()
     def put(self, request: Request, id: int):
         return update_document(request, id)
