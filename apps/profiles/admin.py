@@ -5,8 +5,12 @@ from users.models import CustomUser
 
 admin.site.register(Roles)
 admin.site.register(Section)
-admin.site.register(Role_handler)
 admin.site.register(Profile_type)
+
+
+@admin.register(Role_handler)
+class Role_handler_admin(admin.ModelAdmin):
+    list_display = ['model', 'section']
 
 
 @admin.register(Profile)

@@ -13,13 +13,11 @@ def get_all_roles_by_section(request: Request):
 
 def create_role(request: Request):
     data = deepcopy(request.data)
-    data['section'] = get_current_section(request)
     return Response(create(Role_serializer, data))
 
 
 def update_role(request: Request, id: int):
     data = deepcopy(request.data)
-    data['section'] = get_current_section(request)
     return Response(update(Roles, Role_serializer, data, {"id": id}))
 
 

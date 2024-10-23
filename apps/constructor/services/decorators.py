@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from apps.profiles.models import Role_handler
-from .current import get_current_section, get_current_profile, get_current_contest, get_current_admin_role
+from .current import get_current_section, get_current_profile, get_current_contest
 import logging
 from django.contrib.contenttypes.models import ContentType
 from ..models import Application
@@ -36,8 +36,6 @@ def role_required_v2():
             else:
                 error_text = "У вас нет прав для изменения записи."
             user_role = get_current_profile(request).role
-            if user_role == get_current_admin_role():
-                return func(self, request, *args, **kwargs)
             used_model_content_type = ContentType.objects.get_for_model(self.model_used)
             try:
                 method_roles = Role_handler.objects.get(
