@@ -60,7 +60,7 @@ class Profile(models.Model):
     )
     profile_type = models.ForeignKey(Profile_type, on_delete=models.PROTECT, verbose_name="Тип профиля", blank=True,
                                      null=True)
-    user = models.ForeignKey('users.CustomUser', on_delete=models.CASCADE, blank=True, null=True)
+    user = models.ForeignKey('users.CustomUser', on_delete=models.PROTECT, blank=True, null=True)
     allowed_number_projects = models.PositiveIntegerField("Допустимое количество проектов", default=0)
 
     def __str__(self):

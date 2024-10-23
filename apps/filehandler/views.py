@@ -24,8 +24,8 @@ class File_handler_list(generics.CreateAPIView):
                 file = ser.data['file']
                 correct_url = "/media/files/" + str(file).split("/media/files/")[1]
                 ser.data['file'] = correct_url
-            except:
+            except Exception:
                 pass
             return Response(ser.data)
         else:
-            raise serializers.ValidationError({"error": "Ошибка в добавлении файла"})
+            raise serializers.ValidationError({"error": "Ошибка при добавлении файла"})
