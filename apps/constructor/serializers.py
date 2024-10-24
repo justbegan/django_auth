@@ -19,8 +19,8 @@ class Base_applications_serializer(serializers.ModelSerializer):
 class Applications_serializer(Base_applications_serializer):
     point_calculation = serializers.DictField(read_only=True)
     total_point = serializers.FloatField(read_only=True)
-    get_financing_republic_grant = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
-    total_price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+    get_financing_republic_grant = serializers.DecimalField(max_digits=20, decimal_places=2, read_only=True)
+    total_price = serializers.DecimalField(max_digits=20, decimal_places=2, read_only=True)
     project_type_title = serializers.CharField(read_only=True, source='project_type.title')
 
     class Meta:
