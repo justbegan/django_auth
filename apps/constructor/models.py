@@ -96,9 +96,9 @@ class Base_application(models.Model):
     municipal_district = models.ForeignKey(Municipal_district, on_delete=models.PROTECT, verbose_name="Район",
                                            related_name='%(class)s_set')
     settlement = models.ForeignKey(Settlement, on_delete=models.PROTECT, verbose_name="Поселение",
-                                   related_name='%(class)s_set')
+                                   related_name='%(class)s_set', blank=True, null=True)
     locality = models.ForeignKey(Locality, on_delete=models.PROTECT, verbose_name="Населенный пункт",
-                                 related_name='%(class)s_set')
+                                 related_name='%(class)s_set', blank=True, null=True)
     created_at = models.DateTimeField('Дата создания обращения', auto_now_add=True)
     updated_at = models.DateTimeField('Дата обновления', auto_now=True)
     status = models.ForeignKey('Status', on_delete=models.PROTECT, verbose_name="Статус",
