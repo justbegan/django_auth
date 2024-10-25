@@ -16,7 +16,7 @@ class Role_handler_admin(admin.ModelAdmin):
 @admin.register(Profile)
 class Profile_admin(admin.ModelAdmin):
     list_display = ['id', 'get_username', 'profile_type',
-                    'municipal_district', 'settlement', 'locality', 'profile_type']
+                    'municipal_district', 'profile_type', 'section']
 
     def get_username(self, obj):
         try:
