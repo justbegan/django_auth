@@ -27,7 +27,9 @@ class Project_type_admin(admin.ModelAdmin):
     list_display = ['title', 'section']
 
 
-admin.site.register(Document_type)
+@admin.register(Document_type)
+class Document_type_admin(admin.ModelAdmin):
+    list_display = ['id', 'title', 'section']
 
 
 @admin.register(Schema)
