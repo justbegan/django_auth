@@ -80,7 +80,7 @@ class Project_type(models.Model):
 
 
 class Document_type(models.Model):
-    title = models.CharField("Наименование", max_length=120)
+    title = models.CharField("Наименование", max_length=320)
     required = models.BooleanField("Обязательный")
     section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция")
 
