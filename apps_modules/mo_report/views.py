@@ -58,7 +58,7 @@ class Application_main(generics.ListCreateAPIView):
     @document_validation(Mo_report_document_type)
     @swagger_auto_schema(request_body=Mo_report_app_serializer_ff)
     def post(self, request, *args, **kwargs):
-        return create_application(request, Mo_report_app_serializer)
+        return create_application(request, Mo_report_app_serializer, Status, Mo_report_schema)
 
 
 class Application_detail(APIView):

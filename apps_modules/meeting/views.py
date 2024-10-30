@@ -59,7 +59,7 @@ class Application_main(generics.ListCreateAPIView):
     @document_validation(Meeting_document_type)
     @swagger_auto_schema(request_body=Meeting_app_serializer_ff)
     def post(self, request, *args, **kwargs):
-        return create_application(request, Meeting_app_serializer)
+        return create_application(request, Meeting_app_serializer, Status, Meeting_schema)
 
 
 class Application_detail(APIView):

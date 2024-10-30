@@ -5,7 +5,7 @@ from django.db import transaction
 from django.db.models import Model
 from rest_framework.serializers import Serializer
 
-from apps.constructor.models import Contest, Application
+from apps.constructor.models import Contest, Application, Schema, Status
 from ..serializers import Application_for_map_serializer
 from services.crud import get, create, patch
 from .custom_data import validate_custom_data
@@ -15,11 +15,16 @@ from .custom_validation import custom_validation
 from apps.comments.services import create_comment_and_change_status
 
 
-def create_application(request: Request, serializer: Serializer) -> Response:
+def create_application(
+    request: Request,
+    serializer: Serializer,
+    status_model: Model = Status,
+    schema_model: Model = Schema
+) -> Response:
     request.data['author'] = get_current_profile(request).id
     request.data['section'] = get_current_section(request).id
     request.data['contest'] = get_current_contest(request).id
-    request.data['custom_data'] = validate_custom_data(request)
+    request.data['custom_data'] = validate_custom_data(request, status_model, schema_model)
     custom_validation(request)
     return Response(create(serializer, request.data))
 
