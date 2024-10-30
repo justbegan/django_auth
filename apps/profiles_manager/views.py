@@ -38,7 +38,10 @@ class Profiles_manager_app_main(generics.ListCreateAPIView):
 
     def get_queryset(self):
         q = super().get_queryset()
-        return q.filter(section=get_current_section(self.request))
+        if get_current_section(self.request):
+            return q.filter(section=get_current_section(self.request))
+        else:
+            return q
 
     @swagger_auto_schema(request_body=Profiles_manager_app_serializer_ff)
     def post(self, request, *args, **kwargs):
