@@ -68,7 +68,9 @@ admin.site.register(Custom_validation, FormulaAdmin)
 @admin.register(Application)
 class ApplicationAdmin(SimpleHistoryAdmin, BaseAdmin):
     list_display = ['title', 'contest', 'section', 'status']
+    list_filter = ['contest', 'section']
     history_list_display = ['history_date', 'history_user']
+    search_fields = ['title']
 
 
 @admin.register(Contest)

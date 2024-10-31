@@ -20,7 +20,8 @@ admin.site.register(Meeting_document_type)
 
 @admin.register(Meeting_app)
 class Meeting_app_admin(BaseAdmin):
-    pass
+    list_display = ['municipal_district', 'locality', 'contest', 'section', 'status']
+    list_filter = ['contest', 'section']
 
 
 @admin.register(Meeting_schema)
