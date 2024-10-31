@@ -105,5 +105,5 @@ def change_applications_statuses_to_win(request: Request, contest_id: int):
             return Response({"message": True})
 
         except Exception as e:
-            return Response({"message": False, "error": str(e)})
-    return Response({"message": False, "error": "Модуль не найден"})
+            return Response({"message": str(e)})
+    return Response({"message": "Модуль не найден"})

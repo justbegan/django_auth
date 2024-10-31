@@ -59,9 +59,9 @@ class Application_main(generics.ListCreateAPIView):
         role_title = profile.role.title
 
         if role_title == 'moderator' or role_title == 'admin':
-            return q.filter(contest__section=get_current_section(self.request))
+            return q.filter(contest__section=get_current_section(self.request)).order_by('-created_at')
         else:
-            return q.filter(author=profile)
+            return q.filter(author=profile).order_by('-id')
 
     @document_validation(Document_type)
     @role_required_v2()

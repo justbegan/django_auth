@@ -19,7 +19,7 @@ def role_required(allowed_roles):
             user_role = get_current_profile(request).role.title
             if user_role not in allowed_roles:
                 return Response(
-                    {"detail": "У вас нет прав для создания записи."},
+                    {"message": "У вас нет прав для создания записи."},
                     status=status.HTTP_403_FORBIDDEN
                 )
             return func(self, request, *args, **kwargs)
@@ -44,13 +44,13 @@ def role_required_v2():
                 )
                 if not method_roles.roles.filter(id=user_role.id):
                     return Response(
-                        {"detail": error_text},
+                        {"message": error_text},
                         status=status.HTTP_403_FORBIDDEN
                     )
             except Exception as e:
                 logger.exception(f"Не могу найти роль метода {e}")
                 return Response(
-                    {"detail": error_text},
+                    {"message": error_text},
                     status=status.HTTP_403_FORBIDDEN
                 )
 
@@ -85,7 +85,7 @@ def application_project_type_validator():
             project_type = request.data.get('project_type', None)
             if project_type is None:
                 return Response(
-                    {"message": False, "error": "Поле 'Типология проекта' не может быть пустым"},
+                    {"message": "Поле 'Типология проекта' не может быть пустым"},
                     status=status.HTTP_400_BAD_REQUEST
                 )
             return func(self, request, *args, **kwargs)

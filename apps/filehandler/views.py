@@ -28,4 +28,4 @@ class File_handler_list(generics.CreateAPIView):
                 pass
             return Response(ser.data)
         else:
-            raise serializers.ValidationError({"error": "Ошибка при добавлении файла"})
+            raise serializers.ValidationError({"message": "Ошибка при добавлении файла"})

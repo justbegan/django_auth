@@ -13,7 +13,7 @@ class Process500:
     def process_exception(self, request, exception):
         return JsonResponse(
             {
-                "error": str(exception)
+                "message": str(exception)
             },
             status=500
         )
