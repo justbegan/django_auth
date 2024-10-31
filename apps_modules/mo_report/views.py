@@ -51,9 +51,9 @@ class Application_main(generics.ListCreateAPIView):
             get_current_profile(self.request).role.title == 'admin'
         ]
         if any(condition):
-            return q.filter(contest__section=get_current_section(self.request))
+            return q.filter(contest__section=get_current_section(self.request)).order_by('-created_at')
         else:
-            return q.filter(author=get_current_profile(self.request))
+            return q.filter(author=get_current_profile(self.request)).order_by('-created_at')
 
     @document_validation(Mo_report_document_type)
     @swagger_auto_schema(request_body=Mo_report_app_serializer_ff)
