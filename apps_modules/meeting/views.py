@@ -72,7 +72,7 @@ class Application_detail(APIView):
     @document_validation(Meeting_document_type)
     @swagger_auto_schema(request_body=Meeting_app_serializer_ff)
     def put(self, request: Request, id: int):
-        return update_application(request, id, Meeting_app, Meeting_app_serializer)
+        return update_application(request, id, Meeting_app, Meeting_app_serializer, Status, Meeting_schema)
 
 
 class Schema_main(APIView):

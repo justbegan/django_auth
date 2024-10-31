@@ -30,9 +30,15 @@ def create_application(
 
 
 @transaction.atomic
-def update_application(request: Request, id: int, model: Model, serializer: Serializer) -> Response:
+def update_application(
+    request: Request,
+    id: int, model: Model,
+    serializer: Serializer,
+    status_model: Model = Status,
+    schema_model: Model = Schema
+) -> Response:
     data = deepcopy(request.data)
-    validate_custom_data(request)
+    validate_custom_data(request, status_model, schema_model)
     obj = patch(model, serializer, data, {"id": id})
     comment = data.get("comment")
     if comment:

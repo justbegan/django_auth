@@ -71,7 +71,7 @@ class Application_detail(APIView):
     @document_validation(Mo_report_document_type)
     @swagger_auto_schema(request_body=Mo_report_app_serializer_ff)
     def put(self, request: Request, id: int):
-        return update_application(request, id, Mo_report_app, Mo_report_app_serializer)
+        return update_application(request, id, Mo_report_app, Mo_report_app_serializer, Status, Mo_report_schema)
 
 
 class Schema_main(APIView):
