@@ -3,7 +3,8 @@ from django.db import models
 from jsoneditor.forms import JSONEditor
 from codemirror2.widgets import CodeMirrorEditor
 from simple_history.admin import SimpleHistoryAdmin
-
+import json
+from django.utils.safestring import mark_safe
 from .models import (Contest, Status, Application, Project_type, Schema, Document_type, Custom_validation)
 
 
@@ -35,6 +36,21 @@ class Document_type_admin(admin.ModelAdmin):
 @admin.register(Schema)
 class Schema_admin(BaseAdmin):
     list_display = ['title', 'section']
+    readonly_fields = ('json_field_display',)
+
+    def sort_data_by_pos(self, data):
+        # Сортируем элементы словаря, конвертируя 'pos' в float
+        sorted_items = sorted(data.items(), key=lambda item: item[1].get("pos", 0))
+        # Возвращаем как отсортированный словарь
+        return {key: value for key, value in sorted_items}
+
+    def json_field_display(self, obj):
+        sorted_data = self.sort_data_by_pos(obj.properties)
+        formatted_json = json.dumps(sorted_data, ensure_ascii=False, indent=2)
+        # Возвращаем JSON с выделением отступов
+        return mark_safe(f'<pre>{formatted_json}</pre>')
+
+    json_field_display.short_description = "Отсортированные данные JSON"
 
 
 class FormulaAdmin(admin.ModelAdmin):
