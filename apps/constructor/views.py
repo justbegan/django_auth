@@ -11,8 +11,7 @@ from .serializers import (Applications_serializer, Application_serializer_ff, Do
                           Schema_serializer)
 from .models import Application, Contest, Status, Project_type, Document_type, Schema
 from .filter import Application_filter, Application_map_filter
-from .services.applications import (get_by_application_id, update_application, win_lose_calculation,
-                                    application_for_map, create_application, change_applications_statuses_to_win)
+from .services.applications import Application_services
 from .services.current import get_current_section, get_current_profile
 from .services.schema import get_schema_by_user
 from apps.table_fields_manager.services import get_main_table_fields_by_section_method
@@ -34,7 +33,7 @@ class StandardResultsSetPagination(PageNumberPagination):
     def get_paginated_response(self, data):
         return Response({
             'main_table_fields': get_main_table_fields_by_section_method(self.request, Application),
-            'win_lose': win_lose_calculation(self.request, data),
+            'win_lose': Application_services.win_lose_calculation(self.request, data),
             'total_results': self.page.paginator.count,
             'total_pages': self.page.paginator.num_pages,
             'current_page': self.page.number,
@@ -68,7 +67,7 @@ class Application_main(generics.ListCreateAPIView):
     @application_number_validator()
     @swagger_auto_schema(request_body=Application_serializer_ff)
     def post(self, request, *args, **kwargs):
-        return create_application(request, Applications_serializer)
+        return Application_services.create_application(request, Applications_serializer)
 
 
 class Application_detail(APIView):
@@ -76,14 +75,14 @@ class Application_detail(APIView):
     model_used = Application
 
     def get(self, request: Request, id: int):
-        return get_by_application_id(request, id, Application, Applications_serializer)
+        return Application_services.get_by_application_id(request, id, Application, Applications_serializer)
 
     @document_validation(Document_type)
     @swagger_auto_schema(request_body=Application_serializer_ff)
     @role_required_v2()
     @application_project_type_validator()
     def put(self, request: Request, id: int):
-        return update_application(request, id, Application, Applications_serializer)
+        return Application_services.update_application(request, id, Application, Applications_serializer)
 
 
 class Schema_main(APIView):
@@ -202,7 +201,7 @@ class Application_for_map(APIView):
 
         if filterset.is_valid():
             queryset = filterset.qs
-            return application_for_map(queryset, request)
+            return Application_services.application_for_map(queryset, request)
         else:
             return Response(filterset.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -213,4 +212,4 @@ class Application_change_status_to_win(APIView):
     @swagger_auto_schema(request_body=Application_change_status_serializer)
     def post(self, request):
         contest_id = request.data.get("contest_id")
-        return change_applications_statuses_to_win(request, contest_id)
+        return Application_services.change_applications_statuses_to_win(request, contest_id)

@@ -9,7 +9,7 @@ from .serializers import (Meeting_app_serializer, Meeting_app_serializer_ff, Mee
                           Meeting_document_type_serializer, Meeting_status_serializer)
 from .models import Meeting_app, Meeting_document_type, Meeting_schema, Status
 from .filter import Meeting_app_filter
-from apps.constructor.services.applications import create_application, update_application, get_by_application_id
+from .services.meeting import Meeting_services
 from apps.constructor.services.schema import get_schema_by_user
 from apps.constructor.services.document import document_validation
 from apps.table_fields_manager.services import get_main_table_fields_by_section_method
@@ -59,7 +59,7 @@ class Application_main(generics.ListCreateAPIView):
     @document_validation(Meeting_document_type)
     @swagger_auto_schema(request_body=Meeting_app_serializer_ff)
     def post(self, request, *args, **kwargs):
-        return create_application(request, Meeting_app_serializer, Status, Meeting_schema)
+        return Meeting_services.create_application(request, Meeting_app_serializer, Status, Meeting_schema)
 
 
 class Application_detail(APIView):
@@ -67,12 +67,14 @@ class Application_detail(APIView):
     model_used = Meeting_app
 
     def get(self, request: Request, id: int):
-        return get_by_application_id(request, id, Meeting_app, Meeting_app_serializer)
+        return Meeting_services.get_by_application_id(request, id, Meeting_app, Meeting_app_serializer)
 
     @document_validation(Meeting_document_type)
     @swagger_auto_schema(request_body=Meeting_app_serializer_ff)
     def put(self, request: Request, id: int):
-        return update_application(request, id, Meeting_app, Meeting_app_serializer, Status, Meeting_schema)
+        return Meeting_services.update_application(
+            request, id, Meeting_app, Meeting_app_serializer, Status, Meeting_schema
+        )
 
 
 class Schema_main(APIView):

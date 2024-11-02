@@ -9,7 +9,7 @@ from .serializers import (Mo_report_app_serializer, Mo_report_app_serializer_ff,
                           Mo_report_document_type_serializer, Mo_report_status_serializer)
 from .models import Mo_report_app, Mo_report_document_type, Mo_report_schema, Status
 from .filter import Meeting_app_filter
-from apps.constructor.services.applications import create_application, update_application, get_by_application_id
+from .services.mo_report import Mo_report_services
 from apps.constructor.services.schema import get_schema_by_user
 from apps.constructor.services.document import document_validation
 from apps.table_fields_manager.services import get_main_table_fields_by_section_method
@@ -58,7 +58,7 @@ class Application_main(generics.ListCreateAPIView):
     @document_validation(Mo_report_document_type)
     @swagger_auto_schema(request_body=Mo_report_app_serializer_ff)
     def post(self, request, *args, **kwargs):
-        return create_application(request, Mo_report_app_serializer, Status, Mo_report_schema)
+        return Mo_report_services.create_application(request, Mo_report_app_serializer, Mo_report_schema)
 
 
 class Application_detail(APIView):
@@ -66,12 +66,14 @@ class Application_detail(APIView):
     model_used = Mo_report_app
 
     def get(self, request: Request, id: int):
-        return get_by_application_id(request, id, Mo_report_app, Mo_report_app_serializer)
+        return Mo_report_services.get_by_application_id(request, id, Mo_report_app, Mo_report_app_serializer)
 
     @document_validation(Mo_report_document_type)
     @swagger_auto_schema(request_body=Mo_report_app_serializer_ff)
     def put(self, request: Request, id: int):
-        return update_application(request, id, Mo_report_app, Mo_report_app_serializer, Status, Mo_report_schema)
+        return Mo_report_services.update_application(
+            request, id, Mo_report_app, Mo_report_app_serializer, Mo_report_schema
+        )
 
 
 class Schema_main(APIView):
