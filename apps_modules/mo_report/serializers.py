@@ -11,6 +11,8 @@ class Mo_report_schema_serializer(serializers.ModelSerializer):
 
 
 class Mo_report_app_serializer(Base_applications_serializer):
+    application_title = serializers.CharField(source='application.title')
+
     class Meta:
         fields = '__all__'
         model = Mo_report_app
