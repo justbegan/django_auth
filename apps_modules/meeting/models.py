@@ -10,6 +10,8 @@ class Status(Base_status):
 
 
 class Meeting_app(Base_application):
+    status = models.ForeignKey('Status', on_delete=models.PROTECT, verbose_name="Статус",
+                               related_name='%(class)s_set')
 
     def __str__(self):
         return f"{self.municipal_district} {self.settlement} {self.locality}"

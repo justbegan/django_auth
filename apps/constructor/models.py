@@ -101,8 +101,6 @@ class Base_application(models.Model):
                                  related_name='%(class)s_set', blank=True, null=True)
     created_at = models.DateTimeField('Дата создания обращения', auto_now_add=True)
     updated_at = models.DateTimeField('Дата обновления', auto_now=True)
-    status = models.ForeignKey('Status', on_delete=models.PROTECT, verbose_name="Статус",
-                               related_name='%(class)s_set')
     contest = models.ForeignKey(Contest, on_delete=models.PROTECT, verbose_name="Конкурс",
                                 related_name='%(class)s_set')
     author = models.ForeignKey(Profile, on_delete=models.PROTECT, verbose_name="Пользователь",
@@ -117,6 +115,8 @@ class Base_application(models.Model):
 
 
 class Application(Base_application):
+    status = models.ForeignKey('Status', on_delete=models.PROTECT, verbose_name="Статус",
+                               related_name='%(class)s_set')
     title = models.TextField("Наименование проекта")
     project_type = models.ForeignKey(
         Project_type, on_delete=models.PROTECT, verbose_name="Типология проекта", blank=True, null=True
