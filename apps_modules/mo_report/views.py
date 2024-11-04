@@ -58,7 +58,7 @@ class Application_main(generics.ListCreateAPIView):
     @document_validation(Mo_report_document_type)
     @swagger_auto_schema(request_body=Mo_report_app_serializer_ff)
     def post(self, request, *args, **kwargs):
-        return Mo_report_services.create_application(request, Mo_report_app_serializer, Mo_report_schema)
+        return Mo_report_services.create_application(request)
 
 
 class Application_detail(APIView):
@@ -66,14 +66,12 @@ class Application_detail(APIView):
     model_used = Mo_report_app
 
     def get(self, request: Request, id: int):
-        return Mo_report_services.get_by_application_id(request, id, Mo_report_app, Mo_report_app_serializer)
+        return Mo_report_services.get_by_application_id(request, id)
 
     @document_validation(Mo_report_document_type)
     @swagger_auto_schema(request_body=Mo_report_app_serializer_ff)
     def put(self, request: Request, id: int):
-        return Mo_report_services.update_application(
-            request, id, Mo_report_app, Mo_report_app_serializer, Mo_report_schema
-        )
+        return Mo_report_services.update_application(request, id)
 
 
 class Schema_main(APIView):

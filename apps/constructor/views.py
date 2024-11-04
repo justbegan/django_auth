@@ -67,7 +67,7 @@ class Application_main(generics.ListCreateAPIView):
     @application_number_validator()
     @swagger_auto_schema(request_body=Application_serializer_ff)
     def post(self, request, *args, **kwargs):
-        return Application_services.create_application(request, Applications_serializer)
+        return Application_services.create_application(request)
 
 
 class Application_detail(APIView):
@@ -75,14 +75,14 @@ class Application_detail(APIView):
     model_used = Application
 
     def get(self, request: Request, id: int):
-        return Application_services.get_by_application_id(request, id, Application, Applications_serializer)
+        return Application_services.get_by_application_id(request, id)
 
     @document_validation(Document_type)
     @swagger_auto_schema(request_body=Application_serializer_ff)
     @role_required_v2()
     @application_project_type_validator()
     def put(self, request: Request, id: int):
-        return Application_services.update_application(request, id, Application, Applications_serializer)
+        return Application_services.update_application(request, id)
 
 
 class Schema_main(APIView):

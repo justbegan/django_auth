@@ -59,7 +59,7 @@ class Application_main(generics.ListCreateAPIView):
     @document_validation(Meeting_document_type)
     @swagger_auto_schema(request_body=Meeting_app_serializer_ff)
     def post(self, request, *args, **kwargs):
-        return Meeting_services.create_application(request, Meeting_app_serializer, Status, Meeting_schema)
+        return Meeting_services.create_application(request)
 
 
 class Application_detail(APIView):
@@ -67,14 +67,12 @@ class Application_detail(APIView):
     model_used = Meeting_app
 
     def get(self, request: Request, id: int):
-        return Meeting_services.get_by_application_id(request, id, Meeting_app, Meeting_app_serializer)
+        return Meeting_services.get_by_application_id(request, id)
 
     @document_validation(Meeting_document_type)
     @swagger_auto_schema(request_body=Meeting_app_serializer_ff)
     def put(self, request: Request, id: int):
-        return Meeting_services.update_application(
-            request, id, Meeting_app, Meeting_app_serializer, Status, Meeting_schema
-        )
+        return Meeting_services.update_application(request, id)
 
 
 class Schema_main(APIView):

@@ -2,8 +2,6 @@ from rest_framework.views import Request, Response
 from decimal import Decimal
 from copy import deepcopy
 from django.db import transaction
-from django.db.models import Model
-from rest_framework.serializers import Serializer
 
 from apps.constructor.models import Contest, Application, Schema, Status
 from ..serializers import Application_for_map_serializer
@@ -11,46 +9,34 @@ from services.crud import get, create, patch
 from .custom_data import validate_custom_data
 from .current import (get_current_section, get_current_contest, get_current_profile,
                       get_current_win_status, get_current_lose_status)
-from .custom_validation import custom_validation
 from apps.comments.services import create_comment_and_change_status
+from ..serializers import Applications_serializer
 
 
-class Application_services():
+class Application_services:
     @staticmethod
-    def create_application(
-        request: Request,
-        serializer: Serializer,
-        status_model: Model = Status,
-        schema_model: Model = Schema
-    ) -> Response:
+    def create_application(request: Request) -> Response:
         request.data['author'] = get_current_profile(request).id
         request.data['section'] = get_current_section(request).id
         request.data['contest'] = get_current_contest(request).id
-        request.data['custom_data'] = validate_custom_data(request, status_model, schema_model)
-        custom_validation(request)
-        return Response(create(serializer, request.data))
+        request.data['custom_data'] = validate_custom_data(request, Status, Schema)
+        return Response(create(Applications_serializer, request.data))
 
     @staticmethod
     @transaction.atomic
-    def update_application(
-        request: Request,
-        id: int, model: Model,
-        serializer: Serializer,
-        status_model: Model = Status,
-        schema_model: Model = Schema
-    ) -> Response:
+    def update_application(request: Request, id: int) -> Response:
         data = deepcopy(request.data)
-        validate_custom_data(request, status_model, schema_model)
-        obj = patch(model, serializer, data, {"id": id})
+        validate_custom_data(request, Status, Schema)
+        obj = patch(Application, Applications_serializer, data, {"id": id})
         comment = data.get("comment")
         if comment:
             create_comment_and_change_status(request, comment, id)
         return Response(obj)
 
     @staticmethod
-    def get_by_application_id(request: Request, id: int, model: Model, serializer: Serializer) -> Response:
+    def get_by_application_id(request: Request, id: int) -> Response:
         return Response(
-            get(model, serializer, {"id": id})
+            get(Application, Applications_serializer, {"id": id})
         )
 
     @staticmethod
