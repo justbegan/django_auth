@@ -1,4 +1,3 @@
-from apps.constructor.services.applications import Application_services
 from rest_framework.views import Request, Response
 from copy import deepcopy
 from django.db import transaction
@@ -11,7 +10,7 @@ from ..models import Mo_report_app, Mo_report_schema
 from ..serializers import Mo_report_app_serializer
 
 
-class Mo_report_services(Application_services):
+class Mo_report_services:
     @staticmethod
     def create_application(request: Request) -> Response:
         request.data['author'] = get_current_profile(request).id
