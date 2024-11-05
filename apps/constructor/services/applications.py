@@ -5,7 +5,7 @@ from django.db import transaction
 
 from apps.constructor.models import Contest, Application, Schema, Status
 from ..serializers import Application_for_map_serializer
-from services.crud import get, create, patch
+from services.crud_services import Base_crud
 from .custom_data import validate_custom_data
 from .current import (get_current_section, get_current_contest, get_current_profile,
                       get_current_win_status, get_current_lose_status)
@@ -20,14 +20,14 @@ class Application_services:
         request.data['section'] = get_current_section(request).id
         request.data['contest'] = get_current_contest(request).id
         request.data['custom_data'] = validate_custom_data(request, Status, Schema)
-        return Response(create(Applications_serializer, request.data))
+        return Response(Base_crud.create(Applications_serializer, request.data))
 
     @staticmethod
     @transaction.atomic
     def update_application(request: Request, id: int) -> Response:
         data = deepcopy(request.data)
         validate_custom_data(request, Status, Schema)
-        obj = patch(Application, Applications_serializer, data, {"id": id})
+        obj = Base_crud.patch(Application, Applications_serializer, data, {"id": id})
         comment = data.get("comment")
         if comment:
             create_comment_and_change_status(request, comment, id)
@@ -36,7 +36,7 @@ class Application_services:
     @staticmethod
     def get_by_application_id(request: Request, id: int) -> Response:
         return Response(
-            get(Application, Applications_serializer, {"id": id})
+            Base_crud.get(Application, Applications_serializer, {"id": id})
         )
 
     @staticmethod

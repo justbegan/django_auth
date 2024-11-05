@@ -4,7 +4,7 @@ from copy import deepcopy
 from django.db import transaction
 from jsonschema import validate, ValidationError, draft7_format_checker
 
-from services.crud import create, patch
+from services.crud import create, patch, get
 from apps.constructor.services.current import (get_current_section, get_current_contest, get_current_profile)
 from apps.comments.services import create_comment_and_change_status
 from ..models import Mo_report_app, Mo_report_schema
@@ -30,6 +30,12 @@ class Mo_report_services(Application_services):
         if comment:
             create_comment_and_change_status(request, comment, id)
         return Response(obj)
+
+    @staticmethod
+    def get_by_application_id(request: Request, id: int) -> Response:
+        return Response(
+            get(Mo_report_app, Mo_report_app_serializer, {"id": id})
+        )
 
     @staticmethod
     def validate_custom_data(request: Request):
