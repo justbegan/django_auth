@@ -4,7 +4,7 @@ from simple_history.models import HistoricalRecords
 from django.contrib.contenttypes.models import ContentType
 from decimal import Decimal
 
-from apps.profiles.models import Section, Profile
+from apps.profiles.models import Section, Profile, Roles
 from apps_modules.calculation.models import Formula
 from apps.locations.models import Municipal_district, Settlement, Locality, District_type
 
@@ -48,6 +48,7 @@ class Base_status(models.Model):
     section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция",
                                 related_name='%(app_label)s_set')
     tech_name = models.CharField("Тех. название", max_length=30)
+    roles = models.ManyToManyField(Roles, related_name='%(app_label)s_set', blank=True)
 
     def __str__(self):
         return self.title

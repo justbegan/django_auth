@@ -1,37 +1,52 @@
-from rest_framework.views import Request, Response
+from rest_framework.views import Request
 from copy import deepcopy
-from django.db import transaction
+from jsonschema import validate, ValidationError, draft7_format_checker
 
-from apps.constructor.services.current import (get_current_section, get_current_contest, get_current_profile)
-from apps.constructor.services.custom_data import validate_custom_data
-from services.crud import create, patch, get
+from apps.constructor.services.current import (get_current_section, get_current_new_status)
 from ..models import Meeting_app, Status, Meeting_schema
 from ..serializers import Meeting_app_serializer
-from apps.comments.services import create_comment_and_change_status
+from apps.constructor.services.applications import Base_application_services
 
 
-class Meeting_services:
-    @staticmethod
-    def create_application(request: Request) -> Response:
-        request.data['author'] = get_current_profile(request).id
-        request.data['section'] = get_current_section(request).id
-        request.data['contest'] = get_current_contest(request).id
-        request.data['custom_data'] = validate_custom_data(request, Status, Meeting_schema)
-        return Response(create(Meeting_app_serializer, request.data))
+class CustomDataValidationError(Exception):
+    pass
 
-    @staticmethod
-    @transaction.atomic
-    def update_application(request: Request, id: int) -> Response:
+
+class SchemaNotFoundError(Exception):
+    pass
+
+
+class Meeting_services(Base_application_services):
+    model = Meeting_app
+    serializer = Meeting_app_serializer
+    status = Status
+
+    @classmethod
+    def validate_custom_data(cls, request: Request):
         data = deepcopy(request.data)
-        validate_custom_data(request, Status, Meeting_schema)
-        obj = patch(Meeting_app, Meeting_app_serializer, data, {"id": id})
-        comment = data.get("comment")
-        if comment:
-            create_comment_and_change_status(request, comment, id)
-        return Response(obj)
+        status = data.get("status", None)
+        if status is None:
+            raise CustomDataValidationError({"status": "Статус обязатен к заполнению."})
+        required = status != get_current_new_status(Status, request).id
+        custom_data = data.get("custom_data")
+        if not isinstance(custom_data, dict):
+            raise CustomDataValidationError({"custom_data": f"Ожидалось dict, получено {type(custom_data).__name__}."})
+        schema = Meeting_schema.objects.filter(section=get_current_section(request)).values().last()
 
-    @staticmethod
-    def get_by_application_id(request: Request, id: int) -> Response:
-        return Response(
-            get(Meeting_app, Meeting_app_serializer, {"id": id})
-        )
+        if schema is None:
+            raise SchemaNotFoundError("Схема не найдена для указанного раздела.")
+
+        schema = deepcopy(schema)
+        if not required:
+            schema['required'] = []
+        obj = {
+            key: value for key, value in custom_data.items()
+            if key in schema.get("properties", {}) and value != ''
+        }
+
+        try:
+            validate(instance=obj, schema=schema, format_checker=draft7_format_checker)
+        except ValidationError as e:
+            raise CustomDataValidationError({"custom_data": str(e)})
+
+        return obj

@@ -6,7 +6,7 @@ from apps.profiles.models import Role_handler
 from .current import get_current_section, get_current_profile, get_current_contest
 import logging
 from django.contrib.contenttypes.models import ContentType
-from ..models import Application
+from ..models import Application, Status
 
 
 logger = logging.getLogger('django')
@@ -89,5 +89,23 @@ def application_project_type_validator():
                     status=status.HTTP_400_BAD_REQUEST
                 )
             return func(self, request, *args, **kwargs)
+        return wrapper
+    return decorator
+
+
+def status_validator():
+    def decorator(func):
+        @wraps(func)
+        def wrapper(cls, request, *args, **kwargs):
+            if cls.status:
+                app_status: Status = cls.status.objects.get(id=request.data.get('status'))
+                if app_status.roles.all().count() > 0:
+                    user_role = get_current_profile(request).role
+                    if app_status.roles.filter(id=user_role.id).count() == 0:
+                        return Response(
+                            {"message": "У вас нет права на этот статус"},
+                            status=status.HTTP_403_FORBIDDEN
+                        )
+            return func(cls, request, *args, **kwargs)
         return wrapper
     return decorator

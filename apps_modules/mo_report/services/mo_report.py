@@ -1,42 +1,19 @@
-from rest_framework.views import Request, Response
+from rest_framework.views import Request
 from copy import deepcopy
-from django.db import transaction
 from jsonschema import validate, ValidationError, draft7_format_checker
 
-from services.crud import create, patch, get
-from apps.constructor.services.current import (get_current_section, get_current_contest, get_current_profile)
-from apps.comments.services import create_comment_and_change_status
-from ..models import Mo_report_app, Mo_report_schema
+from apps.constructor.services.current import get_current_section
+from ..models import Mo_report_app, Mo_report_schema, Status
 from ..serializers import Mo_report_app_serializer
+from apps.constructor.services.applications import Base_application_services
 
 
-class Mo_report_services:
-    @staticmethod
-    def create_application(request: Request) -> Response:
-        request.data['author'] = get_current_profile(request).id
-        request.data['section'] = get_current_section(request).id
-        request.data['contest'] = get_current_contest(request).id
-        request.data['custom_data'] = Mo_report_services.validate_custom_data(request)
-        return Response(create(Mo_report_app_serializer, request.data))
+class Mo_report_services(Base_application_services):
+    model = Mo_report_app
+    serializer = Mo_report_app_serializer
+    status = Status
 
-    @staticmethod
-    @transaction.atomic
-    def update_application(request: Request, id: int) -> Response:
-        data = deepcopy(request.data)
-        Mo_report_services.validate_custom_data(request)
-        obj = patch(Mo_report_app, Mo_report_app_serializer, data, {"id": id})
-        comment = data.get("comment")
-        if comment:
-            create_comment_and_change_status(request, comment, id)
-        return Response(obj)
-
-    @staticmethod
-    def get_by_application_id(request: Request, id: int) -> Response:
-        return Response(
-            get(Mo_report_app, Mo_report_app_serializer, {"id": id})
-        )
-
-    @staticmethod
+    @classmethod
     def validate_custom_data(request: Request):
         data = deepcopy(request.data)
         custom_data = data.get("custom_data")
