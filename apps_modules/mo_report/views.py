@@ -16,6 +16,7 @@ from apps.table_fields_manager.services import get_main_table_fields_by_section_
 from apps.constructor.services.document_type import get_all_document_types_by_section
 from apps.constructor.services.status import get_all_statuses_by_section
 from apps.constructor.services.current import get_current_profile, get_current_section
+from services.decorators import Decorators
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -55,6 +56,7 @@ class Application_main(generics.ListCreateAPIView):
         else:
             return q.filter(author=get_current_profile(self.request)).order_by('-created_at')
 
+    @Decorators.role_required_v2()
     @document_validation(Mo_report_document_type)
     @swagger_auto_schema(request_body=Mo_report_app_serializer_ff)
     def post(self, request, *args, **kwargs):
@@ -68,6 +70,7 @@ class Application_detail(APIView):
     def get(self, request: Request, id: int):
         return Mo_report_services.get_by_application_id(request, id)
 
+    @Decorators.role_required_v2()
     @document_validation(Mo_report_document_type)
     @swagger_auto_schema(request_body=Mo_report_app_serializer_ff)
     def put(self, request: Request, id: int):

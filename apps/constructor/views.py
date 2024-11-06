@@ -10,6 +10,7 @@ from .serializers import (Applications_serializer, Application_serializer_ff, Do
                           Status_serializer, Project_type_serializer_ff, Application_change_status_serializer,
                           Schema_serializer)
 from .models import Application, Contest, Status, Project_type, Document_type, Schema
+from services.decorators import Decorators
 from .filter import Application_filter, Application_map_filter
 from .services.applications import Application_services
 from .services.current import get_current_section, get_current_profile
@@ -19,7 +20,7 @@ from .services.status import get_all_statuses_by_section, create_status, update_
 from .services.project_type import (get_project_type_by_section, create_project_type, update_project_type,
                                     delete_project_type)
 from .services.contest import create_contest, update_contest, get_contests_by_section, get_contest_by_year
-from .services.decorators import role_required_v2, application_number_validator, application_project_type_validator
+from .services.decorators import application_number_validator, application_project_type_validator
 from .services.document_type import (create_document_type, update_document_type, get_all_document_types_by_section,
                                      delete_document_type)
 from .services.document import document_validation
@@ -63,7 +64,7 @@ class Application_main(generics.ListCreateAPIView):
             return q.filter(author=profile).order_by('-id')
 
     @document_validation(Document_type)
-    @role_required_v2()
+    @Decorators.role_required_v2()
     @application_number_validator()
     @swagger_auto_schema(request_body=Application_serializer_ff)
     def post(self, request, *args, **kwargs):
@@ -79,7 +80,7 @@ class Application_detail(APIView):
 
     @document_validation(Document_type)
     @swagger_auto_schema(request_body=Application_serializer_ff)
-    @role_required_v2()
+    @Decorators.role_required_v2()
     @application_project_type_validator()
     def put(self, request: Request, id: int):
         return Application_services.update_application(request, id)
@@ -98,7 +99,7 @@ class Status_main(APIView):
     def get(self, request: Request):
         return get_all_statuses_by_section(request, Status, Status_serializer)
 
-    @role_required_v2()
+    @Decorators.role_required_v2()
     @swagger_auto_schema(request_body=Status_serializer)
     def post(self, request: Request):
         return create_status(request)
@@ -108,7 +109,7 @@ class Status_detail(APIView):
     model_used = Status
 
     @swagger_auto_schema(request_body=Status_serializer)
-    @role_required_v2()
+    @Decorators.role_required_v2()
     def put(self, request: Request, id: int):
         return update_status(request, id)
 
@@ -123,7 +124,7 @@ class Project_type_main(APIView):
         return get_project_type_by_section(request)
 
     @swagger_auto_schema(request_body=Project_type_serializer_ff)
-    @role_required_v2()
+    @Decorators.role_required_v2()
     def post(self, request: Request):
         return create_project_type(request)
 
@@ -132,7 +133,7 @@ class Project_type_detail(APIView):
     model_used = Project_type
 
     @swagger_auto_schema(request_body=Project_type_serializer_ff)
-    @role_required_v2()
+    @Decorators.role_required_v2()
     def put(self, request: Request, id: int):
         return update_project_type(request, id)
 
@@ -151,7 +152,7 @@ class Contest_main(APIView):
     def get(self, request: Request):
         return get_contests_by_section(request)
 
-    @role_required_v2()
+    @Decorators.role_required_v2()
     def post(self, request: Request):
         return create_contest(request)
 
@@ -159,7 +160,7 @@ class Contest_main(APIView):
 class Contest_detail(APIView):
     model_used = Contest
 
-    @role_required_v2()
+    @Decorators.role_required_v2()
     def put(self, request: Request, id: int):
         return update_contest(request, id)
 

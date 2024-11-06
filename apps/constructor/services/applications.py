@@ -5,6 +5,7 @@ from django.db import transaction
 from jsonschema import validate, ValidationError, draft7_format_checker
 from rest_framework.serializers import ModelSerializer
 from django.db.models import Model
+from abc import ABC, abstractmethod
 
 from apps.constructor.models import Contest, Application, Schema, Status
 from ..serializers import Application_for_map_serializer
@@ -24,7 +25,7 @@ class SchemaNotFoundError(Exception):
     pass
 
 
-class Base_application_services:
+class Base_application_services(ABC):
     model: Model = None
     serializer: ModelSerializer = None
     status: Status = None
@@ -56,6 +57,11 @@ class Base_application_services:
             Base_crud.get(cls.model, cls.serializer, {"id": id})
         )
 
+    @classmethod
+    @abstractmethod
+    def validate_custom_data(cls, request: Request):
+        pass
+
 
 class Application_services(Base_application_services):
     model = Application
@@ -72,12 +78,12 @@ class Application_services(Base_application_services):
         custom_data = data.get("custom_data")
         if not isinstance(custom_data, dict):
             raise CustomDataValidationError({"custom_data": f"Ожидалось dict, получено {type(custom_data).__name__}."})
-        schema = Schema.objects.filter(section=get_current_section(request)).values().last()
+        schema_data = Schema.objects.filter(section=get_current_section(request)).values().last()
 
-        if schema is None:
+        if schema_data is None:
             raise SchemaNotFoundError("Схема не найдена для указанного раздела.")
 
-        schema = deepcopy(schema)
+        schema = deepcopy(schema_data)
         if not required:
             schema['required'] = []
         obj = {
