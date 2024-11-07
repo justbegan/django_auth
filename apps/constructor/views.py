@@ -16,7 +16,7 @@ from .services.applications import Application_services
 from .services.current import get_current_section, get_current_profile
 from .services.schema import get_schema_by_user
 from apps.table_fields_manager.services import get_main_table_fields_by_section_method
-from .services.status import get_all_statuses_by_section, create_status, update_status, delete_status
+from .services.status import Status_serives
 from .services.project_type import (get_project_type_by_section, create_project_type, update_project_type,
                                     delete_project_type)
 from .services.contest import create_contest, update_contest, get_contests_by_section, get_contest_by_year
@@ -97,12 +97,12 @@ class Status_main(APIView):
     model_used = Status
 
     def get(self, request: Request):
-        return get_all_statuses_by_section(request, Status, Status_serializer)
+        return Status_serives.get_all_statuses_by_section(request)
 
     @Decorators.role_required_v2()
     @swagger_auto_schema(request_body=Status_serializer)
     def post(self, request: Request):
-        return create_status(request)
+        return Status_serives.create_status(request)
 
 
 class Status_detail(APIView):
@@ -111,10 +111,10 @@ class Status_detail(APIView):
     @swagger_auto_schema(request_body=Status_serializer)
     @Decorators.role_required_v2()
     def put(self, request: Request, id: int):
-        return update_status(request, id)
+        return Status_serives.update_status(request, id)
 
     def delete(self, request: Request, id: int):
-        return delete_status(request, id)
+        return Status_serives.delete_status(request, id)
 
 
 class Project_type_main(APIView):

@@ -6,15 +6,14 @@ from rest_framework.permissions import IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
 
 from .serializers import (Mo_report_app_serializer, Mo_report_app_serializer_ff, Mo_report_schema_serializer,
-                          Mo_report_document_type_serializer, Mo_report_status_serializer)
-from .models import Mo_report_app, Mo_report_document_type, Mo_report_schema, Status
+                          Mo_report_document_type_serializer)
+from .models import Mo_report_app, Mo_report_document_type, Mo_report_schema
 from .filter import Meeting_app_filter
 from .services.mo_report import Mo_report_services
 from apps.constructor.services.schema import get_schema_by_user
 from apps.constructor.services.document import document_validation
 from apps.table_fields_manager.services import get_main_table_fields_by_section_method
 from apps.constructor.services.document_type import get_all_document_types_by_section
-from apps.constructor.services.status import get_all_statuses_by_section
 from apps.constructor.services.current import get_current_profile, get_current_section
 from services.decorators import Decorators
 
@@ -89,10 +88,3 @@ class Document_type_main(APIView):
 
     def get(self, request: Request):
         return get_all_document_types_by_section(request, Mo_report_document_type, Mo_report_document_type_serializer)
-
-
-class Status_main(APIView):
-    model_used = Status
-
-    def get(self, request: Request):
-        return get_all_statuses_by_section(request, Status, Mo_report_status_serializer)
