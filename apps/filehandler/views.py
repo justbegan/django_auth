@@ -1,8 +1,11 @@
-from rest_framework import generics, serializers
-from .serializers import File_handler_serializer
+from rest_framework import generics
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import Response
 from rest_framework.parsers import MultiPartParser, FormParser
+from requests import post
+
+from apps.constructor.services.current import get_current_section
+from .serializers import File_handler_serializer
 
 
 class CsrfExemptSessionAuthentication(SessionAuthentication):
@@ -11,21 +14,22 @@ class CsrfExemptSessionAuthentication(SessionAuthentication):
 
 
 class File_handler_list(generics.CreateAPIView):
-    authentication_classes = (CsrfExemptSessionAuthentication,)
     parser_classes = (MultiPartParser, FormParser)
     serializer_class = File_handler_serializer
 
     def post(self, request):
         data = request.data
-        ser = File_handler_serializer(data=data)
-        if ser.is_valid():
-            ser.save()
-            try:
-                file = ser.data['file']
-                correct_url = "/media/files/" + str(file).split("/media/files/")[1]
-                ser.data['file'] = correct_url
-            except Exception:
-                pass
-            return Response(ser.data)
+
+        file = request.FILES["file"]
+        section = str(get_current_section(request).title)
+
+        fastapi_url = "http://10.18.8.15:8080/upload"
+
+        files = {"file": (file.name, file.read())}
+        data = {"section": section}
+        response = post(fastapi_url, files=files, data=data)
+
+        if response.status_code == 200:
+            return Response(response.json())
         else:
-            raise serializers.ValidationError({"message": "Ошибка при добавлении файла"})
+            return Response({"error": "Failed to upload file to FastAPI"}, status=500)
