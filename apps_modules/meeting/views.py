@@ -5,15 +5,14 @@ from rest_framework.views import APIView, Request, Response
 from rest_framework.permissions import IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
 
-from .serializers import (Meeting_app_serializer, Meeting_app_serializer_ff, Meeting_schema_serializer,
-                          Meeting_document_type_serializer)
+from .serializers import (Meeting_app_serializer, Meeting_app_serializer_ff, Meeting_schema_serializer)
 from .models import Meeting_app, Meeting_document_type, Meeting_schema, Status
 from .filter import Meeting_app_filter
 from .services.meeting import Meeting_services
 from apps.constructor.services.schema import get_schema_by_user
 from apps.constructor.services.document import document_validation
 from apps.table_fields_manager.services import get_main_table_fields_by_section_method
-from apps.constructor.services.document_type import get_all_document_types_by_section
+from .services.document_type import Document_type_services
 from .services.status import Meeting_status_services
 from apps.constructor.services.current import get_current_profile, get_current_section
 from services.decorators import Decorators
@@ -88,7 +87,7 @@ class Document_type_main(APIView):
     model_used = Meeting_document_type
 
     def get(self, request: Request):
-        return get_all_document_types_by_section(request, Meeting_document_type, Meeting_document_type_serializer)
+        return Document_type_services.get_all_document_types_by_section(request)
 
 
 class Status_main(APIView):

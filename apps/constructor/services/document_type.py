@@ -9,23 +9,33 @@ from ..serializers import Document_type_serializer
 from ..models import Document_type
 
 
-def create_document_type(request: Request):
-    data = deepcopy(request.data)
-    data['section'] = get_current_section(request)
-    return Response(create(Document_type_serializer, data))
+class Document_type_base_services:
+    model: Model = None
+    serializer: ModelSerializer = None
+
+    @classmethod
+    def create_document_type(cls, request: Request):
+        data = deepcopy(request.data)
+        data['section'] = get_current_section(request)
+        return Response(create(cls.serializer, data))
+
+    @classmethod
+    def get_all_document_types_by_section(cls, request: Request):
+        section = get_current_section(request)
+        return Response(get_many(cls.model, cls.serializer, {'section': section}))
+
+    @classmethod
+    def update_document_type(cls, request: Request, id: int):
+        data = deepcopy(request.data)
+        instance = cls.model.objects.get(id=id)
+        data['section'] = instance.section.id
+        return Response(update(cls.model, cls.serializer, data, {"id": id}))
+
+    @classmethod
+    def delete_document_type(cls, request: Request, id: int):
+        return Response(delete(cls.model, {"id": id}))
 
 
-def get_all_document_types_by_section(request: Request, model: Model, serializer: ModelSerializer):
-    section = get_current_section(request)
-    return Response(get_many(model, serializer, {'section': section}))
-
-
-def update_document_type(request: Request, id: int):
-    data = deepcopy(request.data)
-    instance = Document_type.objects.get(id=id)
-    data['section'] = instance.section.id
-    return Response(update(Document_type, Document_type_serializer, data, {"id": id}))
-
-
-def delete_document_type(request: Request, id: int):
-    return Response(delete(Document_type, {"id": id}))
+class Document_type_services(Document_type_base_services):
+    model = Document_type
+    serializer = Document_type_serializer

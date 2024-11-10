@@ -21,8 +21,7 @@ from .services.project_type import (get_project_type_by_section, create_project_
                                     delete_project_type)
 from .services.contest import create_contest, update_contest, get_contests_by_section, get_contest_by_year
 from .services.decorators import application_number_validator, application_project_type_validator
-from .services.document_type import (create_document_type, update_document_type, get_all_document_types_by_section,
-                                     delete_document_type)
+from .services.document_type import Document_type_services
 from .services.document import document_validation
 
 
@@ -172,11 +171,11 @@ class Document_type_main(APIView):
     model_used = Document_type
 
     def get(self, request: Request):
-        return get_all_document_types_by_section(request, Document_type, Document_type_serializer)
+        return Document_type_services.get_all_document_types_by_section(request)
 
     @swagger_auto_schema(request_body=Document_type_serializer)
     def post(self, request: Request):
-        return create_document_type(request)
+        return Document_type_services.create_document_type(request)
 
 
 class Document_type_detail(APIView):
@@ -184,10 +183,10 @@ class Document_type_detail(APIView):
 
     @swagger_auto_schema(request_body=Document_type_serializer)
     def put(self, request: Request, id: int):
-        return update_document_type(request, id)
+        return Document_type_services.update_document_type(request, id)
 
     def delete(self, request: Request, id: int):
-        return delete_document_type(request, id)
+        return Document_type_services.delete_document_type(request, id)
 
 
 class Application_for_map(APIView):
