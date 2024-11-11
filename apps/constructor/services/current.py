@@ -6,6 +6,7 @@ from apps.profiles.models import Profile, Roles
 from apps.constructor.models import Contest, Schema, Status
 from ..serializers import Schema_serializer
 from users.models import CustomUser
+from apps.profiles.models import Section
 
 
 logger = logging.getLogger('django')
@@ -41,7 +42,7 @@ def get_current_contest(request: Request) -> int:
         return contest.last()
 
 
-def get_current_section(request: Request):
+def get_current_section(request: Request) -> Section:
     if request.user.is_authenticated:
         obj = CustomUser.objects.get(id=request.user.id).current_section
         return obj
