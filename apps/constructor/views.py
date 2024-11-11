@@ -6,9 +6,9 @@ from rest_framework.permissions import IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
-from .serializers import (Applications_serializer, Application_serializer_ff, Document_type_serializer,
+from .serializers import (Application_serializer_ff, Document_type_serializer,
                           Status_serializer, Project_type_serializer_ff, Application_change_status_serializer,
-                          Schema_serializer)
+                          Schema_serializer, Applications_serializer)
 from .models import Application, Contest, Status, Project_type, Document_type, Schema
 from services.decorators import Decorators
 from .filter import Application_filter, Application_map_filter
@@ -45,12 +45,14 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 class Application_main(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = Applications_serializer
     queryset = Application.objects.all().order_by('-id')
     pagination_class = StandardResultsSetPagination
     filter_backends = [DjangoFilterBackend]
     filterset_class = Application_filter
     model_used = Application
+
+    def get_serializer_class(self):
+        return Applications_serializer
 
     def get_queryset(self):
         q = super().get_queryset()

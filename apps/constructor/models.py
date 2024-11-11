@@ -2,7 +2,7 @@ from django.db import models
 import logging
 from simple_history.models import HistoricalRecords
 from django.contrib.contenttypes.models import ContentType
-from decimal import Decimal
+# from decimal import Decimal
 
 from apps.profiles.models import Section, Profile, Roles
 from apps_modules.calculation.models import Formula
@@ -149,39 +149,39 @@ class Application(Base_application):
         else:
             return result
 
-    def get_financing_settlement_budget(self) -> float:
-        """
-            Бюджет поселения (муниципального района)
-        """
-        return Decimal(str(self.custom_data.get("financing_settlement_budget", 0.0)))
+    # def get_financing_settlement_budget(self) -> float:
+    #     """
+    #         Бюджет поселения (муниципального района)
+    #     """
+    #     return Decimal(str(self.custom_data.get("financing_settlement_budget", 0.0)))
 
-    def get_financing_people(self) -> float:
-        """
-            Население (поступления от жителей)
-        """
-        return Decimal(str(self.custom_data.get("financing_people", 0.0)))
+    # def get_financing_people(self) -> float:
+    #     """
+    #         Население (поступления от жителей)
+    #     """
+    #     return Decimal(str(self.custom_data.get("financing_people", 0.0)))
 
-    def get_financing_sponsors(self) -> float:
-        """
-            Спонсоры (денежные поступления от юр.лиц, инд.предпринимателей и т.д.)
-        """
-        return Decimal(str(self.custom_data.get("financing_sponsors", 0.0)))
+    # def get_financing_sponsors(self) -> float:
+    #     """
+    #         Спонсоры (денежные поступления от юр.лиц, инд.предпринимателей и т.д.)
+    #     """
+    #     return Decimal(str(self.custom_data.get("financing_sponsors", 0.0)))
 
-    def get_financing_republic_grant(self) -> float:
-        """
-            Субсидия из бюджета Республики Саха (Якутия)
-        """
-        return Decimal(str(self.custom_data.get("financing_republic_grant", 0.0)))
+    # def get_financing_republic_grant(self) -> float:
+    #     """
+    #         Субсидия из бюджета Республики Саха (Якутия)
+    #     """
+    #     return Decimal(str(self.custom_data.get("financing_republic_grant", 0.0)))
 
-    def total_price(self):
-        return sum(
-            [
-                self.get_financing_settlement_budget(),
-                self.get_financing_people(),
-                self.get_financing_sponsors(),
-                self.get_financing_republic_grant()
-            ]
-        )
+    # def total_price(self):
+    #     return sum(
+    #         [
+    #             self.get_financing_settlement_budget(),
+    #             self.get_financing_people(),
+    #             self.get_financing_sponsors(),
+    #             self.get_financing_republic_grant()
+    #         ]
+    #     )
 
     def total_point(self):
         try:
@@ -255,3 +255,16 @@ profile_type = Profile.objects.get(user__id=current_user.id).profile_type
     class Meta:
         verbose_name = "Кастомное валидирование"
         verbose_name_plural = "Кастомные валидации"
+
+
+class Calculated_fields(models.Model):
+    title = models.CharField("Наименование", max_length=120)
+    code = models.TextField("Код")
+    section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция")
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Вычисляемое поле"
+        verbose_name_plural = "Вычисляемые поля"

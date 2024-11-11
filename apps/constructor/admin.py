@@ -5,7 +5,8 @@ from codemirror2.widgets import CodeMirrorEditor
 from simple_history.admin import SimpleHistoryAdmin
 import json
 from django.utils.safestring import mark_safe
-from .models import (Contest, Status, Application, Project_type, Schema, Document_type, Custom_validation)
+from .models import (Contest, Status, Application, Project_type, Schema, Document_type,
+                     Custom_validation, Calculated_fields)
 
 
 class BaseAdmin(admin.ModelAdmin):
@@ -103,6 +104,9 @@ class MyModelHistoryAdmin(admin.ModelAdmin):
         return 'Нет изменений'
 
     get_changes.short_description = 'Изменения'
+
+
+admin.site.register(Calculated_fields, FormulaAdmin)
 
 
 admin.site.register(Application.history.model, MyModelHistoryAdmin)

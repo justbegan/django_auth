@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.constructor.models import Application
+from apps.constructor.models import Application, Calculated_fields
 from apps.constructor.models import (Contest, Project_type, Status, Schema, Document_type)
 from apps.comments.serializers import Comments_change_status_serializer
 
@@ -16,16 +16,61 @@ class Base_applications_serializer(serializers.ModelSerializer):
         abstract = True
 
 
+# class Applications_serializer(Base_applications_serializer):
+#     point_calculation = serializers.DictField(read_only=True)
+#     total_point = serializers.FloatField(read_only=True)
+#     # get_financing_republic_grant = serializers.DecimalField(max_digits=20, decimal_places=2, read_only=True)
+#     # total_price = serializers.DecimalField(max_digits=20, decimal_places=2, read_only=True)
+#     project_type_title = serializers.CharField(read_only=True, source='project_type.title')
+
+#     class Meta:
+#         model = Application
+#         fields = "__all__"
+
+
 class Applications_serializer(Base_applications_serializer):
     point_calculation = serializers.DictField(read_only=True)
     total_point = serializers.FloatField(read_only=True)
-    get_financing_republic_grant = serializers.DecimalField(max_digits=20, decimal_places=2, read_only=True)
-    total_price = serializers.DecimalField(max_digits=20, decimal_places=2, read_only=True)
     project_type_title = serializers.CharField(read_only=True, source='project_type.title')
 
     class Meta:
         model = Application
-        fields = "__all__"
+        fields = '__all__'
+
+    @staticmethod
+    def create_dynamic_method(value):
+        # Возвращает динамический метод, который использует значение из параметра
+        def dynamic_method(self, obj):
+            return eval(value)
+        return dynamic_method
+
+    def get_fields(self):
+        # Получаем базовые поля, определённые в Meta
+        fields = super().get_fields()
+
+        # Динамически добавляем поля из Calculated_fields
+        calcs_fields = Calculated_fields.objects.all()
+
+        for param in calcs_fields:
+            # Добавляем поле, если его нет в fields
+            if param.title not in fields:
+                fields[param.title] = serializers.SerializerMethodField()
+
+                # Создаём уникальный метод для каждого динамического поля
+                method_name = f'get_{param.title}'
+                
+                # Проверка, чтобы метод не добавлялся повторно
+                if not hasattr(self.__class__, method_name):
+                    # Добавляем метод на уровне класса
+                    setattr(self.__class__, method_name, self.create_dynamic_method(param.code))
+
+        # Удаляем динамические поля, которых больше нет в Calculated_fields
+        calculated_titles = {param.title for param in calcs_fields}
+        fields_to_remove = [name for name in fields if name not in calculated_titles and name.startswith('get_')]
+        for name in fields_to_remove:
+            fields.pop(name, None)
+
+        return fields
 
 
 class Base_application_serializer_ff(serializers.Serializer):
