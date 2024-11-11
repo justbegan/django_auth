@@ -3,6 +3,7 @@ from rest_framework import serializers
 from apps.constructor.models import Application, Calculated_fields
 from apps.constructor.models import (Contest, Project_type, Status, Schema, Document_type)
 from apps.comments.serializers import Comments_change_status_serializer
+from services.current import get_current_section
 
 
 class Base_applications_serializer(serializers.ModelSerializer):
@@ -47,9 +48,13 @@ class Applications_serializer(Base_applications_serializer):
     def get_fields(self):
         # Получаем базовые поля, определённые в Meta
         fields = super().get_fields()
-
+        try:
+            section = get_current_section(self.context['request'])
+            filter = {"section": section}
+        except Exception:
+            filter = {}
         # Динамически добавляем поля из Calculated_fields
-        calcs_fields = Calculated_fields.objects.all()
+        calcs_fields = Calculated_fields.objects.filter(**filter)
 
         for param in calcs_fields:
             # Добавляем поле, если его нет в fields
@@ -58,7 +63,6 @@ class Applications_serializer(Base_applications_serializer):
 
                 # Создаём уникальный метод для каждого динамического поля
                 method_name = f'get_{param.title}'
-                
                 # Проверка, чтобы метод не добавлялся повторно
                 if not hasattr(self.__class__, method_name):
                     # Добавляем метод на уровне класса
