@@ -106,9 +106,9 @@ class Status_main(APIView):
         return Status_serives.create_status(request)
 
 
-class Get_new_status(APIView):
-    def get(self, request: Request):
-        return Status_serives.get_new_status(request)
+class Get_status_by_name(APIView):
+    def get(self, request: Request, name: str):
+        return Status_serives.get_status_by_name(request, name)
 
 
 class Status_detail(APIView):
