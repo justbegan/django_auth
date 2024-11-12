@@ -106,6 +106,11 @@ class Status_main(APIView):
         return Status_serives.create_status(request)
 
 
+class Get_new_status(APIView):
+    def get(self, request: Request):
+        return Status_serives.get_new_status(request)
+
+
 class Status_detail(APIView):
     model_used = Status
 

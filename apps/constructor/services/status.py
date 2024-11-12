@@ -34,6 +34,12 @@ class Base_status_services:
     def delete_status(cls, request: Request, id: int):
         return Response(Base_crud.delete(cls.model, {"id": id}))
 
+    @classmethod
+    def get_new_status(cls, request: Request):
+        return Response(
+            Base_crud.get(cls.model, cls.serializer, {"tech_name": "new", "section": get_current_section(request)})
+        )
+
 
 class Status_serives(Base_status_services):
     model = Status
