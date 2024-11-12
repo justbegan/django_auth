@@ -30,7 +30,10 @@ class Applications_serializer(Base_applications_serializer):
     def create_dynamic_method(value):
         # Возвращает динамический метод, который использует значение из параметра
         def dynamic_method(self, obj):
-            return eval(value)
+            try:
+                return eval(value)
+            except Exception:
+                return None
         return dynamic_method
 
     def get_fields(self):
