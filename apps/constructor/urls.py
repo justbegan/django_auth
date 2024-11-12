@@ -10,7 +10,7 @@ urlpatterns = [
     path('api/v1/schema', views.Schema_main.as_view()),
     path('api/v1/status', views.Status_main.as_view()),
     path('api/v1/status_detail/<int:id>', views.Status_detail.as_view()),
-    path('api/v1/get_new_status', views.Get_status_by_name.as_view()),
+    path('api/v1/get_status_by_name', views.Get_status_by_name.as_view()),
     path('api/v1/project_type', views.Project_type_main.as_view()),
     path('api/v1/project_type_detail/<int:id>', views.Project_type_detail.as_view()),
     path('api/v1/contest', views.Contest_main.as_view()),

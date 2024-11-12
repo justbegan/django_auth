@@ -107,6 +107,11 @@ class Status_main(APIView):
 
 
 class Get_status_by_name(APIView):
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter('name', in_=openapi.IN_QUERY, type=openapi.TYPE_STRING, required=True)
+        ]
+    )
     def get(self, request: Request, name: str):
         return Status_serives.get_status_by_name(request, name)
 
