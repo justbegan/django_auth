@@ -72,7 +72,10 @@ class Profile(models.Model):
         verbose_name_plural = "Профили"
 
     def get_modules(self):
-        return self.section.modules.all().values()
+        try:
+            return self.section.modules.all().values()
+        except Exception:
+            return {}
 
 
 class Role_handler(models.Model):
