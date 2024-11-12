@@ -112,7 +112,8 @@ class Get_status_by_name(APIView):
             openapi.Parameter('name', in_=openapi.IN_QUERY, type=openapi.TYPE_STRING, required=True)
         ]
     )
-    def get(self, request: Request, name: str):
+    def get(self, request: Request):
+        name = request.GET.get('name')
         return Status_serives.get_status_by_name(request, name)
 
 
