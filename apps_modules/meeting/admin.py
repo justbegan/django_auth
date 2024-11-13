@@ -14,8 +14,16 @@ class BaseAdmin(admin.ModelAdmin):
     }
 
 
-admin.site.register(Status)
-admin.site.register(Meeting_document_type)
+@admin.register(Status)
+class Meeting_status_admin(admin.ModelAdmin):
+    list_display = ['id', 'title', 'tech_name', 'section']
+    list_filter = ['section']
+
+
+@admin.register(Meeting_document_type)
+class Meeting_document_type(admin.ModelAdmin):
+    list_display = ['id', 'title', 'section']
+    list_filter = ['section']
 
 
 @admin.register(Meeting_app)

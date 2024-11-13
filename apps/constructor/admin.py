@@ -20,7 +20,7 @@ class BaseAdmin(admin.ModelAdmin):
 
 @admin.register(Status)
 class Status_admin(admin.ModelAdmin):
-    list_display = ['title', 'section']
+    list_display = ['id', 'title', 'tech_name', 'section']
     list_filter = ['section']
 
 

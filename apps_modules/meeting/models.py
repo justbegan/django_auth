@@ -1,6 +1,6 @@
 from django.db import models
 from apps.profiles.models import Section
-from apps.constructor.models import Base_application, Base_status
+from apps.constructor.models import Base_application, Base_status, Application
 
 
 class Status(Base_status):
@@ -12,6 +12,9 @@ class Status(Base_status):
 class Meeting_app(Base_application):
     status = models.ForeignKey('Status', on_delete=models.PROTECT, verbose_name="Статус",
                                related_name='%(class)s_set')
+    application = models.ForeignKey(
+        Application, on_delete=models.SET_NULL, verbose_name="Заявка", null=True, blank=True
+    )
 
     def __str__(self):
         return f"{self.municipal_district} {self.settlement} {self.locality}"
