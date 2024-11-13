@@ -76,7 +76,8 @@ class ApplicationAdmin(SimpleHistoryAdmin, BaseAdmin):
 
 @admin.register(Contest)
 class ContestAdmin(SimpleHistoryAdmin):
-    list_display = ['title', 'section', 'status']
+    list_display = ['title', 'section', 'status', 'year']
+    list_filter = ['section', 'year']
 
 
 class MyModelHistoryAdmin(admin.ModelAdmin):
