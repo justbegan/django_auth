@@ -76,7 +76,7 @@ class Locality(models.Model):
     RegID = models.ForeignKey(Municipal_district, on_delete=models.PROTECT, verbose_name="Регион")
     OKTMO = models.CharField("ОКТМО", max_length=120)
     LocName = models.TextField("Полное наименование")
-    LocNameE = models.CharField("Наименование", max_length=120)
+    LocNameE = models.CharField("Наименование", max_length=320)
     LocPopulation = models.PositiveIntegerField("Население")
     LocTypeID = models.ForeignKey(Locality_type, on_delete=models.PROTECT, verbose_name="Тип")
     Latitude = models.CharField("Широта", max_length=120, null=True, blank=True)
