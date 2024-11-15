@@ -207,13 +207,19 @@ class Application(Base_application):
         return self.custom_data.get("project_problem", "")
 
 
-class Schema(models.Model):
+class Base_schema(models.Model):
     title = models.CharField("Наименование", max_length=120)
     properties = models.JSONField("Properties", default=dict)
     required = models.JSONField("Required", default=list, blank=True, null=True)
     section = models.OneToOneField(Section, on_delete=models.PROTECT, verbose_name="Секция")
+    contests = models.ManyToManyField(Contest, verbose_name="Конкурсы", blank=True)
     type = models.CharField("Тип", max_length=120)
 
+    class Meta:
+        abstract = True
+
+
+class Schema(Base_schema):
     class Meta:
         verbose_name = "Схема"
         verbose_name_plural = "Схемы"

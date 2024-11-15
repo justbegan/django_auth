@@ -1,7 +1,7 @@
 from django.db import models
 
 from apps.profiles.models import Section
-from apps.constructor.models import Base_application, Application, Base_status
+from apps.constructor.models import Base_application, Application, Base_status, Base_schema
 
 
 class Status(Base_status):
@@ -23,13 +23,7 @@ class Mo_report_app(Base_application):
         verbose_name_plural = "Отчеты МО"
 
 
-class Mo_report_schema(models.Model):
-    title = models.CharField("Наименование", max_length=120)
-    properties = models.JSONField("Properties", default=dict)
-    required = models.JSONField("Required", default=list, blank=True, null=True)
-    section = models.OneToOneField(Section, on_delete=models.PROTECT, verbose_name="Секция")
-    type = models.CharField("Тип", max_length=120)
-
+class Mo_report_schema(Base_schema):
     class Meta:
         verbose_name = "Схема"
         verbose_name_plural = "Схемы"

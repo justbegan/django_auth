@@ -8,7 +8,7 @@ from django.db.models import Model
 from abc import ABC, abstractmethod
 
 from apps.constructor.models import Contest, Application, Schema, Status
-from ..serializers import Application_for_map_serializer
+from ..serializers import Application_for_map_serializer, Schema_serializer
 from services.crud_services import Base_crud
 from .current import (get_current_section, get_current_contest, get_current_profile,
                       get_current_win_status, get_current_lose_status, get_current_new_status)
@@ -54,8 +54,18 @@ class Base_application_services(ABC):
     @classmethod
     def get_by_application_id(cls, request: Request, id: int) -> Response:
         return Response(
-            Base_crud.get(cls.model, cls.serializer, {"id": id})
+            {
+                "schema": cls.get_schema(id),
+                "app": Base_crud.get(cls.model, cls.serializer, {"id": id})
+            }
         )
+
+    @classmethod
+    def get_schema(cls, app_id: int) -> Response:
+        contest = cls.model.objects.get(id=app_id).contest
+        schema = Schema.objects.filter(contests=contest).first()
+        data = Schema_serializer(schema).data
+        return data
 
     @classmethod
     @abstractmethod
