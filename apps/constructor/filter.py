@@ -5,7 +5,18 @@ from django.db.models import Q
 from .models import Application
 
 
-class Base_application_filter(django_filters.FilterSet):
+class Base_filter(django_filters.FilterSet):
+    json_search = django_filters.CharFilter(method='json_search')
+
+    class Meta:
+        abstract = True
+
+    def search_json(self, queryset, name, value):
+        data = json.loads(value)
+        return queryset.filter(**data)
+
+
+class Base_application_filter(Base_filter):
     id = django_filters.CharFilter(method='filter_id')
     created_at = django_filters.CharFilter(method='filter_created_at')
     municipal_district = django_filters.CharFilter(method='filter_municipal_district')

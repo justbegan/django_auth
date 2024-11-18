@@ -2,9 +2,10 @@ import django_filters
 from django.db.models import Q
 
 from .models import Profile
+from apps.constructor.filter import Base_filter
 
 
-class Profile_filter(django_filters.FilterSet):
+class Profile_filter(Base_filter):
     municipal_district = django_filters.CharFilter(method='filter_municipal_district')
     all_field = django_filters.CharFilter(method='search_all_field')
     roles = django_filters.CharFilter(method='filter_roles')

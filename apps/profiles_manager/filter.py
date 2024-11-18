@@ -1,9 +1,10 @@
 import django_filters
 
 from .models import Profiles_manager_app
+from apps.constructor.filter import Base_filter
 
 
-class Profiles_manager_app_filter(django_filters.FilterSet):
+class Profiles_manager_app_filter(Base_filter):
     id = django_filters.CharFilter(method='filter_id')
     status = django_filters.CharFilter(method='filter_status')
     author = django_filters.CharFilter(method='filter_author')
