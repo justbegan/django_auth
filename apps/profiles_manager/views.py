@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import Profiles_manager_app_serializer, Profiles_manager_app_serializer_ff
 from .models import Profiles_manager_app
 from .filter import Profiles_manager_app_filter
-from .services import create_profile_manager_app, update_profile_manager_and_change_profile
+from .services import Profile_manager_services
 from apps.constructor.services.current import get_current_section
 
 
@@ -45,10 +45,10 @@ class Profiles_manager_app_main(generics.ListCreateAPIView):
 
     @swagger_auto_schema(request_body=Profiles_manager_app_serializer_ff)
     def post(self, request, *args, **kwargs):
-        return create_profile_manager_app(request)
+        return Profile_manager_services.create_profile_manager_app(request)
 
 
 class Profiles_manager_app_detail(APIView):
     @swagger_auto_schema(request_body=Profiles_manager_app_serializer_ff)
     def put(self, request: Request, id: int):
-        return update_profile_manager_and_change_profile(request, id)
+        return Profile_manager_services.update_profile_manager_and_change_profile(request, id)

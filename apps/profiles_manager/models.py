@@ -10,10 +10,15 @@ class Profiles_manager_app(models.Model):
         (3, "Отклонено"),
     )
     text = models.TextField("Текст", blank=True, null=True)
-    profile = models.ForeignKey('profiles.Profile', on_delete=models.CASCADE, verbose_name="Профиль")
+    profile = models.ForeignKey('profiles.Profile', on_delete=models.CASCADE,
+                                verbose_name="Профиль", blank=True, null=True)
     author = models.ForeignKey('users.CustomUser', on_delete=models.CASCADE, verbose_name="Автор")
     section = models.ForeignKey('profiles.Section', on_delete=models.CASCADE, verbose_name="Раздел")
     status = models.IntegerField("Статус", choices=STATUS_CH, default=1)
+    municipal_district = models.ForeignKey('locations.Municipal_district',
+                                           on_delete=models.SET_NULL, blank=True, null=True)
+    settlement = models.ForeignKey('locations.Settlement', on_delete=models.SET_NULL, blank=True, null=True)
+    custom_locality = models.TextField("Кастомный населенный пункт", blank=True, null=True)
     created_at = models.DateTimeField('Дата создания', auto_now_add=True)
     updated_at = models.DateTimeField('Дата обновления', auto_now=True)
 
