@@ -21,6 +21,7 @@ class Meeting_services(Base_application_services):
     model = Meeting_app
     serializer = Meeting_app_serializer
     status = Status
+    schema = Meeting_schema
 
     @classmethod
     def validate_custom_data(cls, request: Request):
@@ -32,7 +33,7 @@ class Meeting_services(Base_application_services):
         custom_data = data.get("custom_data")
         if not isinstance(custom_data, dict):
             raise CustomDataValidationError({"custom_data": f"Ожидалось dict, получено {type(custom_data).__name__}."})
-        schema_data = Meeting_schema.objects.filter(section=get_current_section(request)).values().last()
+        schema_data = cls.schema.objects.filter(section=get_current_section(request)).values().last()
 
         if schema_data is None:
             raise SchemaNotFoundError("Схема не найдена для указанного раздела.")

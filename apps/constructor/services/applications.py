@@ -29,6 +29,7 @@ class Base_application_services(ABC):
     model: Model = None
     serializer: ModelSerializer = None
     status: Status = None
+    schema: Schema = None
 
     @classmethod
     @status_validator()
@@ -63,7 +64,7 @@ class Base_application_services(ABC):
     @classmethod
     def get_schema(cls, app_id: int) -> Response:
         contest = cls.model.objects.get(id=app_id).contest
-        schema = Schema.objects.filter(contests=contest).first()
+        schema = cls.schema.objects.filter(contests=contest).first()
         data = Schema_serializer(schema).data
         return data
 
@@ -77,6 +78,7 @@ class Application_services(Base_application_services):
     model = Application
     serializer = Applications_serializer
     status = Status
+    schema = Schema
 
     @classmethod
     def validate_custom_data(cls, request: Request):
@@ -88,7 +90,7 @@ class Application_services(Base_application_services):
         custom_data = data.get("custom_data")
         if not isinstance(custom_data, dict):
             raise CustomDataValidationError({"custom_data": f"Ожидалось dict, получено {type(custom_data).__name__}."})
-        schema_data = Schema.objects.filter(section=get_current_section(request)).values().last()
+        schema_data = cls.schema.objects.filter(section=get_current_section(request)).values().last()
 
         if schema_data is None:
             raise SchemaNotFoundError("Схема не найдена для указанного раздела.")

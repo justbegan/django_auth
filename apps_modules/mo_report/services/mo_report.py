@@ -12,14 +12,15 @@ class Mo_report_services(Base_application_services):
     model = Mo_report_app
     serializer = Mo_report_app_serializer
     status = Status
+    schema = Mo_report_schema
 
     @classmethod
-    def validate_custom_data(request: Request):
+    def validate_custom_data(cls, request: Request):
         data = deepcopy(request.data)
         custom_data = data.get("custom_data")
         if not isinstance(custom_data, dict):
             raise Exception({"custom_data": f"Ожидалось dict, получено {type(custom_data).__name__}."})
-        schema = Mo_report_schema.objects.filter(section=get_current_section(request)).values().last()
+        schema = cls.schema.objects.filter(section=get_current_section(request)).values().last()
         schema = deepcopy(schema)
         obj = {
             key: value for key, value in custom_data.items()
