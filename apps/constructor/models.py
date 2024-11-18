@@ -36,7 +36,7 @@ class Contest(models.Model):
     history = HistoricalRecords("История")
 
     def __str__(self):
-        return self.title
+        return f"{self.title}|{self.year}|{self.section}"
 
     class Meta:
         verbose_name = "Конкурс"
