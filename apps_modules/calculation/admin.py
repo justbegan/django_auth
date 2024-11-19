@@ -17,3 +17,4 @@ class BaseFormula(admin.ModelAdmin):
 @admin.register(Formula)
 class Formula_admin(BaseFormula):
     list_display = ['title', 'section']
+    list_filter = ['section']

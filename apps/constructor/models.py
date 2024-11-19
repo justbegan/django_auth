@@ -137,7 +137,7 @@ class Application(Base_application):
             return result
         if self.contest.title != "new":
             try:
-                formulas = Formula.objects.filter(section=self.section)
+                formulas = Formula.objects.filter(section=self.section, contest=self.contest)
                 for f in formulas:
                     try:
                         exec(f.code)

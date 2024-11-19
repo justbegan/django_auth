@@ -3,18 +3,18 @@ from copy import deepcopy
 
 from .models import Question
 from .serializer import Question_serializer
-from services.crud import create, update, get_many, delete
+from services.crud_services import Base_crud
 from services.current import get_current_section
 
 
 def create_question(request: Request):
     data = deepcopy(request.data)
     data['section'] = get_current_section(request).id
-    return Response(create(Question_serializer, data))
+    return Response(Base_crud.create(Question_serializer, data))
 
 
 def get_all_question_by_section(request: Request):
-    return Response(get_many(Question, Question_serializer, {
+    return Response(Base_crud.get_many(Question, Question_serializer, {
         "section": get_current_section(request),
         "hide": False
     }))
@@ -23,8 +23,8 @@ def get_all_question_by_section(request: Request):
 def update_question(request: Request, id: int):
     data = deepcopy(request.data)
     data['section'] = get_current_section(request).id
-    return Response(update(Question, Question_serializer, data, {"id": id}))
+    return Response(Base_crud.update(Question, Question_serializer, data, {"id": id}))
 
 
 def delete_question(request: Request, id: int):
-    return Response(delete(Question, {"id": id}))
+    return Response(Base_crud.delete(Question, {"id": id}))

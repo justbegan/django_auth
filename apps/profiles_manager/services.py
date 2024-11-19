@@ -2,7 +2,7 @@ from rest_framework.views import Response, Request
 from copy import deepcopy
 from django.db import transaction
 
-from services.crud import create, update
+from services.crud_services import Base_crud
 from services.current import get_current_section
 from .serializers import Profiles_manager_app_serializer
 from .models import Profiles_manager_app
@@ -24,7 +24,7 @@ class Profile_manager_services:
             "LocPopulation": 0,
             "LocTypeID": 6
         }
-        return create(Locality_serializer, obj)
+        return Base_crud.create(Locality_serializer, obj)
 
     @staticmethod
     def create_profile(request, data, new_loc):
@@ -39,13 +39,13 @@ class Profile_manager_services:
             "user": data['author'],
             "allowed_number_projects": 1
         }
-        return create(Profile_serializer, obj)
+        return Base_crud.create(Profile_serializer, obj)
 
     @staticmethod
     def create_profile_manager_app(request: Request):
         data = deepcopy(request.data)
         data['author'] = request.user.id
-        return Response(create(Profiles_manager_app_serializer, data))
+        return Response(Base_crud.create(Profiles_manager_app_serializer, data))
 
     @staticmethod
     def update_profile_manager_app(request: Request, id: int):
@@ -53,7 +53,7 @@ class Profile_manager_services:
         instance = Profiles_manager_app.objects.get(id=id)
         data['section'] = instance.section.id
         data['author'] = instance.author.id
-        return update(Profiles_manager_app, Profiles_manager_app_serializer, data, {"id": id})
+        return Base_crud.update(Profiles_manager_app, Profiles_manager_app_serializer, data, {"id": id})
 
     @staticmethod
     def change_profile(profile_id, user_id):

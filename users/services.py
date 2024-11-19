@@ -7,39 +7,41 @@ import string
 
 from users.models import CustomUser
 from .serializers import User_serializer, User_put_serializer
-from services.crud import update, get, create, get_many, patch
+from services.crud_services import Base_crud
 from services.current import get_current_section
 from .models import VerificationCode
 
 
 def get_user(request):
-    return Response(get(CustomUser, User_serializer, {"id": request.user.id}))
+    return Response(Base_crud.get(CustomUser, User_serializer, {"id": request.user.id}))
 
 
 def get_user_id(request: Request, user_id: int):
-    return Response(get(CustomUser, User_serializer, {"id": user_id}))
+    return Response(Base_crud.get(CustomUser, User_serializer, {"id": user_id}))
 
 
 def update_user(request: Request, user_id: int):
     data = request.data
-    user = update(CustomUser, User_put_serializer, data, {"id": user_id})
+    user = Base_crud.update(CustomUser, User_put_serializer, data, {"id": user_id})
     return Response(user)
 
 
 def create_user(request: Request):
     data = request.data
     data['is_active'] = False
-    return Response(create(User_serializer, data))
+    return Response(Base_crud.create(User_serializer, data))
 
 
 def get_all_users(request: Request):
-    users = get_many(CustomUser, User_serializer, {"profile__section": get_current_section(request)})
+    users = Base_crud.get_many(CustomUser, User_serializer, {"profile__section": get_current_section(request)})
     return Response(users)
 
 
 def get_new_users(request: Request):
-    users = get_many(CustomUser, User_serializer,
-                     {"profile__section": get_current_section(request), "is_active": False})
+    users = Base_crud.get_many(
+        CustomUser, User_serializer,
+        {"profile__section": get_current_section(request), "is_active": False}
+    )
     return Response(users)
 
 
@@ -98,4 +100,4 @@ def recover_password(request: Request):
 
 
 def patch_user(request: Request, id: int):
-    return Response(patch(CustomUser, User_serializer, request.data, {'id': id}))
+    return Response(Base_crud.patch(CustomUser, User_serializer, request.data, {'id': id}))
