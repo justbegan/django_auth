@@ -9,8 +9,11 @@ from apps.constructor.services.current import get_current_section
 from services.crud import get_many
 
 
-def get_main_table_fields_by_section_method(request: Request, model: Model):
-    section = get_current_section(request)
+def get_main_table_fields_by_section_method(request: Request = None, model: Model = None, section_obj: dict = None):
+    if section_obj:
+        section = section_obj
+    else:
+        section = get_current_section(request)
     content_type = ContentType.objects.get_for_model(model)
     obj = get_many(Main_table_fields, Main_table_fields_serializer,
                    {"section": section, "content_type": content_type}, 'pos')
@@ -24,8 +27,9 @@ def get_main_table_fields_by_section_method(request: Request, model: Model):
             if filter_config:
                 config_current_section = filter_config.get('current_section', False)
                 config_filter = i['filter_config'].get('filter', {})
+                # если в справочнике есть параметр секция
                 if config_current_section:
-                    config_filter['section'] = get_current_section(request).id
+                    config_filter['section'] = section.id
                 mapping_conf = i['filter_config'].get('mapping', {})
                 annotations = {
                     new_field: F(old_field) for new_field, old_field in mapping_conf.items()

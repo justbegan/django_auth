@@ -4,10 +4,23 @@ from ..models import Section
 from ..serializers import Section_serializer
 from services.crud import get_many, get, create, update
 from apps.constructor.services.current import get_current_section
+from apps.table_fields_manager.services import get_main_table_fields_by_section_method
 
 
 def get_all_sections(request: Request):
-    return Response(get_many(Section, Section_serializer))
+    obj = get_many(Section, Section_serializer)
+    result = []
+    for i in obj:
+        section = Section.objects.get(id=i['id'])
+        result.append(
+            {
+                "data": i,
+                "profile_table_fields": get_main_table_fields_by_section_method(model=Section, section_obj=section)
+            }
+        )
+    return Response(
+        result
+    )
 
 
 def create_section(request: Request):
@@ -24,4 +37,9 @@ def get_section_by_id(request: Request, id: int):
 
 def get_sections_by_user(request: Request):
     section = get_current_section(request)
-    return Response(get(Section, Section_serializer, {"id": section.id}))
+    return Response(
+        {
+            "data": get(Section, Section_serializer, {"id": section.id}),
+            "profile_table_fields": get_main_table_fields_by_section_method(model=Section, section_obj=section)
+        }
+    )
