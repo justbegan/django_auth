@@ -4,7 +4,7 @@ from copy import deepcopy
 from ..models import Project_type
 from ..serializers import Project_type_serializer
 from services.crud import get_many, create, update, delete
-from .current import get_current_section
+from services.current import get_current_section
 
 
 def get_project_type_by_section(request: Request):

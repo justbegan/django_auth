@@ -1,7 +1,7 @@
 from rest_framework.views import Response, Request
 from copy import deepcopy
 
-from apps.constructor.services.current import get_current_section
+from services.current import get_current_section
 from services.crud import create, delete, get_many, patch
 from .serializers import Letter_serializer
 from .models import Letter

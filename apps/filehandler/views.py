@@ -6,7 +6,7 @@ from requests import post
 import os
 from dotenv import load_dotenv
 
-from apps.constructor.services.current import get_current_section
+from services.current import get_current_section
 from .serializers import File_handler_serializer
 
 load_dotenv()

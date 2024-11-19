@@ -8,7 +8,7 @@ import string
 from users.models import CustomUser
 from .serializers import User_serializer, User_put_serializer
 from services.crud import update, get, create, get_many, patch
-from apps.constructor.services.current import get_current_section
+from services.current import get_current_section
 from .models import VerificationCode
 
 

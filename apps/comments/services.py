@@ -10,7 +10,7 @@ from .serializers import Comments_serializer
 from .models import Comments
 from apps.constructor.models import Application
 from apps.profiles.models import Profile
-from apps.constructor.services.current import get_current_section, get_current_moder_role
+from services.current import get_current_section, get_current_moder_role
 
 
 logger = logging.getLogger('django')

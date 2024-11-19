@@ -10,8 +10,8 @@ from abc import ABC, abstractmethod
 from apps.constructor.models import Contest, Application, Schema, Status
 from ..serializers import Application_for_map_serializer, Schema_serializer
 from services.crud_services import Base_crud
-from .current import (get_current_section, get_current_contest, get_current_profile,
-                      get_current_win_status, get_current_lose_status, get_current_new_status)
+from services.current import (get_current_section, get_current_contest, get_current_profile,
+                              get_current_win_status, get_current_lose_status, get_current_new_status)
 from apps.comments.services import create_comment_and_change_status
 from ..serializers import Applications_serializer
 from .decorators import status_validator

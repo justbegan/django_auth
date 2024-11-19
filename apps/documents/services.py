@@ -4,7 +4,7 @@ from copy import deepcopy
 from services.crud import create, get_many, patch
 from .serializer import Document_serializer
 from .models import Document
-from apps.constructor.services.current import get_current_section
+from services.current import get_current_section
 
 
 def create_document(request: Request):

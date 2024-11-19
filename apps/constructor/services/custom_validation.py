@@ -2,7 +2,7 @@ from rest_framework.views import Request
 from rest_framework.validators import ValidationError
 
 from apps.constructor.models import Application, Custom_validation
-from .current import get_current_section, get_current_contest
+from services.current import get_current_section, get_current_contest
 from apps.profiles.models import Profile
 
 

@@ -2,7 +2,7 @@ from rest_framework.views import Request
 from copy import deepcopy
 from jsonschema import validate, ValidationError, draft7_format_checker
 
-from apps.constructor.services.current import (get_current_section, get_current_new_status)
+from services.current import (get_current_section, get_current_new_status)
 from ..models import Meeting_app, Status, Meeting_schema
 from ..serializers import Meeting_app_serializer
 from apps.constructor.services.applications import Base_application_services

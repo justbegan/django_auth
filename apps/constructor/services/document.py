@@ -3,7 +3,7 @@ import logging
 from functools import wraps
 from django.db.models import Model
 
-from .current import get_current_section, get_current_new_status
+from services.current import get_current_section, get_current_new_status
 from ..models import Status
 
 

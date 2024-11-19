@@ -9,7 +9,7 @@ from .serializers import Profiles_manager_app_serializer, Profiles_manager_app_s
 from .models import Profiles_manager_app
 from .filter import Profiles_manager_app_filter
 from .services import Profile_manager_services
-from apps.constructor.services.current import get_current_section
+from services.current import get_current_section
 
 
 class StandardResultsSetPagination(PageNumberPagination):

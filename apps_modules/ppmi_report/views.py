@@ -8,7 +8,7 @@ from drf_yasg import openapi
 from apps.constructor.models import Application
 from .serializers import (Application_registry_serializer, Results_of_applications_acceptance_serializer,
                           Application_rating_serializer, Application_stat_by_district_serializer)
-from apps.constructor.services.current import get_current_section
+from services.current import get_current_section
 from .filter import Application_rating_filter
 from apps.locations.models import Municipal_district, Settlement
 

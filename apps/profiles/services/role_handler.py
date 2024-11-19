@@ -3,7 +3,7 @@ from copy import deepcopy
 from django.contrib.contenttypes.models import ContentType
 
 from services.crud import create, update, get_many, delete, get
-from apps.constructor.services.current import get_current_section
+from services.current import get_current_section
 from ..serializers import Role_handler_serializer
 from ..models import Role_handler
 

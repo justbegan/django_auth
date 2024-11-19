@@ -1,5 +1,5 @@
 from rest_framework.views import Response, Request
-from ..services.current import get_current_section
+from services.current import get_current_section
 from services.crud import create, get_many, update, delete
 from copy import deepcopy
 from django.db.models import Model

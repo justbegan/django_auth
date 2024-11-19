@@ -5,7 +5,7 @@ from django.db.models import F
 
 from .serializers import Main_table_fields_serializer
 from .models import Main_table_fields
-from apps.constructor.services.current import get_current_section
+from services.current import get_current_section
 from services.crud import get_many
 
 

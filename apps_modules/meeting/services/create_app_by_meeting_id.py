@@ -3,7 +3,7 @@ from rest_framework.views import Request
 from ..models import Meeting_app, Status
 from .meeting import Meeting_services
 from apps.constructor.serializers import Applications_serializer
-from apps.constructor.services.current import get_current_new_status
+from services.current import get_current_new_status
 
 
 def create_app(request: Request, meeting_id: int):

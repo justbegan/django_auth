@@ -3,7 +3,7 @@ from rest_framework.views import Request, Response
 from ..models import Section
 from ..serializers import Section_serializer
 from services.crud import get_many, get, create, update
-from apps.constructor.services.current import get_current_section
+from services.current import get_current_section
 from apps.table_fields_manager.services import get_main_table_fields_by_section_method
 
 

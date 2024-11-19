@@ -4,7 +4,7 @@ from copy import deepcopy
 from .models import Question
 from .serializer import Question_serializer
 from services.crud import create, update, get_many, delete
-from apps.constructor.services.current import get_current_section
+from services.current import get_current_section
 
 
 def create_question(request: Request):

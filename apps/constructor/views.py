@@ -13,7 +13,7 @@ from .models import Application, Contest, Status, Project_type, Document_type, S
 from services.decorators import Decorators
 from .filter import Application_filter, Application_map_filter
 from .services.applications import Application_services
-from .services.current import get_current_section, get_current_profile
+from services.current import get_current_section, get_current_profile
 from .services.schema import get_schema_by_user
 from apps.table_fields_manager.services import get_main_table_fields_by_section_method
 from .services.status import Status_serives

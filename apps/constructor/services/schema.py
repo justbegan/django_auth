@@ -2,7 +2,7 @@ from rest_framework.views import Response
 from rest_framework.serializers import ModelSerializer
 from django.db.models import Model
 
-from .current import get_current_contest
+from services.current import get_current_contest
 
 
 def get_schema_by_user(request, model: Model, serializer: ModelSerializer):

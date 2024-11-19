@@ -2,7 +2,7 @@ from rest_framework.views import Request
 from copy import deepcopy
 from jsonschema import validate, ValidationError, draft7_format_checker
 
-from apps.constructor.services.current import get_current_section
+from services.current import get_current_section
 from ..models import Mo_report_app, Mo_report_schema, Status
 from ..serializers import Mo_report_app_serializer
 from apps.constructor.services.applications import Base_application_services

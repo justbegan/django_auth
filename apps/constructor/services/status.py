@@ -6,7 +6,7 @@ from django.db.models import Model
 from ..models import Status
 from ..serializers import Status_serializer
 from services.crud_services import Base_crud
-from .current import get_current_section
+from services.current import get_current_section
 
 
 class Base_status_services:

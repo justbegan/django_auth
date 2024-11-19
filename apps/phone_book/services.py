@@ -2,7 +2,7 @@ from rest_framework.views import Request, Response
 from copy import deepcopy
 from services.crud import create, update, delete, get_many
 
-from apps.constructor.services.current import get_current_section
+from services.current import get_current_section
 from .serializers import Phone_book_serializer
 from .models import Phone_book
 

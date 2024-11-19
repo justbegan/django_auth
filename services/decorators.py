@@ -3,7 +3,7 @@ from rest_framework.views import Response, Request
 from rest_framework import status
 
 from apps.profiles.models import Role_handler
-from .current import get_current_section, get_current_profile
+from services.current import get_current_section, get_current_profile
 import logging
 from django.contrib.contenttypes.models import ContentType
 

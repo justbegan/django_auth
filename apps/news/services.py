@@ -4,7 +4,7 @@ from copy import deepcopy
 from .models import News
 from .serializers import News_serializer
 from services.crud_services import Base_crud
-from apps.constructor.services.current import get_current_section
+from services.current import get_current_section
 
 
 class News_services:

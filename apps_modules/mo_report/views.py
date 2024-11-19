@@ -13,7 +13,7 @@ from apps.constructor.services.schema import get_schema_by_user
 from apps.constructor.services.document import document_validation
 from apps.table_fields_manager.services import get_main_table_fields_by_section_method
 from .services.document_type import Document_type_services
-from apps.constructor.services.current import get_current_profile, get_current_section
+from services.current import get_current_profile, get_current_section
 from services.decorators import Decorators
 
 

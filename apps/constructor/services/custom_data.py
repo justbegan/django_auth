@@ -3,7 +3,7 @@ from django.db.models import Model
 from copy import deepcopy
 from jsonschema import validate, ValidationError, draft7_format_checker
 
-from .current import get_current_new_status, get_current_section
+from services.current import get_current_new_status, get_current_section
 
 
 class CustomDataValidationError(Exception):
