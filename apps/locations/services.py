@@ -1,8 +1,10 @@
 from rest_framework.views import Response, Request
+from django.db.models import Q
 
 from .models import Municipal_district, Settlement, Locality
 from .serializers import Municipal_district_serializer, Settlement_serializer, Locality_serializer
 from services.crud_services import Base_crud
+from services.current import get_current_section
 
 
 class Locallity_services:
@@ -42,8 +44,14 @@ class Locallity_services:
 
     @staticmethod
     def get_all_locality_method(request: Request):
-        params = request.GET.dict()
-        return Base_crud.get_many(Locality, Locality_serializer, params)
+        obj = Locality.objects.filter(
+            Q(sections__isnull=True) | Q(sections=get_current_section(request))
+        ).distinct()
+        return Base_crud.get_many(
+            model=Locality,
+            serializer=Locality_serializer,
+            custom_obj=obj
+        )
 
     @staticmethod
     def get_all_locality(request: Request):

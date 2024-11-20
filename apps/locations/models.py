@@ -81,6 +81,7 @@ class Locality(models.Model):
     LocTypeID = models.ForeignKey(Locality_type, on_delete=models.PROTECT, verbose_name="Тип")
     Latitude = models.CharField("Широта", max_length=120, null=True, blank=True)
     Longitude = models.CharField("Долгота", max_length=120, null=True, blank=True)
+    sections = models.ManyToManyField("profiles.Section", blank=True)
     history = HistoricalRecords("История")
 
     def __str__(self):

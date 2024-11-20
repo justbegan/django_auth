@@ -27,8 +27,17 @@ class Base_crud:
             return {}
 
     @staticmethod
-    def get_many(model: Model, serializer: ModelSerializer, parameters: dict = {}, order: str = "id"):
-        obj = model.objects.filter(**parameters).order_by(order)
+    def get_many(
+        model: Model,
+        serializer: ModelSerializer,
+        parameters: dict = {},
+        order: str = "id",
+        custom_obj: dict = None
+    ):
+        if custom_obj is None:
+            obj = model.objects.filter(**parameters).order_by(order)
+        else:
+            obj = custom_obj
         return serializer(obj, many=True).data
 
     @staticmethod
