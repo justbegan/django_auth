@@ -135,17 +135,14 @@ class Application(Base_application):
         result = {}
         if not self.section.modules.filter(verbose_name='Calculation').exists():
             return result
-        if self.contest.title != "new":
-            try:
-                formulas = Formula.objects.filter(section=self.section, contest=self.contest)
-                for f in formulas:
-                    try:
-                        exec(f.code)
-                    except Exception:
-                        logger.warning("Ошибка при выполнение кода формулы")
-            except Exception:
-                logger.warning("Ошибка при итерации формулы")
-                return result
+        if self.status.tech_name != "new":
+            formulas = Formula.objects.filter(section=self.section, contest=self.contest)
+            for f in formulas:
+                try:
+                    exec(f.code)
+                except Exception:
+                    logger.warning(f"Ошибка при выполнение кода формулы {f.title}")
+            return result
         else:
             return result
 
@@ -184,12 +181,11 @@ class Application(Base_application):
     #     )
 
     def total_point(self):
-        try:
-            values = [value for key, value in self.point_calculation().items()]
+        obj: dict = self.point_calculation()
+        if obj is not None:
+            values = [value for key, value in obj.items()]
             return sum(values)
-        except Exception:
-            logger.warning("Ошибка при расчете баллов, результат 0")
-            return 0
+        return 0
 
     def get_lat_lon(self):
         try:
