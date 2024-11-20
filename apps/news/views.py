@@ -1,20 +1,46 @@
-from rest_framework.views import APIView, Request
+from rest_framework.views import APIView, Request, Response
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import generics
 
 from .services import News_services
-from .serializers import News_serializer_ff
+from .serializers import News_serializer_ff, News_serializer
 from services.decorators import Decorators
 from .models import News
+from .filter import News_filter
+from services.current import get_current_section
 
 
-class News_main(APIView):
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 15
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
+
+    def get_paginated_response(self, data):
+        return Response({
+            'total_results': self.page.paginator.count,
+            'total_pages': self.page.paginator.num_pages,
+            'current_page': self.page.number,
+            'next': self.get_next_link(),
+            'previous': self.get_previous_link(),
+            'results': data,
+        })
+
+
+class News_main(generics.ListCreateAPIView):
     model_used = News
+    permission_classes = [IsAuthenticated]
+    queryset = News.objects.all().order_by('-id')
+    pagination_class = StandardResultsSetPagination
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = News_filter
+    serializer_class = News_serializer
 
-    def get(self, request: Request):
-        """
-        Получить все новости
-        """
-        return News_services.get_all_news(request)
+    def get_queryset(self):
+        q = super().get_queryset()
+        return q.filter(section=get_current_section(self.request)).order_by('-id')
 
     @Decorators.role_required_v2()
     @swagger_auto_schema(request_body=News_serializer_ff)

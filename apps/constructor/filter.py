@@ -6,12 +6,12 @@ from .models import Application
 
 
 class Base_filter(django_filters.FilterSet):
-    json_search = django_filters.CharFilter(method='json_search')
+    json_search = django_filters.CharFilter(method='json_search_method')
 
     class Meta:
         abstract = True
 
-    def search_json(self, queryset, name, value):
+    def json_search_method(self, queryset, name, value):
         data = json.loads(value)
         return queryset.filter(**data)
 
