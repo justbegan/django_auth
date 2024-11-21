@@ -27,9 +27,7 @@ class Profiles_manager_app_filter(Base_filter):
         return queryset.filter(author__id__in=ids)
 
     def filter_get_all(self, queryset, name, value):
-        print(value)
-        if value == 'get_all123':
+        if value == 'get_all':
             return queryset
         else:
-            print(123)
             return queryset.filter(section=get_current_section(self.request))
