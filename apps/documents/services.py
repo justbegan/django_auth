@@ -14,7 +14,8 @@ def create_document(request: Request):
 
 
 def get_all_documents(request: Request):
-    return Response(Base_crud.get_many(Document, Document_serializer, {'section': get_current_section(request)}))
+    return Response(Base_crud.get_many(
+        Document, Document_serializer, {'section': get_current_section(request)}, '-date'))
 
 
 def update_document(request: Request, id: int):
