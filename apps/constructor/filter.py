@@ -1,6 +1,8 @@
 import django_filters
 import json
 from django.db.models import Q
+from apps.constructor.models import Calculated_fields
+from django.db.models.expressions import RawSQL
 
 from .models import Application
 
@@ -72,6 +74,17 @@ class Base_application_filter(Base_filter):
         return queryset.filter(**filter)
 
     def filter_order_by(self, queryset, name, value):
+        calc_field = Calculated_fields.objects.filter(title=value)
+        # Условаия фильтра для вычисляемых полей
+        # На админке пишеться sql код
+        if calc_field.exists():
+            try:
+                val = calc_field.last().code
+                return queryset.annotate(
+                    **{value: RawSQL(val, [])}
+                ).order_by(value)
+            except Exception:
+                pass
         return queryset.order_by(value)
 
     def search_all_field(self, queryset, name, value):

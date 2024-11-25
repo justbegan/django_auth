@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.db.models.expressions import RawSQL
 
 from apps.constructor.models import Application, Calculated_fields
 from apps.constructor.models import (Contest, Project_type, Status, Schema, Document_type)
@@ -31,7 +32,10 @@ class Applications_serializer(Base_applications_serializer):
         # Возвращает динамический метод, который использует значение из параметра
         def dynamic_method(self, obj):
             try:
-                return eval(value)
+                field = Application.objects.filter(id=obj.id).annotate(
+                    custom_field=RawSQL(value, [])
+                )
+                return field.first().custom_field
             except Exception:
                 return None
         return dynamic_method
