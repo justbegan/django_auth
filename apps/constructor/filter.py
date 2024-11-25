@@ -74,17 +74,16 @@ class Base_application_filter(Base_filter):
         return queryset.filter(**filter)
 
     def filter_order_by(self, queryset, name, value):
-        calc_field = Calculated_fields.objects.filter(title=value)
+        value_wo_symbol = value.replace("-", "")
+        calc_field = Calculated_fields.objects.filter(title=value_wo_symbol)
         # Условаия фильтра для вычисляемых полей
         # На админке пишеться sql код
         if calc_field.exists():
-            try:
-                val = calc_field.last().code
-                return queryset.annotate(
-                    **{value: RawSQL(val, [])}
-                ).order_by(value)
-            except Exception:
-                pass
+            val = calc_field.last().code
+            return queryset.annotate(
+                **{value_wo_symbol: RawSQL(val, [])}
+            ).order_by(value)
+
         return queryset.order_by(value)
 
     def search_all_field(self, queryset, name, value):
