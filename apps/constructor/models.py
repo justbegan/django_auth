@@ -136,12 +136,11 @@ class Application(Base_application):
         if not self.section.modules.filter(verbose_name='Calculation').exists():
             return result
         if self.status.tech_name != "new":
-            formulas = Formula.objects.filter(section=self.section, contest=self.contest)
-            for f in formulas:
-                try:
-                    exec(f.code)
-                except Exception:
-                    logger.warning(f"Ошибка при выполнение кода формулы {f.title}")
+            formula = Formula.objects.filter(section=self.section, contest=self.contest).last()
+            try:
+                exec(formula.code)
+            except Exception:
+                logger.warning("Ошибка при выполнение кода формулы")
             return result
         else:
             return result
@@ -260,8 +259,15 @@ profile_type = Profile.objects.get(user__id=current_user.id).profile_type
 
 
 class Calculated_fields(models.Model):
+    FIELD_TYPE_CHOICES = (
+        (1, "IntegerField"),
+        (2, "CharField"),
+        (3, "FloatField"),
+        (4, "DecimalField"),
+    )
     title = models.CharField("Наименование", max_length=120)
     code = models.TextField("Код")
+    field_type = models.IntegerField("Тип поля", choices=FIELD_TYPE_CHOICES, default=2)
     section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция")
 
     def __str__(self):
