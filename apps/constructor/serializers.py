@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from django.db.models.expressions import RawSQL
 
 from apps.constructor.models import Application, Calculated_fields
 from apps.constructor.models import (Contest, Project_type, Status, Schema, Document_type)
@@ -27,19 +26,6 @@ class Applications_serializer(Base_applications_serializer):
         model = Application
         fields = '__all__'
 
-    @staticmethod
-    def create_dynamic_method(value):
-        # Возвращает динамический метод, который использует значение из параметра
-        def dynamic_method(self, obj):
-            try:
-                field = Application.objects.filter(id=obj.id).annotate(
-                    custom_field=RawSQL(value, [])
-                )
-                return field.first().custom_field
-            except Exception:
-                return None
-        return dynamic_method
-
     def get_fields(self):
         # Получаем базовые поля, определённые в Meta
         fields = super().get_fields()
@@ -54,12 +40,19 @@ class Applications_serializer(Base_applications_serializer):
         for param in calcs_fields:
             # Добавляем поле, если его нет в fields
             if param.title not in fields:
-                fields[param.title] = serializers.SerializerMethodField()
-
-                # Создаём уникальный метод для каждого динамического поля
-                method_name = f'get_{param.title}'
-                # Проверка, чтобы метод не добавлялся повторно
-                setattr(self.__class__, method_name, self.create_dynamic_method(param.code))
+                """
+                    (1, "IntegerField"),
+                    (2, "CharField"),
+                    (3, "FloatField"),
+                    (4, "DecimalField"),
+                """
+                mapping = {
+                    1: serializers.IntegerField(read_only=True),
+                    2: serializers.CharField(read_only=True),
+                    3: serializers.FloatField(read_only=True),
+                    4: serializers.DecimalField(max_digits=20, decimal_places=2)
+                }
+                fields[param.title] = mapping[param.field_type]
 
         # Удаляем динамические поля, которых больше нет в Calculated_fields
         calculated_titles = {param.title for param in calcs_fields}

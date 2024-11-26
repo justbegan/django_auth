@@ -13,7 +13,7 @@ from .models import Application, Contest, Status, Project_type, Document_type, S
 from services.decorators import Decorators
 from .filter import Application_filter, Application_map_filter
 from .services.applications import Application_services
-from services.current import get_current_section, get_current_profile
+from services.current import get_current_section
 from .services.schema import get_schema_by_user
 from apps.table_fields_manager.services import get_main_table_fields_by_section_method
 from .services.status import Status_serives
@@ -55,14 +55,7 @@ class Application_main(generics.ListCreateAPIView):
         return Applications_serializer
 
     def get_queryset(self):
-        q = super().get_queryset()
-        profile = get_current_profile(self.request)
-        role_title = profile.role.title
-
-        if role_title == 'moderator' or role_title == 'admin':
-            return q.filter(contest__section=get_current_section(self.request)).order_by('-created_at')
-        else:
-            return q.filter(author=profile).order_by('-id')
+        return Application_services.query_handler(self.request, super().get_queryset())
 
     @document_validation(Document_type)
     @Decorators.role_required_v2()

@@ -6,8 +6,9 @@ from jsonschema import validate, ValidationError, draft7_format_checker
 from rest_framework.serializers import ModelSerializer
 from django.db.models import Model
 from abc import ABC, abstractmethod
+from django.db.models.expressions import RawSQL
 
-from apps.constructor.models import Contest, Application, Schema, Status
+from apps.constructor.models import Contest, Application, Schema, Status, Calculated_fields
 from ..serializers import Application_for_map_serializer, Schema_serializer
 from services.crud_services import Base_crud
 from services.current import (get_current_section, get_current_contest, get_current_profile,
@@ -172,3 +173,17 @@ class Application_services(Base_application_services):
             except Exception as e:
                 return Response({"message": str(e)})
         return Response({"message": "Модуль не найден"})
+
+    @classmethod
+    def query_handler(cls, request: Request, query: dict) -> dict:
+        section = get_current_section(request)
+        profile = get_current_profile(request)
+
+        calcs_fields = Calculated_fields.objects.filter(section=section)
+        for calc_field in calcs_fields:
+            query = query.annotate(**{calc_field.title: RawSQL(calc_field.code, [])})
+
+        if profile.role.title == 'moderator' or profile.role.title == 'admin':
+            return query.filter(contest__section=section).order_by('-created_at')
+        else:
+            return query.filter(author=profile).order_by('-id')
