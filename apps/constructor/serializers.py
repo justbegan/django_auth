@@ -50,7 +50,7 @@ class Applications_serializer(Base_applications_serializer):
                     1: serializers.IntegerField(read_only=True),
                     2: serializers.CharField(read_only=True),
                     3: serializers.FloatField(read_only=True),
-                    4: serializers.DecimalField(max_digits=20, decimal_places=2)
+                    4: serializers.DecimalField(read_only=True, max_digits=20, decimal_places=2)
                 }
                 fields[param.title] = mapping[param.field_type]
 
