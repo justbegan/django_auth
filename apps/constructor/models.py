@@ -268,7 +268,10 @@ class Calculated_fields(models.Model):
     title = models.CharField("Наименование", max_length=120)
     code = models.TextField("Код")
     field_type = models.IntegerField("Тип поля", choices=FIELD_TYPE_CHOICES, default=2)
+    func_type = models.IntegerField("Тип метода", choices=((1, "annotate"), (2, "aggregate"),), default=1)
     section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция")
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    use_sum = models.BooleanField("Использовать SUM", default=False)
 
     def __str__(self):
         return self.title

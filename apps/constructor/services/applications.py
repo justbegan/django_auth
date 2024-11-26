@@ -7,6 +7,7 @@ from rest_framework.serializers import ModelSerializer
 from django.db.models import Model
 from abc import ABC, abstractmethod
 from django.db.models.expressions import RawSQL
+from django.contrib.contenttypes.models import ContentType
 
 from apps.constructor.models import Contest, Application, Schema, Status, Calculated_fields
 from ..serializers import Application_for_map_serializer, Schema_serializer
@@ -178,10 +179,19 @@ class Application_services(Base_application_services):
     def query_handler(cls, request: Request, query: dict) -> dict:
         section = get_current_section(request)
         profile = get_current_profile(request)
+        content_type = ContentType.objects.get_for_model(Application)
 
-        calcs_fields = Calculated_fields.objects.filter(section=section)
+        calcs_fields = Calculated_fields.objects.filter(
+            section=section,
+            content_type=content_type,
+            use_sum=True,
+            func_type=1
+        )
         for calc_field in calcs_fields:
-            query = query.annotate(**{calc_field.title: RawSQL(calc_field.code, [])})
+            try:
+                query = query.annotate(**{calc_field.title: RawSQL(calc_field.code, [])})
+            except Exception:
+                pass
 
         if profile.role.title == 'moderator' or profile.role.title == 'admin':
             return query.filter(contest__section=section).order_by('-created_at')

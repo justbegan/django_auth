@@ -43,6 +43,7 @@ urlpatterns = [
     path('letter/', include('apps_modules.letter.urls')),
     path('mo_report/', include('apps_modules.mo_report.urls')),
     path('module_manager/', include('apps.module_manager.urls')),
+    path('main_page_stat/', include('apps.main_page_stat.urls')),
     path('users/', include('users.urls')),
 ]
 

@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.contrib.contenttypes.models import ContentType
 
 from apps.constructor.models import Application, Calculated_fields
 from apps.constructor.models import (Contest, Project_type, Status, Schema, Document_type)
@@ -29,13 +30,15 @@ class Applications_serializer(Base_applications_serializer):
     def get_fields(self):
         # Получаем базовые поля, определённые в Meta
         fields = super().get_fields()
-        try:
-            section = get_current_section(self.context['request'])
-            filter = {"section": section}
-        except Exception:
-            filter = {}
+        section = get_current_section(self.context['request'])
+        content_type = ContentType.objects.get_for_model(Application)
         # Динамически добавляем поля из Calculated_fields
-        calcs_fields = Calculated_fields.objects.filter(**filter)
+        calcs_fields = Calculated_fields.objects.filter(
+            section=section,
+            content_type=content_type,
+            func_type=1,
+            use_sum=False
+        )
 
         for param in calcs_fields:
             # Добавляем поле, если его нет в fields

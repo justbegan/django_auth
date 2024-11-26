@@ -7,8 +7,9 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 6000
 
-SECRET_KEY = 'django-insecure-02@4mn2!0a*2pn%eys0-4*6#&ey-i564q04!+vya!s_4zootb='
+SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = os.environ.get('DEBUG')
 
 ALLOWED_HOSTS = ['*']
@@ -57,7 +58,8 @@ INSTALLED_APPS = [
     'apps_modules.calculation',
     'apps_modules.meeting',
     'apps_modules.letter',
-    'apps_modules.mo_report'
+    'apps_modules.mo_report',
+    'apps.main_page_stat'
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
