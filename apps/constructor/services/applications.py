@@ -59,7 +59,7 @@ class Base_application_services(ABC):
         return Response(
             {
                 "schema": cls.get_schema(id),
-                "app": Base_crud.get(cls.model, cls.serializer, {"id": id})
+                "app": Base_crud.get(cls.model, cls.serializer, {"id": id}, {"request": request})
             }
         )
 

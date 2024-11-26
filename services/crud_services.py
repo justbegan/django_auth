@@ -8,7 +8,7 @@ logger = logging.getLogger('django')
 
 class Base_crud:
     @staticmethod
-    def update(model: Model, serializer: ModelSerializer, data: dict, parameters: dict):
+    def update(model: Model, serializer: ModelSerializer, data: dict, parameters: dict, context: dict = {}):
         instance = model.objects.get(**parameters)
         serializer = serializer(instance, data=data)
 
@@ -18,10 +18,10 @@ class Base_crud:
         raise serializers.ValidationError(serializer.errors)
 
     @staticmethod
-    def get(model: Model, serializer: ModelSerializer, parameters: dict = {}):
+    def get(model: Model, serializer: ModelSerializer, parameters: dict = {}, context: dict = {}):
         try:
             obj = model.objects.get(**parameters)
-            return serializer(obj).data
+            return serializer(obj, context=context).data
         except Exception as e:
             logger.exception(f"Ошибка получения данных в crud {e}")
             return {}
@@ -32,16 +32,17 @@ class Base_crud:
         serializer: ModelSerializer,
         parameters: dict = {},
         order: str = "id",
-        custom_obj: dict = None
+        custom_obj: dict = None,
+        context: dict = {}
     ):
         if custom_obj is None:
             obj = model.objects.filter(**parameters).order_by(order)
         else:
             obj = custom_obj
-        return serializer(obj, many=True).data
+        return serializer(obj, many=True, context=context).data
 
     @staticmethod
-    def create(serializer: ModelSerializer, data: dict):
+    def create(serializer: ModelSerializer, data: dict, context: dict = {}):
         ser: ModelSerializer = serializer(data=data)
         if ser.is_valid():
             ser.save()
@@ -56,7 +57,7 @@ class Base_crud:
         return True
 
     @staticmethod
-    def patch(model: Model, serializer: ModelSerializer, data: dict, parameters: dict):
+    def patch(model: Model, serializer: ModelSerializer, data: dict, parameters: dict, context: dict = {}):
         instance = model.objects.get(**parameters)
         serializer = serializer(instance, data=data, partial=True)
 
