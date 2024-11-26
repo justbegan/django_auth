@@ -184,7 +184,7 @@ class Application_services(Base_application_services):
         calcs_fields = Calculated_fields.objects.filter(
             section=section,
             content_type=content_type,
-            use_sum=True,
+            use_sum=False,
             func_type=1
         )
         for calc_field in calcs_fields:
