@@ -33,7 +33,7 @@ class News_filter(django_filters.FilterSet):
         )
 
     def filter_get_all(self, queryset, name, value):
-        if value == 0:
-            return queryset.filter(section=get_current_section(self.request))
-        else:
+        if value == '1':
             return queryset
+        else:
+            return queryset.filter(section=get_current_section(self.request))
