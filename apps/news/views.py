@@ -39,7 +39,7 @@ class News_main(generics.ListCreateAPIView):
 
     def get_queryset(self):
         q = super().get_queryset()
-        return q.filter.order_by('-id')
+        return q.order_by('-id')
 
     @Decorators.role_required_v2()
     @swagger_auto_schema(request_body=News_serializer_ff)
