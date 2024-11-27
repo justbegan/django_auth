@@ -1,6 +1,5 @@
 from rest_framework.views import APIView, Request, Response
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
@@ -30,7 +29,6 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 class News_main(generics.ListCreateAPIView):
     model_used = News
-    permission_classes = [IsAuthenticated]
     queryset = News.objects.all().order_by('-id')
     pagination_class = StandardResultsSetPagination
     filter_backends = [DjangoFilterBackend]
