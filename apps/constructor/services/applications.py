@@ -8,6 +8,8 @@ from django.db.models import Model
 from abc import ABC, abstractmethod
 from django.db.models.expressions import RawSQL
 from django.contrib.contenttypes.models import ContentType
+import logging
+from django.db.models import Sum
 
 from apps.constructor.models import Contest, Application, Schema, Status, Calculated_fields
 from ..serializers import Application_for_map_serializer, Schema_serializer
@@ -17,6 +19,9 @@ from services.current import (get_current_section, get_current_contest, get_curr
 from apps.comments.services import create_comment_and_change_status
 from ..serializers import Applications_serializer
 from .decorators import status_validator
+
+
+logger = logging.getLogger('django')
 
 
 class CustomDataValidationError(Exception):
@@ -184,14 +189,16 @@ class Application_services(Base_application_services):
         calcs_fields = Calculated_fields.objects.filter(
             section=section,
             content_type=content_type,
-            use_sum=False,
             func_type=1
         )
         for calc_field in calcs_fields:
             try:
-                query = query.annotate(**{calc_field.title: RawSQL(calc_field.code, [])})
-            except Exception:
-                pass
+                if calc_field.use_sum:
+                    query = query.annotate(**{calc_field.title: Sum(RawSQL(calc_field.code, []))})
+                else:
+                    query = query.annotate(**{calc_field.title: RawSQL(calc_field.code, [])})
+            except Exception as e:
+                logger.exception(f"Ошибка выполнения sql запроса в кастомных полях заявки {e}")
 
         if profile.role.title == 'moderator' or profile.role.title == 'admin':
             return query.filter(contest__section=section).order_by('-created_at')

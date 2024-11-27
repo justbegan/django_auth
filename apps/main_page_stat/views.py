@@ -2,11 +2,15 @@ from rest_framework.views import APIView, Response
 from django.db.models import Sum
 from django.db.models.expressions import RawSQL
 from django.contrib.contenttypes.models import ContentType
+import logging
 
 from apps.profiles.models import Section
 from apps.locations.models import Municipal_district
 from apps.constructor.models import Application, Calculated_fields
 from .models import Main_page_stats_mapper
+
+
+logger = logging.getLogger('django')
 
 
 class Location_stat(APIView):
@@ -23,18 +27,26 @@ class Location_stat(APIView):
             for section in sections:
                 sec = {
                     "id": section.id,
-                    "count": Application.objects.filter(section=section).count()
+                    "count": Application.objects.filter(section=section, municipal_district=ra).count()
                 }
                 custom_fields = Calculated_fields.objects.filter(
                     section=section,
                     content_type=content_type,
-                    func_type=2,
-                    use_sum=True
+                    func_type=2
                 )
                 for calc_field in custom_fields:
-                    sec[calc_field.title] = Application.objects.filter(municipal_district=ra).aggregate(
-                        total=Sum(RawSQL(calc_field.code, []))
-                    )['total']
+                    try:
+                        if calc_field.use_sum:
+                            sec[calc_field.title] = Application.objects.filter(municipal_district=ra).aggregate(
+                                total=Sum(RawSQL(calc_field.code, []))
+                            )['total']
+                        else:
+                            sec[calc_field.title] = Application.objects.filter(municipal_district=ra).aggregate(
+                                total=RawSQL(calc_field.code, [])
+                            )['total']
+                    except Exception as e:
+                        logger.exception(f"Ошибка выполнения sql запроса статистики главного окна {e}")
+                        sec[calc_field.title] = None
 
                 sections_obj.append(sec)
             obj['sections'] = sections_obj

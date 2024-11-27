@@ -10,7 +10,6 @@ from .serializers import News_serializer_ff, News_serializer
 from services.decorators import Decorators
 from .models import News
 from .filter import News_filter
-from services.current import get_current_section
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -40,7 +39,7 @@ class News_main(generics.ListCreateAPIView):
 
     def get_queryset(self):
         q = super().get_queryset()
-        return q.filter(section=get_current_section(self.request)).order_by('-id')
+        return q.filter.order_by('-id')
 
     @Decorators.role_required_v2()
     @swagger_auto_schema(request_body=News_serializer_ff)

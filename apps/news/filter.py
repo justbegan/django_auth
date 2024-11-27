@@ -3,12 +3,14 @@ import json
 from django.db.models import Q
 
 from apps.news.models import News
+from services.current import get_current_section
 
 
 class News_filter(django_filters.FilterSet):
     json_search = django_filters.CharFilter(method='json_search_method')
     search = django_filters.CharFilter(method='filter_search')
     created_at = django_filters.CharFilter(method='filter_created_at')
+    get_all = django_filters.CharFilter(method='filter_get_all')
 
     class Meta:
         model = News
@@ -29,3 +31,9 @@ class News_filter(django_filters.FilterSet):
                 | Q(text__icontains=value)
             )
         )
+
+    def filter_get_all(self, queryset, name, value):
+        if value == 0:
+            return queryset.filter(section=get_current_section(self.request))
+        else:
+            return queryset
