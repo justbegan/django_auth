@@ -19,6 +19,7 @@ class Location_stat(APIView):
         municipal_districts = Municipal_district.objects.all()
         content_type = ContentType.objects.get_for_model(Main_page_stats_mapper)
         result = []
+        apps = Application.objects.filter(**request.GET.dict())
         for ra in municipal_districts:
             obj = {
                 "id": ra.id,
@@ -27,7 +28,10 @@ class Location_stat(APIView):
             for section in sections:
                 sec = {
                     "id": section.id,
-                    "count": Application.objects.filter(section=section, municipal_district=ra).count()
+                    "count": apps.filter(
+                        section=section,
+                        municipal_district=ra
+                    ).count()
                 }
                 custom_fields = Calculated_fields.objects.filter(
                     section=section,
@@ -37,11 +41,11 @@ class Location_stat(APIView):
                 for calc_field in custom_fields:
                     try:
                         if calc_field.use_sum:
-                            sec[calc_field.title] = Application.objects.filter(municipal_district=ra).aggregate(
+                            sec[calc_field.title] = apps.filter(municipal_district=ra).aggregate(
                                 total=Sum(RawSQL(calc_field.code, []))
                             )['total']
                         else:
-                            sec[calc_field.title] = Application.objects.filter(municipal_district=ra).aggregate(
+                            sec[calc_field.title] = apps.filter(municipal_district=ra).aggregate(
                                 total=RawSQL(calc_field.code, [])
                             )['total']
                     except Exception as e:

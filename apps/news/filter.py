@@ -11,6 +11,7 @@ class News_filter(django_filters.FilterSet):
     search = django_filters.CharFilter(method='filter_search')
     created_at = django_filters.CharFilter(method='filter_created_at')
     get_all = django_filters.CharFilter(method='filter_get_all')
+    section = django_filters.CharFilter(method='filter_section')
 
     class Meta:
         model = News
@@ -37,3 +38,6 @@ class News_filter(django_filters.FilterSet):
             return queryset
         else:
             return queryset.filter(section=get_current_section(self.request))
+
+    def filter_section(self, queryset, name, value):
+        return queryset.filter(section__id=value)
