@@ -30,38 +30,40 @@ class Applications_serializer(Base_applications_serializer):
     def get_fields(self):
         # Получаем базовые поля, определённые в Meta
         fields = super().get_fields()
-        section = get_current_section(self.context['request'])
-        content_type = ContentType.objects.get_for_model(Application)
-        # Динамически добавляем поля из Calculated_fields
-        calcs_fields = Calculated_fields.objects.filter(
-            section=section,
-            content_type=content_type,
-            func_type=1,
-            use_sum=False
-        )
+        request = self.context.get('request', None)
+        if request.user.is_authenticated:
+            section = get_current_section(request)
+            content_type = ContentType.objects.get_for_model(Application)
+            # Динамически добавляем поля из Calculated_fields
+            calcs_fields = Calculated_fields.objects.filter(
+                section=section,
+                content_type=content_type,
+                func_type=1,
+                use_sum=False
+            )
 
-        for param in calcs_fields:
-            # Добавляем поле, если его нет в fields
-            if param.title not in fields:
-                """
-                    (1, "IntegerField"),
-                    (2, "CharField"),
-                    (3, "FloatField"),
-                    (4, "DecimalField"),
-                """
-                mapping = {
-                    1: serializers.IntegerField(read_only=True),
-                    2: serializers.CharField(read_only=True),
-                    3: serializers.FloatField(read_only=True),
-                    4: serializers.DecimalField(read_only=True, max_digits=20, decimal_places=2)
-                }
-                fields[param.title] = mapping[param.field_type]
+            for param in calcs_fields:
+                # Добавляем поле, если его нет в fields
+                if param.title not in fields:
+                    """
+                        (1, "IntegerField"),
+                        (2, "CharField"),
+                        (3, "FloatField"),
+                        (4, "DecimalField"),
+                    """
+                    mapping = {
+                        1: serializers.IntegerField(read_only=True),
+                        2: serializers.CharField(read_only=True),
+                        3: serializers.FloatField(read_only=True),
+                        4: serializers.DecimalField(read_only=True, max_digits=20, decimal_places=2)
+                    }
+                    fields[param.title] = mapping[param.field_type]
 
-        # Удаляем динамические поля, которых больше нет в Calculated_fields
-        calculated_titles = {param.title for param in calcs_fields}
-        fields_to_remove = [name for name in fields if name not in calculated_titles and name.startswith('get_')]
-        for name in fields_to_remove:
-            fields.pop(name, None)
+            # Удаляем динамические поля, которых больше нет в Calculated_fields
+            calculated_titles = {param.title for param in calcs_fields}
+            fields_to_remove = [name for name in fields if name not in calculated_titles and name.startswith('get_')]
+            for name in fields_to_remove:
+                fields.pop(name, None)
 
         return fields
 
