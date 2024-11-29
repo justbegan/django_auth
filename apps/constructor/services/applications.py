@@ -19,6 +19,8 @@ from services.current import (get_current_section, get_current_contest, get_curr
 from apps.comments.services import create_comment_and_change_status
 from ..serializers import Applications_serializer
 from .decorators import status_validator
+from apps_modules.calculation.models import Formula
+from django.db.models import F
 
 
 logger = logging.getLogger('django')
@@ -191,6 +193,7 @@ class Application_services(Base_application_services):
             content_type=content_type,
             func_type=1
         )
+
         for calc_field in calcs_fields:
             try:
                 if calc_field.use_sum:
@@ -199,7 +202,7 @@ class Application_services(Base_application_services):
                     query = query.annotate(**{calc_field.title: RawSQL(calc_field.code, [])})
             except Exception as e:
                 logger.exception(f"Ошибка выполнения sql запроса в кастомных полях заявки {e}")
-
+        query = query.annotate(total_point=RawSQL(Formula.objects.filter(contest=F('contest')).last().code, []))
         if profile.role.title == 'moderator' or profile.role.title == 'admin':
             return query.filter(contest__section=section).order_by('-created_at')
         else:

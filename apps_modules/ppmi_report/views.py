@@ -4,11 +4,11 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticated
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from django.db.models.expressions import RawSQL
+from django.db.models import Sum
 
 from apps.constructor.models import Application
-from .serializers import (Ppmi_report_base_serializer,
-                          Application_rating_serializer, Application_stat_by_district_serializer)
-from services.current import get_current_section
+from .serializers import (Ppmi_report_base_serializer, Application_stat_by_district_serializer)
 from .filter import Application_rating_filter
 from apps.locations.models import Municipal_district, Settlement
 from .services import Ppmi_report_services, Base_pagination
@@ -101,7 +101,7 @@ class Application_stat_by_district(APIView):
     )
     def get(self, request: Request):
         filter = {
-            'section__id': get_current_section(request).id
+            'section__id': 1
         }
         for key, value in request.query_params.items():
             filter[key] = value
@@ -124,6 +124,40 @@ class Application_stat_by_district(APIView):
         settlement_obj = Settlement.objects
         application_obj = Application.objects.filter(**filter)
         objects = []
+        application_financing_settlement_budget_sql = """
+SELECT
+    (element ->> 'price')::decimal AS price
+FROM
+    jsonb_array_elements(custom_data->'planned_finansing_sources') AS element
+WHERE
+    element ->> 'source_type' = 'Бюджет поселения (муниципального района) (не менее 5 процентов\
+ от суммы субсидии из республиканского бюджета)'
+        """
+        application_financing_people_sql = """
+SELECT
+    (element ->> 'price')::decimal AS price
+FROM
+    jsonb_array_elements(custom_data->'planned_finansing_sources') AS element
+WHERE
+    element ->> 'source_type' = 'Население (поступления от жителей)'
+        """
+        application_financing_sponsors_sql = """
+SELECT
+    (element ->> 'price')::decimal AS price
+FROM
+    jsonb_array_elements(custom_data->'planned_finansing_sources') AS element
+WHERE
+    element ->> 'source_type' = 'Спонсоры (денежные поступления от юр.лиц, инд.предпринимателей и т.д.)'
+        """
+        application_financing_republic_grant_sql = """
+SELECT
+    (element ->> 'price')::decimal AS price
+FROM
+    jsonb_array_elements(custom_data->'planned_finansing_sources') AS element
+WHERE
+    element ->> 'source_type' = 'Субсидия из бюджета Республики Саха (Якутия) на софинансирование проектов развития\
+ общественной инфраструктуры, основанных на местных инициативах'
+        """
         for municipal_district in Municipal_district.objects.all():
             app_by_md = application_obj.filter(municipal_district=municipal_district)
             settlement_count = settlement_obj.filter(RegID=municipal_district).count()
@@ -131,12 +165,22 @@ class Application_stat_by_district(APIView):
             application_winner_count = application_obj.filter(
                 municipal_district=municipal_district, status__title="Победила").count()
             application_winner_percent = self.get_percentage(application_winner_count, application_count)
-            application_financing_settlement_budget = self.get_financing_settlement_budget(
-                app_by_md
+            application_financing_settlement_budget = self.get_field_value(
+                app_by_md,
+                application_financing_settlement_budget_sql
             )
-            application_financing_people = self.get_financing_people(app_by_md)
-            application_financing_sponsors = self.get_financing_sponsors(app_by_md)
-            application_financing_republic_grant = self.get_financing_republic_grant(app_by_md)
+            application_financing_people = self.get_field_value(
+                app_by_md,
+                application_financing_people_sql
+            )
+            application_financing_sponsors = self.get_field_value(
+                app_by_md,
+                application_financing_sponsors_sql
+            )
+            application_financing_republic_grant = self.get_field_value(
+                app_by_md,
+                application_financing_republic_grant_sql
+            )
             application_finded_sum_percent = self.get_percentage(
                 sum([application_financing_settlement_budget,
                      application_financing_people,
@@ -167,26 +211,5 @@ class Application_stat_by_district(APIView):
             return 0
         return (val1 * 100) / val2
 
-    def get_financing_settlement_budget(self, obj: Application):
-        result = 0
-        for app in obj:
-            result += app.get_financing_settlement_budget()
-        return result
-
-    def get_financing_people(self, obj: Application):
-        result = 0
-        for app in obj:
-            result += app.get_financing_people()
-        return result
-
-    def get_financing_sponsors(self, obj: Application):
-        result = 0
-        for app in obj:
-            result += app.get_financing_sponsors()
-        return result
-
-    def get_financing_republic_grant(self, obj: Application):
-        result = 0
-        for app in obj:
-            result += app.get_financing_republic_grant()
-        return result
+    def get_field_value(self, app: Application, sql: str):
+        return app.aggregate(total=Sum(RawSQL(sql, [])))['total']
