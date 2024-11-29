@@ -107,7 +107,10 @@ class MyModelHistoryAdmin(admin.ModelAdmin):
     get_changes.short_description = 'Изменения'
 
 
-admin.site.register(Calculated_fields, FormulaAdmin)
+@admin.register(Calculated_fields)
+class Calc_field_admin(FormulaAdmin):
+    list_display = ['id', 'title', 'section', 'content_type', 'func_type']
+    list_filter = ['section', 'func_type', 'content_type']
 
 
 admin.site.register(Application.history.model, MyModelHistoryAdmin)

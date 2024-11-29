@@ -6,92 +6,87 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
 from apps.constructor.models import Application
-from .serializers import (Application_registry_serializer, Results_of_applications_acceptance_serializer,
+from .serializers import (Ppmi_report_base_serializer,
                           Application_rating_serializer, Application_stat_by_district_serializer)
 from services.current import get_current_section
 from .filter import Application_rating_filter
 from apps.locations.models import Municipal_district, Settlement
+from .services import Ppmi_report_services, Base_pagination
 
 
-class Application_registry(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request: Request):
-        obj = Application.objects.filter(section=get_current_section(request))
-        ser = Application_registry_serializer(obj, many=True)
-        result = {
-            "fields_description": {
-                'municipal_district': 'Район',
-                'settlement': 'Поселение',
-                'locality': 'Населенный пункт',
-                'title': 'Название проекта',
-                'project_type': 'Типология проекта',
-                'total_price': 'Стоимость проекта'
-            },
-            "data": ser.data
+class Application_registry_pagination(Base_pagination):
+    def get_fields(self):
+        return {
+            'municipal_district': 'Район',
+            'settlement': 'Поселение',
+            'locality': 'Населенный пункт',
+            'title': 'Название проекта',
+            'project_type': 'Типология проекта',
+            'total_price': 'Стоимость проекта'
         }
-        return Response(result)
 
 
-class Results_of_applications_acceptance(APIView):
+class Application_registry(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
+    queryset = Application.objects.all().order_by('-id')
+    pagination_class = Application_registry_pagination
+    serializer_class = Ppmi_report_base_serializer
 
-    def get(self, request: Request):
-        obj = Application.objects.filter(section=get_current_section(request))
-        ser = Results_of_applications_acceptance_serializer(obj, many=True)
-        result = {
-            "fields_description": {
-                'municipal_district': 'Район',
-                'settlement': 'Поселение',
-                'locality': 'Населенный пункт',
-                'title': 'Название проекта',
-                'project_type': 'Типология проекта',
-                'total_price': 'Стоимость проекта',
-                'get_financing_settlement_budget': 'Вклад поселения',
-                'get_financing_people': 'Вклад населения',
-                'get_financing_sponsors': 'Вклад спонсоров',
-                'get_financing_republic_grant': 'Сумма субсидии'
-            },
-            "data": ser.data
+    def get_queryset(self):
+        return Ppmi_report_services.query_handler(self.request, super().get_queryset())
+
+
+class Results_of_applications_acceptance_pagination(Base_pagination):
+    def get_fields(self):
+        return {
+            'municipal_district': 'Район',
+            'settlement': 'Поселение',
+            'locality': 'Населенный пункт',
+            'title': 'Название проекта',
+            'project_type': 'Типология проекта',
+            'total_price': 'Стоимость проекта',
+            'get_financing_settlement_budget': 'Вклад поселения',
+            'get_financing_people': 'Вклад населения',
+            'get_financing_sponsors': 'Вклад спонсоров',
+            'get_financing_republic_grant': 'Сумма субсидии'
         }
-        return Response(result)
+
+
+class Results_of_applications_acceptance(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Application.objects.all().order_by('-id')
+    pagination_class = Results_of_applications_acceptance_pagination
+    serializer_class = Ppmi_report_base_serializer
+
+    def get_queryset(self):
+        return Ppmi_report_services.query_handler(self.request, super().get_queryset())
+
+
+class Application_rating_pagination(Base_pagination):
+    def get_fields(self):
+        return {
+            'municipal_district': 'Район',
+            'settlement': 'Поселение',
+            'locality': 'Населенный пункт',
+            'title': 'Название проекта',
+            'rating': 'Рейтинг',
+            'get_financing_republic_grant': 'Сумма субсидии',
+            'total_point': 'Итог. балл'
+        }
 
 
 class Application_rating(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
-
-    serializer_class = Application_rating_serializer
     queryset = Application.objects.all().order_by('-id')
+    pagination_class = Results_of_applications_acceptance_pagination
+    serializer_class = Ppmi_report_base_serializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = Application_rating_filter
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        obj = queryset.filter(author=self.request.user.id)
-        return obj
-
-    def list(self, request, *args, **kwargs):
-        response = super().list(request, *args, **kwargs)
-
-        custom_data = {
-            'fields_description': {
-                'municipal_district': 'Район',
-                'settlement': 'Поселение',
-                'locality': 'Населенный пункт',
-                'title': 'Название проекта',
-                'rating': 'Рейтинг',
-                'get_financing_republic_grant': 'Сумма субсидии',
-                'total_point': 'Итог. балл'
-            },
-            'data': self.custom_method(response.data),
-        }
-        return Response(custom_data)
-
-    def custom_method(self, data):
-        sorted_data = sorted(data, key=lambda x: (x['created_at'], -x['total_point']))
-        for num, i in enumerate(sorted_data, start=1):
-            i['rating'] = num
-        return sorted_data
+        return Ppmi_report_services.query_handler(
+            self.request, super().get_queryset()
+        ).order_by('total_point', 'created_at')
 
 
 class Application_stat_by_district(APIView):
