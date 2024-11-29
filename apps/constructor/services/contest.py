@@ -9,7 +9,7 @@ from ..models import Contest
 
 def create_contest(request: Request):
     data = deepcopy(request.data)
-    data['section'] = get_current_section(request)
+    data['section'] = get_current_section(request).id
     return Response(Base_crud.create(Contest_serializer, data))
 
 
