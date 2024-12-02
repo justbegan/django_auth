@@ -5,7 +5,6 @@ from django.contrib.contenttypes.models import ContentType
 # from decimal import Decimal
 
 from apps.profiles.models import Section, Profile, Roles
-from apps_modules.calculation.models import Formula
 from apps.locations.models import Municipal_district, Settlement, Locality, District_type
 
 logger = logging.getLogger('django')
@@ -131,61 +130,6 @@ class Application(Base_application):
         verbose_name = "Заявка"
         verbose_name_plural = "Заявки"
 
-    def point_calculation(self) -> dict:
-        result = {}
-        if not self.section.modules.filter(verbose_name='Calculation').exists():
-            return result
-        if self.status.tech_name != "new":
-            formula = Formula.objects.filter(section=self.section, contest=self.contest).last()
-            try:
-                exec(formula.code)
-            except Exception:
-                logger.warning("Ошибка при выполнение кода формулы")
-            return result
-        else:
-            return result
-
-    # def get_financing_settlement_budget(self) -> float:
-    #     """
-    #         Бюджет поселения (муниципального района)
-    #     """
-    #     return Decimal(str(self.custom_data.get("financing_settlement_budget", 0.0)))
-
-    # def get_financing_people(self) -> float:
-    #     """
-    #         Население (поступления от жителей)
-    #     """
-    #     return Decimal(str(self.custom_data.get("financing_people", 0.0)))
-
-    # def get_financing_sponsors(self) -> float:
-    #     """
-    #         Спонсоры (денежные поступления от юр.лиц, инд.предпринимателей и т.д.)
-    #     """
-    #     return Decimal(str(self.custom_data.get("financing_sponsors", 0.0)))
-
-    # def get_financing_republic_grant(self) -> float:
-    #     """
-    #         Субсидия из бюджета Республики Саха (Якутия)
-    #     """
-    #     return Decimal(str(self.custom_data.get("financing_republic_grant", 0.0)))
-
-    # def total_price(self):
-    #     return sum(
-    #         [
-    #             self.get_financing_settlement_budget(),
-    #             self.get_financing_people(),
-    #             self.get_financing_sponsors(),
-    #             self.get_financing_republic_grant()
-    #         ]
-    #     )
-
-    def total_point(self):
-        obj: dict = self.point_calculation()
-        if obj is not None:
-            values = [value for key, value in obj.items()]
-            return sum(values)
-        return 0
-
     def get_lat_lon(self):
         try:
             return {
@@ -272,6 +216,7 @@ class Calculated_fields(models.Model):
     section = models.ForeignKey(Section, on_delete=models.PROTECT, verbose_name="Секция")
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     use_sum = models.BooleanField("Использовать SUM", default=False)
+    contest = models.ManyToManyField(Contest, verbose_name="Конкурс", blank=True)
 
     def __str__(self):
         return self.title

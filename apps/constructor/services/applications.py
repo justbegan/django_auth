@@ -19,7 +19,6 @@ from services.current import (get_current_section, get_current_contest, get_curr
 from apps.comments.services import create_comment_and_change_status
 from ..serializers import Applications_serializer
 from .decorators import status_validator
-from apps_modules.calculation.models import Formula
 from django.db.models import F
 
 
@@ -188,21 +187,21 @@ class Application_services(Base_application_services):
         profile = get_current_profile(request)
         content_type = ContentType.objects.get_for_model(Application)
 
-        calcs_fields = Calculated_fields.objects.filter(
-            section=section,
-            content_type=content_type,
-            func_type=1
-        )
+        try:
+            query = query.annotate(
+                **{
+                    field.title: Sum(RawSQL(field.code, [])) for field in Calculated_fields.objects.filter(
+                        section=section,
+                        content_type=content_type,
+                        func_type=1,
+                        contest=F('contest')
+                    )
+                }
+            )
 
-        for calc_field in calcs_fields:
-            try:
-                if calc_field.use_sum:
-                    query = query.annotate(**{calc_field.title: Sum(RawSQL(calc_field.code, []))})
-                else:
-                    query = query.annotate(**{calc_field.title: RawSQL(calc_field.code, [])})
-            except Exception as e:
-                logger.exception(f"Ошибка выполнения sql запроса в кастомных полях заявки {e}")
-        query = query.annotate(total_point=RawSQL(Formula.objects.filter(contest=F('contest')).last().code, []))
+        except Exception as e:
+            logger.exception(f"Ошибка выполнения sql запроса в кастомных полях заявки {e}")
+
         if profile.role.title == 'moderator' or profile.role.title == 'admin':
             return query.filter(contest__section=section).order_by('-created_at')
         else:
