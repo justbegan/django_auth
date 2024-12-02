@@ -11,6 +11,10 @@ class Section(models.Model):
     header = models.TextField("Заголовок", blank=True, null=True)
     modules = models.ManyToManyField(Apps, verbose_name="Модули", blank=True)
     tech_name = models.CharField("Тех. название", max_length=120)
+    goal = models.CharField("Цель", max_length=500)
+    members = models.CharField("Участники", max_length=500)
+    amount_of_subsidy = models.CharField("Объем субсидий", max_length=500)
+    key_terms = models.CharField("Ключевые условия", max_length=2000)
 
     def __str__(self):
         return f"{self.title}"
