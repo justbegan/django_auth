@@ -15,6 +15,7 @@ class Section(models.Model):
     members = models.CharField("Участники", max_length=500)
     amount_of_subsidy = models.CharField("Объем субсидий", max_length=500)
     key_terms = models.CharField("Ключевые условия", max_length=2000)
+    adt = models.TextField("Объявление", null=True, blank=True)
 
     def __str__(self):
         return f"{self.title}"
