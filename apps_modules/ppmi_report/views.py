@@ -86,7 +86,7 @@ class Application_rating(generics.ListAPIView):
     def get_queryset(self):
         return Ppmi_report_services.query_handler(
             self.request, super().get_queryset()
-        ).order_by('total_point', 'created_at')
+        ).order_by('-total_point', 'created_at')
 
 
 class Application_stat_by_district(APIView):

@@ -2,7 +2,8 @@ from rest_framework.views import Request, Response
 from django.db.models.expressions import RawSQL
 from django.contrib.contenttypes.models import ContentType
 import logging
-from django.db.models import Sum
+from django.db.models import Sum, F, Window
+from django.db.models.functions import RowNumber
 from rest_framework.pagination import PageNumberPagination
 
 from apps.constructor.models import Calculated_fields
@@ -38,18 +39,23 @@ class Ppmi_report_services:
         section = get_current_section(request)
         content_type = ContentType.objects.get_for_model(Ppmi_report)
 
-        calcs_fields = Calculated_fields.objects.filter(
-            section=section,
-            content_type=content_type,
-            func_type=1
-        )
-        for calc_field in calcs_fields:
-            try:
-                if calc_field.use_sum:
-                    query = query.annotate(**{calc_field.title: Sum(RawSQL(calc_field.code, []))})
-                else:
-                    query = query.annotate(**{calc_field.title: RawSQL(calc_field.code, [])})
-            except Exception as e:
-                logger.exception(f"Ошибка выполнения sql запроса в отчете ппми {e}")
+        try:
+            query = query.annotate(
+                **{
+                    field.title: Sum(RawSQL(field.code, [])) for field in Calculated_fields.objects.filter(
+                        section=section,
+                        content_type=content_type,
+                        func_type=1,
+                        contest=F('contest')
+                    )
+                }
+            ).annotate(
+                rating=Window(
+                    expression=RowNumber(),
+                    order_by=[F('total_point').desc(), F('created_at').asc()]
+                )
+            )
+        except Exception as e:
+            logger.exception(f"Ошибка выполнения sql запроса в отчете ппми {e}")
 
         return query.filter(contest__section=section).order_by('-created_at')
