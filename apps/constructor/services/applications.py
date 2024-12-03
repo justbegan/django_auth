@@ -9,7 +9,7 @@ from abc import ABC, abstractmethod
 from django.db.models.expressions import RawSQL
 from django.contrib.contenttypes.models import ContentType
 import logging
-from django.db.models import Sum
+from django.db.models import Sum, FloatField, ExpressionWrapper, F
 
 from apps.constructor.models import Contest, Application, Schema, Status, Calculated_fields
 from ..serializers import Application_for_map_serializer, Schema_serializer
@@ -19,7 +19,7 @@ from services.current import (get_current_section, get_current_contest, get_curr
 from apps.comments.services import create_comment_and_change_status
 from ..serializers import Applications_serializer
 from .decorators import status_validator
-from django.db.models import F
+from apps_modules.calculation.models import Formula
 
 
 logger = logging.getLogger('django')
@@ -123,9 +123,9 @@ class Application_services(Base_application_services):
         section = get_current_section(request)
         if section.modules.filter(verbose_name='Calculation').exists():
             all_contests = Contest.objects.filter(section=section)
-            data = sorted(data, key=lambda x: (x['created_at'], -x['total_point']))
             result = []
             try:
+                data = sorted(data, key=lambda x: (x['created_at'], -x['total_point']))
                 for c in all_contests:
                     grant_sum = Contest.objects.get(id=c.id).grant_sum
                     for i in data:
@@ -201,8 +201,22 @@ class Application_services(Base_application_services):
 
         except Exception as e:
             logger.exception(f"Ошибка выполнения sql запроса в кастомных полях заявки {e}")
+        query = query.annotate(
+            total_point=ExpressionWrapper(
+                cls.get_formula_by_contest(F('contest')),
+                output_field=FloatField()
+            )
+        )
 
         if profile.role.title == 'moderator' or profile.role.title == 'admin':
             return query.filter(contest__section=section).order_by('-created_at')
         else:
             return query.filter(author=profile).order_by('-id')
+
+    @classmethod
+    def get_formula_by_contest(cls, contest):
+        fields = Formula.objects.filter(contest__id=contest).last().json
+        expression = F(fields[0])
+        for field in fields[1:]:
+            expression += F(field)
+        return expression
