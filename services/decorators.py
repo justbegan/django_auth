@@ -23,6 +23,8 @@ class Decorators:
                     error_text = "У вас нет прав для изменения записи."
                 user_role = get_current_profile(request).role
                 used_model_content_type = ContentType.objects.get_for_model(self.model_used)
+                if user_role.title in ['admin', 'administrator']:
+                    return func(self, request, *args, **kwargs)
                 try:
                     method_roles = Role_handler.objects.get(
                         section=get_current_section(request),
