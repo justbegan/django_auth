@@ -33,7 +33,6 @@ class StandardResultsSetPagination(PageNumberPagination):
     def get_paginated_response(self, data):
         return Response({
             'main_table_fields': get_main_table_fields_by_section_method(self.request, Application),
-            'win_lose': Application_services.win_lose_calculation(self.request, data),
             'total_results': self.page.paginator.count,
             'total_pages': self.page.paginator.num_pages,
             'current_page': self.page.number,
@@ -55,7 +54,8 @@ class Application_main(generics.ListCreateAPIView):
         return Applications_serializer
 
     def get_queryset(self):
-        return Application_services.query_handler(self.request, super().get_queryset())
+        q = self.filter_queryset(super().get_queryset())
+        return Application_services.query_handler(self.request, q)
 
     @document_validation(Document_type)
     @Decorators.role_required_v2()

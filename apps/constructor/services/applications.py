@@ -88,6 +88,7 @@ class Application_services(Base_application_services):
     serializer = Applications_serializer
     status = Status
     schema = Schema
+    formula = Formula
 
     @classmethod
     def validate_custom_data(cls, request: Request):
@@ -202,7 +203,6 @@ class Application_services(Base_application_services):
 
         except Exception as e:
             logger.exception(f"Ошибка выполнения sql запроса в кастомных полях заявки {e}")
-
         section = get_current_section(request)
         if section.modules.filter(verbose_name='Calculation').exists():
             query = query.annotate(
@@ -224,7 +224,7 @@ class Application_services(Base_application_services):
 
     @classmethod
     def get_formula_by_contest(cls, contest):
-        fields = Formula.objects.filter(contest__id=contest).last().json
+        fields = cls.formula.objects.filter(contest__id=contest).last().json
         expression = F(fields[0])
         for field in fields[1:]:
             expression += F(field)
