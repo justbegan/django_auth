@@ -9,7 +9,8 @@ from abc import ABC, abstractmethod
 from django.db.models.expressions import RawSQL
 from django.contrib.contenttypes.models import ContentType
 import logging
-from django.db.models import Sum, FloatField, ExpressionWrapper, F
+from django.db.models import Sum, FloatField, ExpressionWrapper, F, Window
+from django.db.models.functions import RowNumber
 
 from apps.constructor.models import Contest, Application, Schema, Status, Calculated_fields
 from ..serializers import Application_for_map_serializer, Schema_serializer
@@ -201,12 +202,20 @@ class Application_services(Base_application_services):
 
         except Exception as e:
             logger.exception(f"Ошибка выполнения sql запроса в кастомных полях заявки {e}")
-        query = query.annotate(
-            total_point=ExpressionWrapper(
-                cls.get_formula_by_contest(F('contest')),
-                output_field=FloatField()
+
+        section = get_current_section(request)
+        if section.modules.filter(verbose_name='Calculation').exists():
+            query = query.annotate(
+                total_point=ExpressionWrapper(
+                    cls.get_formula_by_contest(F('contest')),
+                    output_field=FloatField()
+                )
+            ).annotate(
+                rating=Window(
+                    expression=RowNumber(),
+                    order_by=[F('total_point').desc(), F('created_at').asc()]
+                )
             )
-        )
 
         if profile.role.title == 'moderator' or profile.role.title == 'admin':
             return query.filter(contest__section=section).order_by('-created_at')

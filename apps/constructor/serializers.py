@@ -22,6 +22,7 @@ class Applications_serializer(Base_applications_serializer):
     point_calculation = serializers.DictField(read_only=True)
     total_point = serializers.FloatField(read_only=True)
     project_type_title = serializers.CharField(read_only=True, source='project_type.title')
+    rating = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Application
