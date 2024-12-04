@@ -59,7 +59,8 @@ INSTALLED_APPS = [
     'apps_modules.meeting',
     'apps_modules.letter',
     'apps_modules.mo_report',
-    'apps.main_page_stat'
+    'apps.main_page_stat',
+    'apps.ad'
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
