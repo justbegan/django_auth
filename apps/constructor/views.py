@@ -54,7 +54,7 @@ class Application_main(generics.ListCreateAPIView):
         return Applications_serializer
 
     def get_queryset(self):
-        q = self.filter_queryset(super().get_queryset())
+        q = super().get_queryset()
         return Application_services.query_handler(self.request, q)
 
     @document_validation(Document_type)
