@@ -9,7 +9,7 @@ from abc import ABC, abstractmethod
 from django.db.models.expressions import RawSQL
 from django.contrib.contenttypes.models import ContentType
 import logging
-from django.db.models import Sum, FloatField, ExpressionWrapper, F, Window
+from django.db.models import Sum, ExpressionWrapper, F, Window, DecimalField
 from django.db.models.functions import RowNumber
 
 from apps.constructor.models import Contest, Application, Schema, Status, Calculated_fields
@@ -208,7 +208,7 @@ class Application_services(Base_application_services):
             query = query.annotate(
                 total_point=ExpressionWrapper(
                     cls.get_formula_by_contest(F('contest')),
-                    output_field=FloatField()
+                    output_field=DecimalField(max_digits=20, decimal_places=2)
                 )
             ).annotate(
                 rating=Window(

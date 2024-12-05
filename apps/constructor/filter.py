@@ -72,6 +72,10 @@ class Base_application_filter(Base_filter):
         return queryset.filter(**filter)
 
     def filter_order_by(self, queryset, name, value):
+        order_by_mapping = {
+            "profile_type": "author__profile_type__title"
+        }
+        value = order_by_mapping[value] if order_by_mapping.get(value, None) else value
         return queryset.order_by(value)
 
     def search_all_field(self, queryset, name, value):
