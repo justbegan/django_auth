@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 
-from apps.locations.models import Municipal_district, Settlement, Locality
+from apps.locations.models import Municipal_district, Settlement, Locality, District_type
 from apps.module_manager.models import Apps
 
 
@@ -68,6 +68,10 @@ class Profile(models.Model):
                                      null=True)
     user = models.ForeignKey('users.CustomUser', on_delete=models.PROTECT, blank=True, null=True)
     allowed_number_projects = models.PositiveIntegerField("Допустимое количество проектов", default=0)
+    contest_type = models.ForeignKey(
+        District_type, on_delete=models.PROTECT, verbose_name="Тип конкурса",
+        help_text="Для какого конкурса этот профиль будет участвовать"
+    )
 
     def __str__(self):
         return str(self.id)

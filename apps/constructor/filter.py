@@ -72,7 +72,6 @@ class Base_application_filter(Base_filter):
         return queryset.filter(**filter)
 
     def filter_order_by(self, queryset, name, value):
-        print(value)
         order_by_mapping = {
             "profile_type": "author__profile_type__title",
             "-profile_type": "-author__profile_type__title"
