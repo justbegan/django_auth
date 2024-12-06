@@ -29,7 +29,8 @@ def get_current_profile_type(request: Request):
     try:
         section = get_current_section(request)
         obj = get_custom_user_model('profiles', 'Profile').objects.get(
-            user=request.user, section=section).municipal_district.district_type
+            user=request.user, section=section
+        ).district_type
         return obj
     except Exception as e:
         logger.exception(f"Ошибка при поиске поля profile_type {e}")
